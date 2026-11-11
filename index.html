@@ -5646,7 +5646,7 @@
             }
 
             panCamera(dx, dz) {
-                const spd = 0.35 / this.zoomFactor;
+                const spd = 0.58 / this.zoomFactor;
                 const rad = (this.camAngleDeg * Math.PI) / 180;
                 // Điều hướng chuẩn theo góc xoay camera hiện tại
                 const forwardX = -Math.cos(rad);
@@ -5657,8 +5657,9 @@
                 const moveX = (dx * rightX - dz * forwardX) * spd;
                 const moveZ = (dx * rightZ - dz * forwardZ) * spd;
 
-                this.camTarget.x = Math.max(-18, Math.min(18, this.camTarget.x + moveX));
-                this.camTarget.z = Math.max(-18, Math.min(18, this.camTarget.z + moveZ));
+                const maxBound = 24 + (this.state && this.state.realEstate ? (this.state.realEstate.expandedLots || 0) * 4 : 0);
+                this.camTarget.x = Math.max(-maxBound, Math.min(maxBound, this.camTarget.x + moveX));
+                this.camTarget.z = Math.max(-maxBound, Math.min(maxBound, this.camTarget.z + moveZ));
                 this.updateCameraTransform();
             }
 
@@ -7641,8 +7642,59 @@
                     this.updateCameraTransform();
                 }, { passive: true });
 
-                // Kéo chuột
+                // Hỗ trợ cảm ứng đa điểm (Zoom bằng 2 ngón tay trên Điện thoại / Máy tính bảng) & Lướt nhanh di chuyển góc nhìn
+                this.activePointers = new Map();
+                this.isPinching = false;
+                this.pinchStartDist = 0;
+                this.pinchStartZoom = 1.0;
+
+                const getTouchDistance = (t1, t2) => Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+
+                this.renderer.domElement.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        this.isPinching = true;
+                        this.isDragging = false;
+                        this.pointerMoved = true;
+                        this.pinchStartDist = getTouchDistance(e.touches[0], e.touches[1]);
+                        this.pinchStartZoom = this.zoomFactor;
+                    }
+                }, { passive: true });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (this.isPinching && e.touches.length === 2) {
+                        const curDist = getTouchDistance(e.touches[0], e.touches[1]);
+                        if (this.pinchStartDist > 10) {
+                            const scale = curDist / this.pinchStartDist;
+                            this.zoomFactor = Math.max(0.45, Math.min(2.5, this.pinchStartZoom * scale));
+                            this.updateCameraTransform();
+                        }
+                    }
+                }, { passive: true });
+
+                const endTouchPinch = (e) => {
+                    if (e.touches.length < 2) {
+                        if (this.isPinching && e.touches.length === 1) {
+                            this.dragStart.x = e.touches[0].clientX;
+                            this.dragStart.y = e.touches[0].clientY;
+                        }
+                        this.isPinching = false;
+                    }
+                };
+                window.addEventListener('touchend', endTouchPinch, { passive: true });
+                window.addEventListener('touchcancel', endTouchPinch, { passive: true });
+
+                // Kéo chuột / Lướt 1 ngón tay tốc độ nhanh & Fallback Zoom 2 ngón qua PointerEvents
                 this.renderer.domElement.addEventListener('pointerdown', (e) => {
+                    this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+                    if (this.activePointers.size >= 2) {
+                        this.isPinching = true;
+                        this.isDragging = false;
+                        this.pointerMoved = true;
+                        const pts = Array.from(this.activePointers.values());
+                        this.pinchStartDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+                        this.pinchStartZoom = this.zoomFactor;
+                        return;
+                    }
                     this.isDragging = true;
                     this.pointerMoved = false;
                     this.dragStart.x = e.clientX;
@@ -7650,24 +7702,55 @@
                 });
 
                 window.addEventListener('pointermove', (e) => {
+                    if (this.activePointers.has(e.pointerId)) {
+                        this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+                    }
+                    if (this.activePointers.size >= 2 || this.isPinching) {
+                        if (this.activePointers.size >= 2) {
+                            const pts = Array.from(this.activePointers.values());
+                            const curDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+                            if (this.pinchStartDist > 10) {
+                                const scale = curDist / this.pinchStartDist;
+                                this.zoomFactor = Math.max(0.45, Math.min(2.5, this.pinchStartZoom * scale));
+                                this.updateCameraTransform();
+                            }
+                        }
+                        return;
+                    }
                     this.updateHologram(e.clientX, e.clientY);
                     if (!this.isDragging) return;
                     const dx = e.clientX - this.dragStart.x;
                     const dy = e.clientY - this.dragStart.y;
-                    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+                    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
                         this.pointerMoved = true;
-                        this.panCamera(-dx * 0.05, -dy * 0.05);
+                        // Tăng mạnh tốc độ lướt màn hình (từ 0.05 lên 0.145 kết hợp spd 0.58) giúp vuốt cực nhạy và mượt
+                        const swipeMult = (e.pointerType === 'touch') ? 0.165 : 0.135;
+                        this.panCamera(-dx * swipeMult, -dy * swipeMult);
                         this.dragStart.x = e.clientX;
                         this.dragStart.y = e.clientY;
                     }
                 });
 
-                window.addEventListener('pointerup', (e) => {
-                    if (this.isDragging && !this.pointerMoved && e.target === this.renderer.domElement) {
+                const handlePointerRelease = (e) => {
+                    this.activePointers.delete(e.pointerId);
+                    if (this.activePointers.size < 2) {
+                        if (this.activePointers.size === 1) {
+                            const remaining = Array.from(this.activePointers.values())[0];
+                            this.dragStart.x = remaining.x;
+                            this.dragStart.y = remaining.y;
+                        } else {
+                            this.isPinching = false;
+                        }
+                    }
+                    if (this.isDragging && !this.pointerMoved && !this.isPinching && e.target === this.renderer.domElement) {
                         this.handleMapClick(e.clientX, e.clientY);
                     }
-                    this.isDragging = false;
-                });
+                    if (this.activePointers.size === 0) {
+                        this.isDragging = false;
+                    }
+                };
+                window.addEventListener('pointerup', handlePointerRelease);
+                window.addEventListener('pointercancel', handlePointerRelease);
 
                 window.addEventListener('resize', () => {
                     this.updateCameraTransform();
