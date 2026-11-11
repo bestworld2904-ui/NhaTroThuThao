@@ -1439,9 +1439,14 @@
             <span id="preview-bar-status" style="font-size:11px; font-weight:900; padding:2px 8px; border-radius:8px; background:#e8f5e9; color:#2e7d32;">✅ Ô Hợp Lệ</span>
         </div>
         <div class="preview-bar-meta">
+            <span>🏢 Tầng đặt: <b id="preview-bar-floor">Tầng 1</b></span>
             <span>📍 Vị trí ô: <b id="preview-bar-coord">(0, 0)</b></span>
             <span>🧭 Góc xoay: <b id="preview-bar-angle">0° (Hướng Nam)</b></span>
             <span id="preview-bar-cost-wrap">💵 Chi phí: <b id="preview-bar-cost">0đ</b></span>
+        </div>
+        <div id="preview-floor-switch-row" style="display:none; margin-bottom:7px; background:#fff3e0; border:1.5px solid #ffb74d; border-radius:10px; padding:5px 8px; font-size:11.5px; font-weight:800; color:#e65100; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <span>🛗 Chuyển kiến trúc sang tầng:</span>
+            <div id="preview-floor-btns" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
         </div>
         <div style="font-size:11px; color:#546e7a; font-weight:800; margin-bottom:7px;">
             💡 Chạm/bấm vào ô bất kỳ trên mặt bằng để chọn vị trí • Bấm nút <b>Xoay 90°</b> để xem hướng kiến trúc trước khi đặt.
@@ -1500,16 +1505,19 @@
                     </div>
                 </div>
 
-                <!-- Hàng 2: Chi tiết Thống kê nhanh + Tốc độ + Hồ sơ (Có thể bấm ▲ Gọn để ẩn hoàn toàn) -->
+                <!-- Hàng 2: Chi tiết Thống kê nhanh + Chuyển Tầng / Mở Rộng Mặt Bằng + Tốc độ + Hồ sơ -->
                 <div id="time-panel-body">
                     <div class="stats-row">
                         <span>📈 Thu: +<span id="income-display">0</span>đ/th</span>
                         <span>🏠 Phòng: <span id="occupancy-display">1/1</span></span>
                         <span>🛣️ HL: <span id="corridor-display">0</span></span>
                         <span>😊 <span id="happy-display">88%</span></span>
+                        <span>🗺️ Ô đất: <b id="land-tiles-display" style="color:#00897b;">25/50</b></span>
                         <span title="Tiến trình ngày"><div class="day-progress"><div class="day-progress-fill" id="day-progress-fill"></div></div></span>
                     </div>
                     <div class="mini-actions">
+                        <span id="hud-floor-quick-btns" style="display:inline-flex; gap:3px; align-items:center;"></span>
+                        <button class="mini-btn" id="btn-open-land-floor" style="background:#00897b;border-color:#00695c;box-shadow:0 2px 0 #00695c;" title="Mua thêm ô mở rộng mặt bằng & Nâng tầng 2, tầng 3">🗺️ Mở Rộng &amp; Tầng</button>
                         <button class="mini-btn active-speed" data-speed="1" title="Tốc độ 1x: 1 ngày = 5 phút">1x</button>
                         <button class="mini-btn" data-speed="2" title="Tốc độ 2x: 1 ngày = 2.5 phút">2x</button>
                         <button class="mini-btn" data-speed="5" title="Tốc độ 5x: 1 ngày = 1 phút">5x</button>
@@ -1524,6 +1532,7 @@
                 <div id="left-dropdown-list" class="hidden-menu">
                     <button class="left-menu-item active-mode" id="btn-mode-view">👀 Quản Lý</button>
                     <button class="left-menu-item" id="btn-open-build">🔨 Xây Dựng</button>
+                    <button class="left-menu-item" id="btn-menu-land-floor" style="background:#ef6c00;border-color:#e65100;box-shadow:0 2px 0 #e65100;">🗺️ Mở Rộng Ô &amp; Nâng Tầng</button>
                     <button class="left-menu-item" id="btn-open-staff" style="background:#00897b;border-color:#00695c;box-shadow:0 2px 0 #00695c;">👨‍💼 Nhân Sự Tự Động</button>
                     <button class="left-menu-item" id="btn-open-depth" style="background:#8e24aa;border-color:#6a1b9a;box-shadow:0 2px 0 #6a1b9a;">🌟 Lễ Hội &amp; Chiều Sâu</button>
                     <button class="left-menu-item" id="btn-open-bank">🏦 Ngân Hàng</button>
@@ -1872,6 +1881,17 @@
                 <button class="depth-tab-btn" data-depth-tab="realestate">📈 Thị Trường Bất Động Sản</button>
             </div>
             <div id="depth-modal-body" style="max-height:60vh; overflow-y:auto; padding-right:4px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL MỞ RỘNG Ô MẶT BẰNG (TỐI ĐA GẤP ĐÔI) & NÂNG CẤP TẦNG 2, TẦNG 3... (YÊU CẦU 1) -->
+    <div id="land-floor-modal-overlay" style="position:fixed; inset:0; background:rgba(35,30,30,0.72); z-index:66; display:none; align-items:center; justify-content:center; padding:14px; pointer-events:auto;">
+        <div class="modal-card" style="max-width:640px;">
+            <div class="drawer-header">
+                <h2>🗺️ Mở Rộng Phạm Vi Mặt Bằng &amp; Nâng Cấp Tầng Cao</h2>
+                <button class="close-btn" id="btn-close-land-floor">✕</button>
+            </div>
+            <div id="land-floor-modal-body" style="max-height:70vh; overflow-y:auto; padding-right:4px;"></div>
         </div>
     </div>
 
@@ -3965,6 +3985,372 @@
         }
 
         /**
+         * 4B. CLASS CHILDNPC (NPC ĐỨA TRẺ VUI CHƠI TRÒ CHUYỆN TRONG KHU TRỌ - YÊU CẦU 2)
+         * - Đứa thì đánh trống (3D Drum set), đứa thì đàn piano (3D Piano), đứa thì khóc vì bị cha mẹ đánh,
+         *   các đứa trẻ rủ những đứa trẻ khác trong cùng khu trọ đi chơi & trò chuyện.
+         * - Nếu chưa xây Khu Vui Chơi -> Chơi ở Hành Lang.
+         * - Khi đã xây Khu Vui Chơi -> Tự động đi dọc hành lang ra Khu Vui Chơi để chơi!
+         */
+        const CHILD_NPC_PRESETS = [
+            { id: 'child_bi', name: 'Bé Bi', gender: 'M', shirt: '#ff7043', hairColor: '#212121', favRole: 'DRUMS' },
+            { id: 'child_na', name: 'Bé Na', gender: 'F', shirt: '#ec407a', hairColor: '#4e342e', favRole: 'PIANO' },
+            { id: 'child_bo', name: 'Bé Bo', gender: 'M', shirt: '#42a5f5', hairColor: '#3e2723', favRole: 'CRYING' },
+            { id: 'child_bong', name: 'Bé Bông', gender: 'F', shirt: '#ab47bc', hairColor: '#212121', favRole: 'INVITE' },
+            { id: 'child_ti', name: 'Bé Tí', gender: 'M', shirt: '#66bb6a', hairColor: '#263238', favRole: 'DRUMS' }
+        ];
+
+        class ChildNPC {
+            constructor(preset, idx, scene, gameManager) {
+                this.id = preset.id;
+                this.name = preset.name;
+                this.gender = preset.gender;
+                this.shirt = preset.shirt;
+                this.hairColor = preset.hairColor;
+                this.favRole = preset.favRole;
+                this.idx = idx;
+                this.scene = scene;
+                this.gm = gameManager;
+                this.floor = 1;
+
+                // Trạng thái hoạt động: 'DRUMS' | 'PIANO' | 'CRYING' | 'INVITING' | 'WALKING'
+                this.activity = preset.favRole === 'INVITE' ? 'INVITING' : preset.favRole;
+                this.activityTimer = 180 + idx * 45;
+                this.pathWaypoints = [];
+                this.speed = 0.048;
+
+                // Khởi tạo vị trí trên hành lang hoặc sân chơi
+                const startSpot = this.pickPlayDestination(true);
+                this.mesh = this.buildChildMesh();
+                this.mesh.position.set(startSpot.x, 0, startSpot.z);
+                this.targetPos = new THREE.Vector3(startSpot.x, 0, startSpot.z);
+                this.scene.add(this.mesh);
+
+                this.bubbleVisible = true;
+                this.bubbleHideAt = performance.now() + 8000;
+                this.nextBubbleAt = performance.now() + 1500;
+                this.currentBubbleHtml = '';
+                this.refreshActivityBubble(false);
+            }
+
+            buildChildMesh() {
+                const scale = 0.62;
+                const group = new THREE.Group();
+                const pantsColor = this.gender === 'F' ? '#f48fb1' : '#1e88e5';
+
+                const legGeo = new THREE.BoxGeometry(0.12 * scale, 0.34 * scale, 0.12 * scale);
+                const leftLeg = createToonMesh(legGeo, pantsColor);
+                leftLeg.position.set(-0.08 * scale, 0.17 * scale, 0);
+                const rightLeg = createToonMesh(legGeo, pantsColor);
+                rightLeg.position.set(0.08 * scale, 0.17 * scale, 0);
+                group.add(leftLeg, rightLeg);
+
+                const body = createToonMesh(new THREE.CylinderGeometry(0.19 * scale, 0.22 * scale, 0.46 * scale, 8), this.shirt);
+                body.position.y = 0.54 * scale;
+                group.add(body);
+
+                const armGeo = new THREE.BoxGeometry(0.095 * scale, 0.34 * scale, 0.095 * scale);
+                const leftArm = createToonMesh(armGeo, '#ffccbc');
+                leftArm.position.set(-0.25 * scale, 0.54 * scale, 0.04);
+                const rightArm = createToonMesh(armGeo, '#ffccbc');
+                rightArm.position.set(0.25 * scale, 0.54 * scale, 0.04);
+                group.add(leftArm, rightArm);
+
+                const head = createToonMesh(new THREE.SphereGeometry(0.24 * scale, 8, 8), '#ffccbc');
+                head.position.y = 0.96 * scale;
+                group.add(head);
+
+                if (this.gender === 'F') {
+                    const hairTop = createToonMesh(new THREE.SphereGeometry(0.25 * scale, 8, 8), this.hairColor);
+                    hairTop.scale.set(1.02, 0.68, 1.02);
+                    hairTop.position.set(0, 1.05 * scale, 0);
+                    const bunL = createToonMesh(new THREE.SphereGeometry(0.11 * scale, 6, 6), '#ffeb3b');
+                    bunL.position.set(-0.2 * scale, 1.08 * scale, -0.05 * scale);
+                    const bunR = createToonMesh(new THREE.SphereGeometry(0.11 * scale, 6, 6), '#ffeb3b');
+                    bunR.position.set(0.2 * scale, 1.08 * scale, -0.05 * scale);
+                    group.add(hairTop, bunL, bunR);
+                } else {
+                    const cap = createToonMesh(new THREE.CylinderGeometry(0.23 * scale, 0.24 * scale, 0.14 * scale, 8), '#fdd835');
+                    cap.position.set(0, 1.12 * scale, 0);
+                    group.add(cap);
+                }
+
+                // Đạo cụ 1: Bộ Trống 3D (Drum Set) phía trước đứa trẻ
+                this.drumProp = new THREE.Group();
+                const drumStand = createToonMesh(new THREE.CylinderGeometry(0.03, 0.05, 0.32, 6), '#78909c');
+                drumStand.position.set(0, 0.16, 0.34);
+                const drumBody = createToonMesh(new THREE.CylinderGeometry(0.22, 0.22, 0.22, 12), '#e53935', '#ffca28');
+                drumBody.position.set(0, 0.34, 0.34);
+                const drumTop = createToonMesh(new THREE.CylinderGeometry(0.21, 0.21, 0.03, 12), '#fff8e1');
+                drumTop.position.set(0, 0.46, 0.34);
+                this.drumProp.add(drumStand, drumBody, drumTop);
+                group.add(this.drumProp);
+
+                // Đạo cụ 2: Đàn Piano 3D (Mini Piano Keyboard) phía trước đứa trẻ
+                this.pianoProp = new THREE.Group();
+                const pLegL = createToonMesh(new THREE.BoxGeometry(0.05, 0.34, 0.22), '#5d4037');
+                pLegL.position.set(-0.22, 0.17, 0.35);
+                const pLegR = createToonMesh(new THREE.BoxGeometry(0.05, 0.34, 0.22), '#5d4037');
+                pLegR.position.set(0.22, 0.17, 0.35);
+                const pBoard = createToonMesh(new THREE.BoxGeometry(0.56, 0.1, 0.26), '#212121', '#ffd54f');
+                pBoard.position.set(0, 0.36, 0.35);
+                const pKeys = createToonMesh(new THREE.BoxGeometry(0.48, 0.03, 0.12), '#ffffff', '#000000');
+                pKeys.position.set(0, 0.42, 0.39);
+                this.pianoProp.add(pLegL, pLegR, pBoard, pKeys);
+                group.add(this.pianoProp);
+
+                // Đạo cụ 3: Giọt nước mắt 3D khi khóc nhè vì bị cha mẹ đánh
+                this.tearProp = new THREE.Group();
+                const tearL = createToonMesh(new THREE.SphereGeometry(0.05, 6, 6), '#29b6f6');
+                tearL.position.set(-0.11, 0.58, 0.16);
+                const tearR = createToonMesh(new THREE.SphereGeometry(0.05, 6, 6), '#29b6f6');
+                tearR.position.set(0.11, 0.58, 0.16);
+                this.tearProp.add(tearL, tearR);
+                group.add(this.tearProp);
+
+                this.limbs = { leftArm, rightArm, leftLeg, rightLeg };
+                this.syncPropsVisibility();
+                return group;
+            }
+
+            syncPropsVisibility() {
+                const isMoving = this.pathWaypoints && this.pathWaypoints.length > 0;
+                if (this.drumProp) this.drumProp.visible = (!isMoving && this.activity === 'DRUMS');
+                if (this.pianoProp) this.pianoProp.visible = (!isMoving && this.activity === 'PIANO');
+                if (this.tearProp) this.tearProp.visible = (this.activity === 'CRYING');
+            }
+
+            getPlaygroundsOnFloor() {
+                if (!this.gm || !this.gm.state || !this.gm.state.communityMap) return [];
+                const all = Array.from(this.gm.state.communityMap.values()).filter(c => (c.floor || 1) === 1);
+                const dedicatedPg = all.filter(c => c.typeId === 'playground');
+                return dedicatedPg.length > 0 ? dedicatedPg : all;
+            }
+
+            pickPlayDestination(initial = false) {
+                const pgs = this.getPlaygroundsOnFloor();
+                const offsets = [
+                    { ox: -0.85, oz: -0.65 },
+                    { ox: 0.85, oz: -0.65 },
+                    { ox: -0.75, oz: 0.75 },
+                    { ox: 0.75, oz: 0.75 },
+                    { ox: 0.0, oz: 0.15 }
+                ];
+                const off = offsets[this.idx % offsets.length];
+
+                // YÊU CẦU 2: Nếu người chơi ĐÃ xây Khu Vui Chơi -> Trẻ em ra Khu Vui Chơi để chơi!
+                if (pgs.length > 0) {
+                    const chosenPg = pgs[this.idx % pgs.length];
+                    this.isPlayingAtPlayground = true;
+                    return {
+                        gx: chosenPg.gx,
+                        gz: chosenPg.gz,
+                        x: chosenPg.x + off.ox,
+                        z: chosenPg.z + off.oz
+                    };
+                }
+
+                // Nếu CHƯA xây Khu Vui Chơi -> Trẻ em chơi ở Hành Lang!
+                this.isPlayingAtPlayground = false;
+                const cors = this.gm && this.gm.state
+                    ? Array.from(this.gm.state.corridorMap.values()).filter(c => (c.floor || 1) === 1)
+                    : [];
+                if (cors.length > 0) {
+                    const chosenCor = cors[this.idx % cors.length];
+                    return {
+                        gx: chosenCor.gx,
+                        gz: chosenCor.gz,
+                        x: chosenCor.x + off.ox * 0.55,
+                        z: chosenCor.z + off.oz * 0.55
+                    };
+                }
+                return { gx: 0, gz: 2, x: off.ox * 0.5, z: 8 + off.oz * 0.5 };
+            }
+
+            refreshActivityBubble(justInvited = false, friendName = 'bạn') {
+                const locBadge = this.isPlayingAtPlayground ? '🎠 Sân Chơi' : '🛣️ Hành Lang';
+                if (justInvited) {
+                    this.currentBubbleHtml = `<span class="thought-pill pill-neighbor">🧒 Rủ bạn (${locBadge})</span>"Ê ${friendName} ơi! Qua ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} chơi chung với tụi mình đi!"`;
+                    return;
+                }
+                if (this.activity === 'DRUMS') {
+                    const lines = [
+                        `Tùng! Tùng! Tùng! ${this.name} đang đánh trống rộn ràng ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
+                        `🥁 Tập đánh trống bài nhạc thiếu nhi vui quá các bạn ơi!`,
+                        `🥁 Đánh trống cổ vũ cả xóm trọ náo nhiệt lên nào!`
+                    ];
+                    this.currentBubbleHtml = `<span class="thought-pill pill-job">🥁 Đánh trống (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                } else if (this.activity === 'PIANO') {
+                    const lines = [
+                        `🎹 Đồ Rê Mi Pha Sol~ ${this.name} đang đàn piano cho các bạn nghe ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
+                        `🎹 Tiếng đàn piano ngân vang khắp xóm trọ bình yên!`,
+                        `🎹 Tập đàn piano chăm chỉ để mai mốt thành nghệ sĩ tí hon!`
+                    ];
+                    this.currentBubbleHtml = `<span class="thought-pill pill-living">🎹 Đàn Piano (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                } else if (this.activity === 'CRYING') {
+                    const lines = [
+                        `😭 Hu hu... Hôm nay em nghịch làm vỡ đồ bị ba mẹ đánh đòn đau quá hu hu!`,
+                        `😭 Hu hu bị mẹ mắng đánh vào mông rồi, có bạn nào ra chơi dỗ em với!`,
+                        `😭 Oa oa... Bị ba phạt đòn đau quá, đứng ở ${this.isPlayingAtPlayground ? 'sân chơi' : 'hành lang'} khóc nhè hu hu!`
+                    ];
+                    this.currentBubbleHtml = `<span class="thought-pill pill-crisis">😭 Khóc nhè (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                } else {
+                    const others = (this.gm && this.gm.childNpcs) ? this.gm.childNpcs.filter(c => c.id !== this.id) : [];
+                    const buddy = others.length > 0 ? others[Math.floor(Math.random() * others.length)].name : 'các bạn';
+                    const lines = [
+                        `🧒 "Ê ${buddy} ơi! Ra ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} tụ tập chơi chung đi!"`,
+                        `🤸‍♀️ Mấy đứa nhỏ trong khu trọ rủ nhau vừa nghe đàn vừa chơi đùa vui quá!`,
+                        `👦 "Nín khóc đi bạn ơi, lại đây nghe đánh trống với đàn piano cùng tụi mình nè!"`
+                    ];
+                    this.currentBubbleHtml = `<span class="thought-pill pill-neighbor">🧒 Trò chuyện (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                }
+            }
+
+            update(deltaSec, timeScale, gameHour) {
+                if (!this.mesh || !this.gm) return;
+                // Chỉ hiển thị ở Tầng 1 và ban ngày (06:00 - 21:59)
+                const isSleeping = (gameHour >= 22 || gameHour < 6);
+                const onFloor1 = (this.gm.currentFloor || 1) === 1;
+                this.mesh.visible = !isSleeping && onFloor1;
+                if (!this.mesh.visible) {
+                    this.bubbleVisible = false;
+                    return;
+                }
+
+                const nowMs = performance.now();
+                const time = Date.now() * 0.016;
+
+                // Kiểm tra xem người chơi vừa xây Khu Vui Chơi chưa để rủ nhau di chuyển ra Khu Vui Chơi
+                const hasPgNow = this.getPlaygroundsOnFloor().length > 0;
+                if (hasPgNow !== this.isPlayingAtPlayground) {
+                    const dest = this.pickPlayDestination(false);
+                    const s = GAME_CONFIG.CELL_SIZE;
+                    const curGx = Math.round(this.mesh.position.x / s);
+                    const curGz = Math.round(this.mesh.position.z / s);
+                    const path = this.gm.state.findCorridorPath(curGx, curGz, dest.gx, dest.gz);
+                    if (path && path.length > 0) {
+                        this.pathWaypoints = path.map(p => ({ x: p.gx * s, z: p.gz * s }));
+                        this.pathWaypoints.push({ x: dest.x, z: dest.z });
+                        const first = this.pathWaypoints.shift();
+                        this.targetPos.set(first.x, 0, first.z);
+                    } else {
+                        this.targetPos.set(dest.x, 0, dest.z);
+                    }
+                    if (hasPgNow) {
+                        this.currentBubbleHtml = `<span class="thought-pill pill-living">🎉 Khu Vui Chơi!</span>"Chủ trọ xây Khu Vui Chơi rồi tụi bây ơi! Rủ nhau ra sân chơi thôi!"`;
+                        this.bubbleVisible = true;
+                        this.bubbleHideAt = nowMs + 6000;
+                    }
+                }
+
+                // Di chuyển dọc theo hành lang hoặc tới chỗ bạn để rủ đi chơi
+                const dx = this.targetPos.x - this.mesh.position.x;
+                const dz = this.targetPos.z - this.mesh.position.z;
+                const dist = Math.hypot(dx, dz);
+
+                if (dist > 0.14) {
+                    const step = Math.min(dist, this.speed * timeScale);
+                    this.mesh.position.x += (dx / dist) * step;
+                    this.mesh.position.z += (dz / dist) * step;
+                    this.mesh.position.y = Math.abs(Math.sin(time * 1.4 + this.idx)) * 0.12;
+                    this.mesh.rotation.y = Math.atan2(dx, dz);
+
+                    const swing = Math.sin(time * 1.6 + this.idx) * 0.6;
+                    this.limbs.leftLeg.rotation.x = swing;
+                    this.limbs.rightLeg.rotation.x = -swing;
+                    this.limbs.leftArm.rotation.x = -swing * 0.7;
+                    this.limbs.rightArm.rotation.x = swing * 0.7;
+                    this.syncPropsVisibility();
+                } else if (this.pathWaypoints.length > 0) {
+                    const nextWp = this.pathWaypoints.shift();
+                    this.targetPos.set(nextWp.x, 0, nextWp.z);
+                } else {
+                    this.mesh.position.y = 0;
+                    this.limbs.leftLeg.rotation.x = 0;
+                    this.limbs.rightLeg.rotation.x = 0;
+                    this.syncPropsVisibility();
+
+                    // Hoạt ảnh tay đặc trưng cho Đánh trống, Đàn piano, Khóc nhè, Trò chuyện
+                    if (this.activity === 'DRUMS') {
+                        this.limbs.leftArm.rotation.x = -0.9 + Math.sin(time * 3.2) * 0.45;
+                        this.limbs.rightArm.rotation.x = -0.9 - Math.sin(time * 3.2) * 0.45;
+                    } else if (this.activity === 'PIANO') {
+                        this.limbs.leftArm.rotation.x = -0.75 + Math.sin(time * 2.4) * 0.22;
+                        this.limbs.rightArm.rotation.x = -0.75 + Math.cos(time * 2.4) * 0.22;
+                    } else if (this.activity === 'CRYING') {
+                        this.limbs.leftArm.rotation.x = -2.1 + Math.sin(time * 2.8) * 0.15;
+                        this.limbs.rightArm.rotation.x = -2.1 - Math.sin(time * 2.8) * 0.15;
+                        this.mesh.position.y = Math.abs(Math.sin(time * 2.5)) * 0.04;
+                    } else {
+                        this.limbs.leftArm.rotation.x = Math.sin(time * 1.5) * 0.35;
+                        this.limbs.rightArm.rotation.x = -Math.sin(time * 1.5) * 0.35;
+                    }
+                }
+
+                // Đổi hoạt động định kỳ & rủ bạn trong khu trọ đi chơi chung
+                this.activityTimer -= deltaSec * 25 * timeScale;
+                if (this.activityTimer <= 0) {
+                    this.activityTimer = 180 + Math.random() * 140;
+                    const roll = Math.random();
+                    if (this.favRole === 'DRUMS' && roll < 0.52) {
+                        this.activity = 'DRUMS';
+                    } else if (this.favRole === 'PIANO' && roll < 0.52) {
+                        this.activity = 'PIANO';
+                    } else if (this.favRole === 'CRYING' && roll < 0.45) {
+                        this.activity = 'CRYING';
+                    } else {
+                        const pool = ['DRUMS', 'PIANO', 'CRYING', 'INVITING'];
+                        this.activity = pool[Math.floor(Math.random() * pool.length)];
+                    }
+
+                    // Nếu ở trạng thái INVITING: Đi qua chỗ một đứa trẻ khác để rủ đi chơi hoặc dỗ bạn đang khóc!
+                    const peers = (this.gm.childNpcs || []).filter(c => c.id !== this.id);
+                    if (this.activity === 'INVITING' && peers.length > 0) {
+                        const cryingPeer = peers.find(p => p.activity === 'CRYING');
+                        const targetPeer = cryingPeer || peers[Math.floor(Math.random() * peers.length)];
+                        const dest = this.pickPlayDestination(false);
+                        this.targetPos.set(targetPeer.mesh.position.x + (Math.random() - 0.5) * 0.7, 0, targetPeer.mesh.position.z + (Math.random() - 0.5) * 0.7);
+                        this.refreshActivityBubble(true, targetPeer.name);
+                        this.bubbleVisible = true;
+                        this.bubbleHideAt = nowMs + 6000;
+
+                        // Nếu bạn đang khóc vì bị ba mẹ đánh, được rủ đi chơi sẽ nín khóc và vui vẻ đi chơi chung!
+                        if (cryingPeer) {
+                            setTimeout(() => {
+                                if (cryingPeer && cryingPeer.activity === 'CRYING') {
+                                    cryingPeer.activity = 'INVITING';
+                                    cryingPeer.syncPropsVisibility();
+                                    cryingPeer.currentBubbleHtml = `<span class="thought-pill pill-living">😊 Nín khóc</span>"Cảm ơn ${this.name} đã dỗ mình nha! Mình hết khóc rồi, đi chơi chung thôi!"`;
+                                    cryingPeer.bubbleVisible = true;
+                                    cryingPeer.bubbleHideAt = performance.now() + 5500;
+                                }
+                            }, 1800);
+                        }
+                    } else {
+                        const dest = this.pickPlayDestination(false);
+                        this.targetPos.set(dest.x, 0, dest.z);
+                        this.refreshActivityBubble(false);
+                        this.bubbleVisible = true;
+                        this.bubbleHideAt = nowMs + 6000;
+                    }
+                    this.syncPropsVisibility();
+                }
+
+                if (this.bubbleVisible && nowMs >= this.bubbleHideAt) {
+                    this.bubbleVisible = false;
+                    this.nextBubbleAt = nowMs + 4500 + Math.random() * 5000;
+                } else if (!this.bubbleVisible && nowMs >= this.nextBubbleAt) {
+                    this.refreshActivityBubble(false);
+                    this.bubbleVisible = true;
+                    this.bubbleHideAt = nowMs + 5800;
+                }
+            }
+
+            destroy() {
+                if (this.mesh && this.scene) this.scene.remove(this.mesh);
+            }
+        }
+
+        /**
          * 5. CLASS ROOM (Phòng trọ theo loại, toilet khép kín, cửa sổ, đồ họa Toon)
          */
                 class Room {
@@ -3972,6 +4358,7 @@
                 this.code = config.code;
                 this.typeId = config.typeId || 'standard';
                 this.typeConfig = GAME_CONFIG.ROOM_TYPES[this.typeId] || GAME_CONFIG.ROOM_TYPES.standard;
+                this.floor = Number(config.floor || StateStore.activeFloor || 1);
                 this.gx = config.gx;
                 this.gz = config.gz;
                 this.x = this.gx * GAME_CONFIG.CELL_SIZE;
@@ -4373,6 +4760,7 @@
                 return {
                     code: this.code,
                     typeId: this.typeId,
+                    floor: this.floor || 1,
                     rotIndex: this.rotIndex || 0,
                     paintId: this.paintId,
                     gx: this.gx,
@@ -4395,9 +4783,10 @@
          * 6. CLASS CORRIDOR (Hành lang đi bộ Toon kết nối các phòng ra Cổng)
          */
         class Corridor {
-            constructor(gx, gz, scene, typeId = 'cor_brick', rotIndex = 0) {
+            constructor(gx, gz, scene, typeId = 'cor_brick', rotIndex = 0, floor = null) {
                 this.gx = gx;
                 this.gz = gz;
+                this.floor = Number(floor || StateStore.activeFloor || 1);
                 this.typeId = typeId && GAME_CONFIG.CORRIDOR_TYPES[typeId] ? typeId : 'cor_brick';
                 this.typeConfig = GAME_CONFIG.CORRIDOR_TYPES[this.typeId];
                 this.x = gx * GAME_CONFIG.CELL_SIZE;
@@ -4493,15 +4882,16 @@
                 const gx = this.gx;
                 const gz = this.gz;
 
+                const fl = this.floor || 1;
                 const isRoadAt = (nx, nz) => {
-                    if (extraCorridorCell && extraCorridorCell.gx === nx && extraCorridorCell.gz === nz) return true;
+                    if (extraCorridorCell && extraCorridorCell.gx === nx && extraCorridorCell.gz === nz && (extraCorridorCell.floor || fl) === fl) return true;
                     if (nx === GAME_CONFIG.GATE_GRID.gx && nz === GAME_CONFIG.GATE_GRID.gz) return true;
-                    return state.corridorMap.has(StateStore.key(nx, nz));
+                    return state.corridorMap.has(StateStore.key(nx, nz, fl));
                 };
 
                 const isAnyConnectedAt = (nx, nz) => {
                     if (isRoadAt(nx, nz)) return true;
-                    const k = StateStore.key(nx, nz);
+                    const k = StateStore.key(nx, nz, fl);
                     return state.roomMap.has(k) || state.shopMap.has(k) || state.bizMap.has(k) || state.communityMap.has(k);
                 };
 
@@ -4597,7 +4987,7 @@
             }
 
             serialize() {
-                return { gx: this.gx, gz: this.gz, typeId: this.typeId, rotIndex: this.rotIndex || 0 };
+                return { gx: this.gx, gz: this.gz, floor: this.floor || 1, typeId: this.typeId, rotIndex: this.rotIndex || 0 };
             }
         }
 
@@ -4608,6 +4998,7 @@
             constructor(config, scene) {
                 this.gx = config.gx;
                 this.gz = config.gz;
+                this.floor = Number(config.floor || StateStore.activeFloor || 1);
                 this.x = this.gx * GAME_CONFIG.CELL_SIZE;
                 this.z = this.gz * GAME_CONFIG.CELL_SIZE;
                 this.scene = scene;
@@ -4786,6 +5177,7 @@
                 return {
                     gx: this.gx,
                     gz: this.gz,
+                    floor: this.floor || 1,
                     rotIndex: this.rotIndex || 0,
                     unlockedGoods: this.unlockedGoods,
                     totalEarned: this.totalEarned
@@ -4800,6 +5192,7 @@
             constructor(config, scene) {
                 this.gx = config.gx;
                 this.gz = config.gz;
+                this.floor = Number(config.floor || StateStore.activeFloor || 1);
                 this.typeId = config.typeId && GAME_CONFIG.BIZ_TYPES[config.typeId] ? config.typeId : 'eatery';
                 this.typeConfig = GAME_CONFIG.BIZ_TYPES[this.typeId];
                 this.x = this.gx * GAME_CONFIG.CELL_SIZE;
@@ -4971,6 +5364,7 @@
                 return {
                     gx: this.gx,
                     gz: this.gz,
+                    floor: this.floor || 1,
                     rotIndex: this.rotIndex || 0,
                     typeId: this.typeId,
                     mode: this.mode,
@@ -4988,6 +5382,7 @@
             constructor(config, scene) {
                 this.gx = config.gx;
                 this.gz = config.gz;
+                this.floor = Number(config.floor || StateStore.activeFloor || 1);
                 this.typeId = config.typeId && GAME_CONFIG.COMMUNITY_TYPES[config.typeId] ? config.typeId : 'playground';
                 this.typeConfig = GAME_CONFIG.COMMUNITY_TYPES[this.typeId];
                 this.x = this.gx * GAME_CONFIG.CELL_SIZE;
@@ -5071,7 +5466,7 @@
             }
 
             serialize() {
-                return { gx: this.gx, gz: this.gz, typeId: this.typeId, rotIndex: this.rotIndex || 0 };
+                return { gx: this.gx, gz: this.gz, floor: this.floor || 1, typeId: this.typeId, rotIndex: this.rotIndex || 0 };
             }
         }
 
@@ -5079,22 +5474,22 @@
          * 7. CLASS STATESTORE (Quản lý State O(1) + Save/Load localStorage)
          */
         class StateStore {
-            getNeighbors(gx, gz) {
+            getNeighbors(gx, gz, floor = null) {
                 const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
                 const result = [];
                 for (const [dx, dz] of dirs) {
-                    const r = this.getRoom(gx + dx, gz + dz);
+                    const r = this.getRoom(gx + dx, gz + dz, floor);
                     if (r) result.push(r);
                 }
                 return result;
             }
     
             constructor() {
-                this.roomMap = new Map();      // Key: "gx,gz" -> Room
-                this.corridorMap = new Map();  // Key: "gx,gz" -> Corridor
-                this.shopMap = new Map();      // Key: "gx,gz" -> GroceryShop
-                this.bizMap = new Map();       // Key: "gx,gz" -> ServiceBiz
-                this.communityMap = new Map(); // Key: "gx,gz" -> CommunitySpace
+                this.roomMap = new Map();      // Key: "gx,gz" (Tầng 1) hoặc "F2:gx,gz" (Tầng 2+) -> Room
+                this.corridorMap = new Map();
+                this.shopMap = new Map();
+                this.bizMap = new Map();
+                this.communityMap = new Map();
                 this.cash = 30000000;          // Khởi đầu 30 triệu VNĐ
                 this.xp = 20;
                 this.level = 1;
@@ -5133,20 +5528,151 @@
                     marketIndex: 1.0,
                     marketingBoostDays: 0
                 };
+
+                // YÊU CẦU 1 (MỚI): Hệ thống Mở rộng Ô mặt bằng (Tối đa gấp đôi mặt bằng = 25 -> 50 ô/tầng) & Nâng Tầng (Tầng 1, 2, 3...)
+                this.unlockedFloors = 1;
+                this.baseTilesPerFloor = 25;     // Mặt bằng ban đầu mỗi tầng: 25 ô (5x5 quanh trục chính)
+                this.maxExtraTilesPerFloor = 25; // Giới hạn mở rộng tối đa thêm 25 ô -> Tổng 50 ô (gấp đôi mặt bằng gốc!)
+                this.floorUnlockedCells = {};
+                this.ensureFloorCellsInitialized(1);
             }
 
-            static key(gx, gz) { return `${gx},${gz}`; }
+            static activeFloor = 1;
 
-            isOccupied(gx, gz) {
-                const k = StateStore.key(gx, gz);
+            static key(gx, gz, floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                return f <= 1 ? `${gx},${gz}` : `F${f}:${gx},${gz}`;
+            }
+
+            static coordStr(gx, gz) {
+                return `${gx},${gz}`;
+            }
+
+            getDefaultBaseCells() {
+                const cells = [];
+                // 25 ô mặt bằng gốc (gx: -2..2, gz: 0..4) nơi có phòng khởi đầu (0,0) và trục hành lang (0,1..4)
+                for (let gx = -2; gx <= 2; gx++) {
+                    for (let gz = 0; gz <= 4; gz++) {
+                        cells.push(`${gx},${gz}`);
+                    }
+                }
+                return cells;
+            }
+
+            ensureFloorCellsInitialized(floor = 1) {
+                const fKey = String(floor);
+                if (!Array.isArray(this.floorUnlockedCells[fKey]) || this.floorUnlockedCells[fKey].length === 0) {
+                    this.floorUnlockedCells[fKey] = this.getDefaultBaseCells();
+                }
+                const set = new Set(this.floorUnlockedCells[fKey]);
+                // Đảm bảo mọi ô đã có công trình trên tầng này đều nằm trong danh sách đã mở khóa
+                const absorbMap = (mp) => {
+                    if (!mp) return;
+                    mp.forEach(inst => {
+                        if ((inst.floor || 1) === Number(floor)) {
+                            set.add(`${inst.gx},${inst.gz}`);
+                        }
+                    });
+                };
+                absorbMap(this.roomMap);
+                absorbMap(this.corridorMap);
+                absorbMap(this.shopMap);
+                absorbMap(this.bizMap);
+                absorbMap(this.communityMap);
+                this.floorUnlockedCells[fKey] = Array.from(set);
+            }
+
+            getUnlockedCellSet(floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                this.ensureFloorCellsInitialized(f);
+                return new Set(this.floorUnlockedCells[String(f)]);
+            }
+
+            isCellUnlocked(gx, gz, floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                if (gx === GAME_CONFIG.GATE_GRID.gx && gz === GAME_CONFIG.GATE_GRID.gz) return true;
+                const set = this.getUnlockedCellSet(f);
+                return set.has(`${gx},${gz}`);
+            }
+
+            getTotalUnlockedTilesCount(floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                const set = this.getUnlockedCellSet(f);
+                return set.size;
+            }
+
+            getMaxTilesPerFloor() {
+                return this.baseTilesPerFloor + this.maxExtraTilesPerFloor; // 50 ô (gấp đôi 25 ô ban đầu)
+            }
+
+            getExtraPurchasedTilesCount(floor = null) {
+                const total = this.getTotalUnlockedTilesCount(floor);
+                return Math.max(0, Math.min(this.maxExtraTilesPerFloor, total - this.baseTilesPerFloor));
+            }
+
+            isFloorFullyExpanded(floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                return this.getTotalUnlockedTilesCount(f) >= this.getMaxTilesPerFloor();
+            }
+
+            /**
+             * Giá mua ô mở rộng: Các ô đầu mở rộng rất rẻ (250.000đ), càng về sau mua càng đắt
+             */
+            getNextTileExpandCost(floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                const k = this.getExtraPurchasedTilesCount(f); // 0..24
+                const floorMult = 1 + (f - 1) * 0.45;
+                return Math.round((250000 + k * 175000 + Math.pow(k, 1.65) * 58000) * floorMult);
+            }
+
+            /**
+             * Tìm danh sách các ô chưa mở khóa nằm sát cạnh vùng mặt bằng đã mở khóa hiện tại
+             */
+            getExpandableCandidateCells(floor = null) {
+                const f = Number(floor || StateStore.activeFloor || 1);
+                if (this.isFloorFullyExpanded(f)) return [];
+                const unlocked = this.getUnlockedCellSet(f);
+                const candidates = new Map();
+                const maxR = 6;
+                const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
+                unlocked.forEach(cStr => {
+                    const [cx, cz] = cStr.split(',').map(Number);
+                    for (const [dx, dz] of dirs) {
+                        const nx = cx + dx;
+                        const nz = cz + dz;
+                        if (nx < -maxR || nx > maxR || nz < -maxR || nz > maxR) continue;
+                        if (nx === GAME_CONFIG.GATE_GRID.gx && nz === GAME_CONFIG.GATE_GRID.gz) continue;
+                        const nKey = `${nx},${nz}`;
+                        if (!unlocked.has(nKey) && !candidates.has(nKey)) {
+                            const distFromCenter = Math.hypot(nx, nz - 2);
+                            candidates.set(nKey, { gx: nx, gz: nz, dist: distFromCenter });
+                        }
+                    }
+                });
+
+                return Array.from(candidates.values()).sort((a, b) => a.dist - b.dist);
+            }
+
+            canUnlockNextUpperFloor() {
+                // Chỉ mở khóa tầng tiếp theo sau khi đã mua hết mặt bằng (đạt tối đa gấp đôi = 50/50 ô) ở tầng hiện tại
+                return this.isFloorFullyExpanded(this.unlockedFloors);
+            }
+
+            getNextUpperFloorCost() {
+                return Math.round(18000000 * Math.pow(1.65, this.unlockedFloors - 1));
+            }
+
+            isOccupied(gx, gz, floor = null) {
+                const k = StateStore.key(gx, gz, floor);
                 return this.roomMap.has(k) || this.corridorMap.has(k) || this.shopMap.has(k) || this.bizMap.has(k) || this.communityMap.has(k);
             }
 
-            getRoom(gx, gz) { return this.roomMap.get(StateStore.key(gx, gz)) || null; }
-            getCorridor(gx, gz) { return this.corridorMap.get(StateStore.key(gx, gz)) || null; }
-            getShop(gx, gz) { return this.shopMap.get(StateStore.key(gx, gz)) || null; }
-            getBiz(gx, gz) { return this.bizMap.get(StateStore.key(gx, gz)) || null; }
-            getCommunity(gx, gz) { return this.communityMap.get(StateStore.key(gx, gz)) || null; }
+            getRoom(gx, gz, floor = null) { return this.roomMap.get(StateStore.key(gx, gz, floor)) || null; }
+            getCorridor(gx, gz, floor = null) { return this.corridorMap.get(StateStore.key(gx, gz, floor)) || null; }
+            getShop(gx, gz, floor = null) { return this.shopMap.get(StateStore.key(gx, gz, floor)) || null; }
+            getBiz(gx, gz, floor = null) { return this.bizMap.get(StateStore.key(gx, gz, floor)) || null; }
+            getCommunity(gx, gz, floor = null) { return this.communityMap.get(StateStore.key(gx, gz, floor)) || null; }
             getFirstShop() {
                 const arr = Array.from(this.shopMap.values());
                 return arr.length > 0 ? arr[0] : null;
@@ -5268,6 +5794,8 @@
                     envProtection: this.envProtection,
                     activeDisaster: this.activeDisaster,
                     realEstate: this.realEstate,
+                    unlockedFloors: this.unlockedFloors || 1,
+                    floorUnlockedCells: this.floorUnlockedCells || {},
                     rooms: Array.from(this.roomMap.values()).map(r => r.serialize()),
                     corridors: Array.from(this.corridorMap.values()).map(c => c.serialize()),
                     shops: Array.from(this.shopMap.values()).map(s => s.serialize()),
@@ -6164,45 +6692,63 @@
                 if (saved.envProtection) this.state.envProtection = { ...this.state.envProtection, ...saved.envProtection };
                 this.state.activeDisaster = saved.activeDisaster || null;
                 if (saved.realEstate) this.state.realEstate = { ...this.state.realEstate, ...saved.realEstate };
+                this.state.unlockedFloors = Math.max(1, Number(saved.unlockedFloors || 1));
+                if (saved.floorUnlockedCells && typeof saved.floorUnlockedCells === 'object') {
+                    this.state.floorUnlockedCells = saved.floorUnlockedCells;
+                }
+                this.currentFloor = 1;
+                StateStore.activeFloor = 1;
 
                 if (Array.isArray(saved.rooms)) {
                     saved.rooms.forEach(r => {
-                        const room = new Room(r, this.scene);
-                        this.state.roomMap.set(StateStore.key(r.gx, r.gz), room);
+                        const fl = Number(r.floor || 1);
+                        const room = new Room({ ...r, floor: fl }, this.scene);
+                        this.state.roomMap.set(StateStore.key(r.gx, r.gz, fl), room);
                     });
                 }
                 if (Array.isArray(saved.corridors)) {
                     saved.corridors.forEach(c => {
-                        const cor = new Corridor(c.gx, c.gz, this.scene, c.typeId || 'cor_brick', c.rotIndex || 0);
-                        this.state.corridorMap.set(StateStore.key(c.gx, c.gz), cor);
+                        const fl = Number(c.floor || 1);
+                        const cor = new Corridor(c.gx, c.gz, this.scene, c.typeId || 'cor_brick', c.rotIndex || 0, fl);
+                        this.state.corridorMap.set(StateStore.key(c.gx, c.gz, fl), cor);
                     });
                 }
                 if (Array.isArray(saved.shops)) {
                     saved.shops.forEach(s => {
-                        const shop = new GroceryShop(s, this.scene);
-                        this.state.shopMap.set(StateStore.key(s.gx, s.gz), shop);
+                        const fl = Number(s.floor || 1);
+                        const shop = new GroceryShop({ ...s, floor: fl }, this.scene);
+                        this.state.shopMap.set(StateStore.key(s.gx, s.gz, fl), shop);
                     });
                 }
                 if (Array.isArray(saved.bizList)) {
                     saved.bizList.forEach(b => {
-                        const biz = new ServiceBiz(b, this.scene);
-                        this.state.bizMap.set(StateStore.key(b.gx, b.gz), biz);
+                        const fl = Number(b.floor || 1);
+                        const biz = new ServiceBiz({ ...b, floor: fl }, this.scene);
+                        this.state.bizMap.set(StateStore.key(b.gx, b.gz, fl), biz);
                     });
                 }
                 if (Array.isArray(saved.communities)) {
                     saved.communities.forEach(cm => {
-                        const comm = new CommunitySpace(cm, this.scene);
-                        this.state.communityMap.set(StateStore.key(cm.gx, cm.gz), comm);
+                        const fl = Number(cm.floor || 1);
+                        const comm = new CommunitySpace({ ...cm, floor: fl }, this.scene);
+                        this.state.communityMap.set(StateStore.key(cm.gx, cm.gz, fl), comm);
                     });
+                }
+                for (let f = 1; f <= this.state.unlockedFloors; f++) {
+                    this.state.ensureFloorCellsInitialized(f);
                 }
                 this.syncFestival3DDecor();
                 this.syncStaff3DMeshes();
+                this.syncChildNpcs();
+                this.switchFloor(1, true);
                 this.rebuildLabels();
                 this.updateHUD();
                 this.state.saveToLocal();
             }
 
             bootData() {
+                this.currentFloor = 1;
+                StateStore.activeFloor = 1;
                 const saved = this.state.loadFromLocal();
                 if (saved && Array.isArray(saved.rooms) && saved.rooms.length > 0) {
                     this.loadPayloadIntoWorld(saved);
@@ -6213,6 +6759,9 @@
                     this.buildCorridorAt(0, 2, true);
                     this.buildCorridorAt(0, 3, true);
                     this.buildCorridorAt(0, 4, true);
+                    this.state.ensureFloorCellsInitialized(1);
+                    this.syncChildNpcs();
+                    this.switchFloor(1, true);
                     this.state.saveToLocal();
                     // Mở bảng Tạo Hồ Sơ (Profile) cho người chơi mới trước khi bắt đầu
                     this.openProfileModal();
@@ -6224,6 +6773,10 @@
              * QUY HOẠCH XÂY DỰNG: PHÒNG & HÀNH LANG (YÊU CẦU 2)
              */
             buildRoomAt(gx, gz, typeId = 'standard', isFree = false, rotIndex = 0) {
+                if (!isFree && !this.state.isCellUnlocked(gx, gz, this.currentFloor)) {
+                    this.showToast('🔒 Ô đất này chưa được mở khóa! Hãy mua mở rộng ô mặt bằng trước.');
+                    return false;
+                }
                 if (this.state.isOccupied(gx, gz)) {
                     this.showToast('⚠️ Vị trí này đã có công trình rồi!');
                     return false;
@@ -6270,6 +6823,10 @@
             }
 
             buildCorridorAt(gx, gz, isFree = false, corTypeId = 'cor_brick', rotIndex = 0) {
+                if (!isFree && !this.state.isCellUnlocked(gx, gz, this.currentFloor)) {
+                    this.showToast('🔒 Ô đất này chưa được mở khóa! Hãy mua mở rộng ô mặt bằng trước.');
+                    return false;
+                }
                 const existingRoom = this.state.getRoom(gx, gz);
                 if (existingRoom) {
                     this.showToast('⚠️ Ô đất này đang là Phòng trọ, hãy chọn ô trống để lát hành lang!');
@@ -6378,6 +6935,10 @@
             }
 
             buildShopAt(gx, gz, rotIndex = 0) {
+                if (!this.state.isCellUnlocked(gx, gz, this.currentFloor)) {
+                    this.showToast('🔒 Ô đất này chưa được mở khóa! Hãy mua mở rộng ô mặt bằng trước.');
+                    return false;
+                }
                 if (this.state.isOccupied(gx, gz)) {
                     this.showToast('⚠️ Ô đất này đã có công trình rồi, hãy chọn ô trống!');
                     return false;
@@ -6476,6 +7037,7 @@
                             🚚 Di Dời Trên Mặt Bằng
                         </button>
                     </div>
+                    ${this.renderMoveFloorButtonsHtml('shop', shop)}
                     <div style="margin-bottom:10px;">
                         <button class="upgrade-btn" id="btn-sell-shop" style="width:100%; background:#e53935; border-color:#b71c1c; box-shadow:0 3px 0 #b71c1c; padding:7px 10px; font-size:11.5px;">
                             💰 Bán Tiệm Tạp Hóa (Thu lại 50% giá mua: +${formatVND(shopRefund)}đ)
@@ -6527,6 +7089,7 @@
                         this.sellArchitecture('shop', shop, 'Tiệm Tạp Hóa');
                     });
                 }
+                this.bindMoveFloorListeners(body, 'shop', shop, 'Tiệm Tạp Hóa');
 
                 body.querySelectorAll('[data-good]').forEach(btn => {
                     btn.addEventListener('click', () => {
@@ -6556,6 +7119,10 @@
 
             // YÊU CẦU 6: Xây dựng & Quản lý Quán Ăn / Quán Cà Phê (Tự kinh doanh vs Cho thuê mặt bằng)
             buildBizAt(gx, gz, bizTypeId = 'eatery', rotIndex = 0) {
+                if (!this.state.isCellUnlocked(gx, gz, this.currentFloor)) {
+                    this.showToast('🔒 Ô đất này chưa được mở khóa! Hãy mua mở rộng ô mặt bằng trước.');
+                    return false;
+                }
                 if (this.state.isOccupied(gx, gz)) {
                     this.showToast('⚠️ Ô đất này đã có công trình rồi, hãy chọn ô trống!');
                     return false;
@@ -6637,6 +7204,7 @@
                             🚚 Di Dời Trên Mặt Bằng
                         </button>
                     </div>
+                    ${this.renderMoveFloorButtonsHtml('biz', biz)}
                     <div style="margin-bottom:10px;">
                         <button class="upgrade-btn" id="btn-sell-biz" style="width:100%; background:#e53935; border-color:#b71c1c; box-shadow:0 3px 0 #b71c1c; padding:7px 10px; font-size:11.5px;">
                             💰 Bán ${tc.name} (Thu lại 50% giá mua: +${formatVND(bizRefund)}đ)
@@ -6704,6 +7272,7 @@
                         this.sellArchitecture('biz', biz, tc.name);
                     });
                 }
+                this.bindMoveFloorListeners(body, 'biz', biz, tc.name);
 
                 const btnSpec = document.getElementById('btn-biz-special-upg');
                 if (btnSpec && !biz.upgradedSpecial) {
@@ -7355,6 +7924,7 @@
                             🚚 Di Dời Trên Mặt Bằng
                         </button>
                     </div>
+                    ${this.renderMoveFloorButtonsHtml('room', room)}
                     <div style="margin-bottom:10px;">
                         <button class="upgrade-btn" id="btn-sell-room" style="width:100%; background:#e53935; border-color:#b71c1c; box-shadow:0 3px 0 #b71c1c; padding:7px 10px; font-size:11.5px;">
                             💰 Bán Phòng ${room.code} (Thu lại 50% giá mua: +${formatVND(roomRefund)}đ)
@@ -7669,6 +8239,7 @@
                         this.sellArchitecture('room', room, `Phòng ${room.code} (${room.typeConfig.name})`);
                     });
                 }
+                this.bindMoveFloorListeners(body, 'room', room, `Phòng ${room.code}`);
 
                 // Khách thuê tự chủ động xin thanh lý qua sự kiện; không cung cấp thao tác thanh lý chủ động cho chủ trọ.
 
@@ -7816,6 +8387,413 @@
                 if (drawer.style.display === 'block') {
                     this.openRoomInspector(room);
                 }
+            }
+
+            // =========================================================================
+            // YÊU CẦU 1: MỞ RỘNG Ô MẶT BẰNG (TỐI ĐA 2X), NÂNG TẦNG 2, 3... & CHUYỂN KIẾN TRÚC LÊN TẦNG KHÁC
+            // =========================================================================
+            renderMoveFloorButtonsHtml(kind, instance) {
+                const curInstFloor = instance.floor || 1;
+                const maxF = this.state.unlockedFloors || 1;
+                if (maxF < 2) {
+                    return `
+                        <div style="margin-bottom:6px; background:#f5f5f5; border:1.5px dashed #b0bec5; border-radius:11px; padding:6px 9px; font-size:11px; color:#546e7a; font-weight:800;">
+                            🔒 <b>Di chuyển lên tầng khác:</b> Chỉ mở khóa sau khi bạn mua hết mặt bằng Tầng 1 (50/50 ô) và nâng cấp lên Tầng 2, Tầng 3...
+                        </div>
+                    `;
+                }
+                let btns = '';
+                for (let f = 1; f <= maxF; f++) {
+                    if (f === curInstFloor) continue;
+                    btns += `
+                        <button class="upgrade-btn" data-move-to-floor="${f}" style="flex:1; background:#ef6c00; border-color:#e65100; box-shadow:0 3px 0 #e65100; padding:6px 8px; font-size:11px;">
+                            🛗 Chuyển Sang Tầng ${f}
+                        </button>
+                    `;
+                }
+                return `
+                    <div style="margin-bottom:6px; background:#fff3e0; border:1.5px solid #ffb74d; border-radius:12px; padding:6px 8px;">
+                        <div style="font-size:11px; font-weight:900; color:#e65100; margin-bottom:4px;">🏢 Đang ở Tầng ${curInstFloor} — Di chuyển kiến trúc sang tầng khác:</div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">${btns}</div>
+                    </div>
+                `;
+            }
+
+            bindMoveFloorListeners(containerEl, kind, instance, labelName) {
+                if (!containerEl || !instance) return;
+                containerEl.querySelectorAll('[data-move-to-floor]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const targetF = Number(btn.getAttribute('data-move-to-floor'));
+                        this.startRelocatingArchitecture(kind, instance, labelName);
+                        if (this.placementState) {
+                            this.placementState.targetFloor = targetF;
+                            instance.floor = targetF;
+                            this.switchFloor(targetF, true);
+                            const avail = this.findNearestAvailableCell(instance.gx, instance.gz);
+                            this.placementState.gx = avail.gx;
+                            this.placementState.gz = avail.gz;
+                            this.syncPlacementPreviewTransform();
+                            this.showToast(`🛗 Đang chuyển "${labelName}" sang Tầng ${targetF}: Chọn ô trên mặt bằng Tầng ${targetF} rồi bấm [✅ Đặt Kiến Trúc]!`);
+                        }
+                    });
+                });
+            }
+
+            switchFloor(targetFloor = 1, silent = false) {
+                const maxF = this.state.unlockedFloors || 1;
+                const fl = Math.max(1, Math.min(maxF, Number(targetFloor) || 1));
+                this.currentFloor = fl;
+                StateStore.activeFloor = fl;
+                this.state.ensureFloorCellsInitialized(fl);
+
+                // Cập nhật hiển thị các kiến trúc theo tầng đang xem
+                this.state.roomMap.forEach(r => {
+                    const vis = (r.floor || 1) === fl;
+                    if (r.group) r.group.visible = vis;
+                    if (r.tenant && r.tenant.mesh) {
+                        r.tenant.mesh.visible = vis;
+                        if (r.tenant.memberFollowers) {
+                            r.tenant.memberFollowers.forEach(mf => { if (mf.mesh) mf.mesh.visible = vis; });
+                        }
+                    }
+                });
+                this.state.corridorMap.forEach(c => {
+                    if (c.mesh) c.mesh.visible = ((c.floor || 1) === fl);
+                });
+                this.state.shopMap.forEach(s => {
+                    if (s.group) s.group.visible = ((s.floor || 1) === fl);
+                });
+                if (this.state.bizMap) {
+                    this.state.bizMap.forEach(b => {
+                        if (b.group) b.group.visible = ((b.floor || 1) === fl);
+                    });
+                }
+                if (this.state.communityMap) {
+                    this.state.communityMap.forEach(cm => {
+                        if (cm.group) cm.group.visible = ((cm.floor || 1) === fl);
+                    });
+                }
+
+                // Hiển thị Cổng chính ở Tầng 1, hoặc Sảnh Thang Máy/Cầu Thang ở Tầng 2+
+                if (this.gateGroup) {
+                    this.gateGroup.visible = (fl === 1);
+                }
+                this.syncUpperFloor3DSlab();
+                this.syncFloorTileMarkers();
+                this.syncAllCorridorCurbs();
+                this.rebuildLabels();
+                this.updateHUD();
+
+                if (!silent) {
+                    this.showToast(`🏢 Đã chuyển góc nhìn sang Mặt Bằng Tầng ${fl}/${maxF} (Đã mở: ${this.state.getTotalUnlockedTilesCount(fl)}/${this.state.getMaxTilesPerFloor()} ô)!`);
+                }
+            }
+
+            syncUpperFloor3DSlab() {
+                if (this.upperFloorCoreGroup && this.scene) {
+                    this.scene.remove(this.upperFloorCoreGroup);
+                    this.upperFloorCoreGroup = null;
+                }
+                if ((this.currentFloor || 1) <= 1) return;
+
+                // Vẽ Sảnh Cầu Thang Bộ & Thang Máy Thông Tầng tại ô (0, 5) cho Tầng 2, Tầng 3...
+                const grp = new THREE.Group();
+                const gx = GAME_CONFIG.GATE_GRID.gx * GAME_CONFIG.CELL_SIZE;
+                const gz = GAME_CONFIG.GATE_GRID.gz * GAME_CONFIG.CELL_SIZE;
+                grp.position.set(gx, 0, gz);
+
+                const shaft = createToonMesh(new THREE.BoxGeometry(2.6, 2.7, 2.2), '#cfd8dc', '#455a64');
+                shaft.position.set(0, 1.35, 0);
+                const elevDoor = createToonMesh(new THREE.BoxGeometry(1.4, 1.9, 0.14), '#90a4ae', '#263238');
+                elevDoor.position.set(0, 1.0, -1.1);
+                const roofSign = createToonMesh(new THREE.BoxGeometry(2.2, 0.42, 0.2), '#0288d1', '#01579b');
+                roofSign.position.set(0, 2.85, -0.9);
+                grp.add(shaft, elevDoor, roofSign);
+
+                this.upperFloorCoreGroup = grp;
+                this.scene.add(grp);
+            }
+
+            syncFloorTileMarkers() {
+                if (this.tileMarkersGroup && this.scene) {
+                    this.scene.remove(this.tileMarkersGroup);
+                    this.tileMarkersGroup = null;
+                }
+                if (!this.state || !this.scene) return;
+
+                const s = GAME_CONFIG.CELL_SIZE;
+                const fl = this.currentFloor || 1;
+                const grp = new THREE.Group();
+
+                // 1. Vẽ viền ranh giới các ô mặt bằng đã mở khóa trên tầng hiện tại
+                const unlockedSet = this.state.getUnlockedCellSet(fl);
+                unlockedSet.forEach(cStr => {
+                    const [gx, gz] = cStr.split(',').map(Number);
+                    const tilePad = new THREE.Mesh(
+                        new THREE.BoxGeometry(s - 0.14, 0.04, s - 0.14),
+                        new THREE.MeshBasicMaterial({
+                            color: fl === 1 ? '#e6dfd3' : '#dfe7ec',
+                            transparent: true,
+                            opacity: 0.45
+                        })
+                    );
+                    tilePad.position.set(gx * s, 0.01, gz * s);
+                    grp.add(tilePad);
+                });
+
+                // 2. Nếu đang ở chế độ Mua Ô Mở Rộng trên bản đồ (mode === 'expand_tile') -> Hiển thị nổi bật các ô có thể mua tiếp theo
+                if (this.mode === 'expand_tile') {
+                    const candidates = this.state.getExpandableCandidateCells(fl);
+                    candidates.forEach(cand => {
+                        const pad = new THREE.Mesh(
+                            new THREE.BoxGeometry(s - 0.22, 0.12, s - 0.22),
+                            new THREE.MeshBasicMaterial({ color: '#00c853', transparent: true, opacity: 0.42 })
+                        );
+                        pad.position.set(cand.gx * s, 0.06, cand.gz * s);
+                        grp.add(pad);
+                    });
+                }
+
+                this.tileMarkersGroup = grp;
+                this.scene.add(grp);
+            }
+
+            buyExpansionTileAt(gx, gz, floor = null) {
+                const fl = Number(floor || this.currentFloor || 1);
+                if (this.state.isFloorFullyExpanded(fl)) {
+                    this.showToast(`🎉 Mặt bằng Tầng ${fl} đã mở tối đa 50/50 ô (gấp đôi mặt bằng gốc)! Bạn có thể nâng cấp lên Tầng ${fl + 1}!`);
+                    return false;
+                }
+                if (this.state.isCellUnlocked(gx, gz, fl)) {
+                    this.showToast(`ℹ️ Ô (${gx}, ${gz}) trên Tầng ${fl} đã được mở khóa rồi!`);
+                    return false;
+                }
+                const cost = this.state.getNextTileExpandCost(fl);
+                if (this.state.cash < cost) {
+                    this.showToast(`💸 Cần ${formatVND(cost)}đ để mua thêm ô mặt bằng (${gx}, ${gz}) tại Tầng ${fl}!`);
+                    return false;
+                }
+
+                this.state.cash -= cost;
+                this.state.ensureFloorCellsInitialized(fl);
+                this.state.floorUnlockedCells[String(fl)].push(`${gx},${gz}`);
+                this.addXP(25);
+                this.syncFloorTileMarkers();
+                this.updateHUD();
+                this.state.saveToLocal();
+
+                const unlockedNow = this.state.getTotalUnlockedTilesCount(fl);
+                const maxTiles = this.state.getMaxTilesPerFloor();
+                this.spawnFloatingText(gx * GAME_CONFIG.CELL_SIZE, 2.2, gz * GAME_CONFIG.CELL_SIZE, `🔓 Mở Ô (${gx},${gz}) -${formatVND(cost)}đ`, '#00897b');
+
+                if (unlockedNow >= maxTiles) {
+                    this.showToast(`🎊 ĐÃ MUA HẾT MẶT BẰNG TẦNG ${fl} (${unlockedNow}/${maxTiles} ô — Gấp đôi mặt bằng gốc)! Hiện bạn đã có thể nâng cấp mở khóa Tầng ${fl + 1}!`);
+                } else {
+                    this.showToast(`🗺️ Đã mua mở rộng ô (${gx}, ${gz}) tại Tầng ${fl} (${unlockedNow}/${maxTiles} ô)! Giá ô tiếp theo: ${formatVND(this.state.getNextTileExpandCost(fl))}đ.`);
+                }
+                return true;
+            }
+
+            buyNextExpansionTilesBatch(count = 1) {
+                const fl = this.currentFloor || 1;
+                let bought = 0;
+                for (let i = 0; i < count; i++) {
+                    if (this.state.isFloorFullyExpanded(fl)) break;
+                    const cands = this.state.getExpandableCandidateCells(fl);
+                    if (cands.length === 0) break;
+                    const nextCell = cands[0];
+                    if (!this.buyExpansionTileAt(nextCell.gx, nextCell.gz, fl)) break;
+                    bought++;
+                }
+                return bought;
+            }
+
+            unlockNextUpperFloor() {
+                const curMaxF = this.state.unlockedFloors || 1;
+                if (!this.state.canUnlockNextUpperFloor()) {
+                    const curTiles = this.state.getTotalUnlockedTilesCount(curMaxF);
+                    const maxTiles = this.state.getMaxTilesPerFloor();
+                    this.showToast(`🔒 Bạn cần mua hết mặt bằng Tầng ${curMaxF} (${curTiles}/${maxTiles} ô — tối đa gấp đôi mặt bằng gốc) trước khi nâng cấp lên Tầng ${curMaxF + 1}!`);
+                    return false;
+                }
+                const cost = this.state.getNextUpperFloorCost();
+                if (this.state.cash < cost) {
+                    this.showToast(`💸 Cần ${formatVND(cost)}đ để thi công đổ sàn nâng cấp lên Tầng ${curMaxF + 1}!`);
+                    return false;
+                }
+
+                this.state.cash -= cost;
+                const newFloor = curMaxF + 1;
+                this.state.unlockedFloors = newFloor;
+                this.state.ensureFloorCellsInitialized(newFloor);
+
+                // Tạo sẵn trục hành lang nối từ Sảnh Thang Máy (0, 5) vào giữa Tầng mới
+                const prevFloor = this.currentFloor;
+                this.currentFloor = newFloor;
+                StateStore.activeFloor = newFloor;
+                this.buildCorridorAt(0, 4, true);
+                this.buildCorridorAt(0, 3, true);
+                this.buildCorridorAt(0, 2, true);
+
+                this.addXP(220);
+                this.switchFloor(newFloor, true);
+                this.state.saveToLocal();
+                this.showToast(`🏢 CHÚC MỪNG! Đã nâng cấp mở khóa TẦNG ${newFloor}! Tính năng Di chuyển kiến trúc giữa các tầng đã sẵn sàng!`);
+                return true;
+            }
+
+            openLandFloorModal() {
+                const modal = document.getElementById('land-floor-modal-overlay');
+                const body = document.getElementById('land-floor-modal-body');
+                if (!modal || !body) return;
+
+                const curF = this.currentFloor || 1;
+                const maxF = this.state.unlockedFloors || 1;
+                const unlockedTiles = this.state.getTotalUnlockedTilesCount(curF);
+                const maxTiles = this.state.getMaxTilesPerFloor(); // 50
+                const extraBought = this.state.getExtraPurchasedTilesCount(curF); // 0..25
+                const maxExtra = this.state.maxExtraTilesPerFloor; // 25
+                const isFullFloor = this.state.isFloorFullyExpanded(curF);
+                const nextTileCost = this.state.getNextTileExpandCost(curF);
+
+                const canUnlockUpper = this.state.canUnlockNextUpperFloor();
+                const upperCost = this.state.getNextUpperFloorCost();
+                const topFloorTiles = this.state.getTotalUnlockedTilesCount(maxF);
+
+                let floorTabsHtml = '';
+                for (let f = 1; f <= maxF; f++) {
+                    const active = f === curF;
+                    const fTiles = this.state.getTotalUnlockedTilesCount(f);
+                    floorTabsHtml += `
+                        <button class="upgrade-btn" data-modal-switch-floor="${f}" style="background:${active ? '#e65100' : '#78909c'}; border-color:${active ? '#bf360c' : '#455a64'}; padding:7px 14px; font-size:12.5px;">
+                            🏢 Tầng ${f} (${fTiles}/${maxTiles} ô) ${active ? '• Đang xem' : ''}
+                        </button>
+                    `;
+                }
+
+                body.innerHTML = `
+                    <div style="background:#e0f2f1; border:2px solid #00897b; border-radius:14px; padding:10px 12px; margin-bottom:12px; font-size:12.5px;">
+                        <div style="font-weight:900; color:#004d40; font-size:13.5px; margin-bottom:6px;">🏢 Chọn Tầng Mặt Bằng Đang Xem &amp; Xây Dựng (Đã mở: ${maxF} tầng):</div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;">${floorTabsHtml}</div>
+                        <div style="color:#00695c; font-size:11.5px; font-weight:700;">
+                            💡 ${maxF >= 2
+                                ? '✅ Bạn đã mở khóa từ Tầng 2 trở lên: Có thể bấm vào bất kỳ Phòng trọ, Cửa hàng, Hành lang nào để <b>Chuyển Kiến Trúc Lên/Xuống Tầng Khác</b>!'
+                                : '🔒 Tính năng <b>Di chuyển kiến trúc lên các tầng khác</b> sẽ tự động mở khóa ngay khi bạn nâng cấp lên Tầng 2!'}
+                        </div>
+                    </div>
+
+                    <div style="background:#fff8e1; border:2px solid #ffb300; border-radius:14px; padding:11px 13px; margin-bottom:12px; font-size:12.5px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+                            <span style="font-weight:900; color:#e65100; font-size:14px;">🗺️ 1. Mua Thêm Ô Mở Rộng Mặt Bằng — Tầng ${curF}</span>
+                            <span style="background:${isFullFloor ? '#2e7d32' : '#f57c00'}; color:#fff; padding:2px 9px; border-radius:99px; font-size:11px; font-weight:900;">
+                                Đã mở: ${unlockedTiles}/${maxTiles} ô (${Math.round((unlockedTiles / 25) * 100)}% mặt bằng gốc)
+                            </span>
+                        </div>
+                        <div style="color:#5d4037; font-size:12px; line-height:1.45; margin-bottom:8px;">
+                            • Mặt bằng gốc ban đầu: <b>25 ô</b> • Giới hạn mở rộng tối đa: <b>50 ô (Gấp đôi mặt bằng ban đầu)</b>.<br>
+                            • Đã mua thêm: <b>${extraBought}/${maxExtra} ô</b>. Các ô đầu mở rộng rất rẻ (từ 250.000đ), càng về sau giá càng đắt dần theo quy mô đất.<br>
+                            ${isFullFloor
+                                ? '<b style="color:#2e7d32;">✅ Bạn đã mua hết 100% ô mặt bằng của Tầng này!</b>'
+                                : `• Giá mua ô mở rộng tiếp theo (Ô #${extraBought + 1}/${maxExtra}): <b style="color:#c62828; font-size:13.5px;">${formatVND(nextTileCost)}đ</b>`}
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="upgrade-btn" id="btn-buy-1-tile" ${isFullFloor ? 'disabled' : ''} style="flex:1.2; padding:8px 10px; font-size:12px; background:#2e7d32; border-color:#1b5e20;">
+                                ${isFullFloor ? 'Đã Đạt Tối Đa 50/50 Ô ✓' : `➕ Mua Thêm 1 Ô (${formatVND(nextTileCost)}đ)`}
+                            </button>
+                            <button class="upgrade-btn" id="btn-buy-5-tiles" ${isFullFloor ? 'disabled' : ''} style="flex:1; padding:8px 10px; font-size:12px; background:#0288d1; border-color:#01579b;">
+                                ⚡ Mua Nhanh 5 Ô Liên Tiếp
+                            </button>
+                            <button class="upgrade-btn" id="btn-pick-tile-on-map" ${isFullFloor ? 'disabled' : ''} style="flex:1; padding:8px 10px; font-size:12px; background:#7e57c2; border-color:#512da8;">
+                                👆 Tự Chọn Ô Trên Mặt Bằng 3D
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background:#f3e5f5; border:2px solid #8e24aa; border-radius:14px; padding:11px 13px; font-size:12.5px;">
+                        <div style="font-weight:900; color:#6a1b9a; font-size:14px; margin-bottom:5px;">
+                            🏗️ 2. Nâng Cấp Mở Rộng Lên Tầng Trên — Mở Khóa Tầng ${maxF + 1}
+                        </div>
+                        <div style="color:#4a148c; font-size:12px; line-height:1.45; margin-bottom:8px;">
+                            • <b>Điều kiện mở khóa:</b> Bạn cần mua hết toàn bộ mặt bằng ở Tầng ${maxF} (đạt <b>${topFloorTiles}/${maxTiles} ô</b> — gấp đôi mặt bằng gốc) mới có thể đổ sàn nâng cấp lên <b>Tầng ${maxF + 1}</b>.<br>
+                            • <b>Quyền lợi khi lên Tầng ${maxF + 1}:</b> Có thêm mặt bằng tầng mới để xây thêm phòng trọ/cửa hàng VÀ mở khóa tính năng <b>Di chuyển các kiến trúc qua lại giữa các tầng</b>!
+                        </div>
+                        <button class="upgrade-btn" id="btn-unlock-next-floor" ${!canUnlockUpper ? 'disabled' : ''} style="width:100%; padding:9px 12px; font-size:13px; background:${canUnlockUpper ? '#8e24aa' : '#9e9e9e'}; border-color:${canUnlockUpper ? '#4a148c' : '#757575'};">
+                            ${canUnlockUpper
+                                ? `🚀 Nâng Cấp Mở Khóa Mặt Bằng Tầng ${maxF + 1} Ngay (Chi phí: ${formatVND(upperCost)}đ)`
+                                : `🔒 Cần Mua Hết Mặt Bằng Tầng ${maxF} (${topFloorTiles}/${maxTiles} ô — Còn thiếu ${maxTiles - topFloorTiles} ô) Để Mở Tầng ${maxF + 1}`}
+                        </button>
+                    </div>
+                `;
+
+                modal.style.display = 'flex';
+
+                body.querySelectorAll('[data-modal-switch-floor]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tf = Number(btn.getAttribute('data-modal-switch-floor'));
+                        this.switchFloor(tf, false);
+                        this.openLandFloorModal();
+                    });
+                });
+
+                const btnBuy1 = document.getElementById('btn-buy-1-tile');
+                if (btnBuy1 && !isFullFloor) {
+                    btnBuy1.addEventListener('click', () => {
+                        if (this.buyNextExpansionTilesBatch(1) > 0) {
+                            this.openLandFloorModal();
+                        }
+                    });
+                }
+
+                const btnBuy5 = document.getElementById('btn-buy-5-tiles');
+                if (btnBuy5 && !isFullFloor) {
+                    btnBuy5.addEventListener('click', () => {
+                        if (this.buyNextExpansionTilesBatch(5) > 0) {
+                            this.openLandFloorModal();
+                        }
+                    });
+                }
+
+                const btnPickMap = document.getElementById('btn-pick-tile-on-map');
+                if (btnPickMap && !isFullFloor) {
+                    btnPickMap.addEventListener('click', () => {
+                        modal.style.display = 'none';
+                        this.mode = 'expand_tile';
+                        this.syncFloorTileMarkers();
+                        this.showToast(`👆 Chế độ Mua Ô Trên Mặt Bằng: Hãy chạm vào các ô màu xanh lá quanh mặt bằng Tầng ${curF} để mua mở rộng (Giá ô tiếp theo: ${formatVND(this.state.getNextTileExpandCost(curF))}đ)!`);
+                    });
+                }
+
+                const btnUnlockUpper = document.getElementById('btn-unlock-next-floor');
+                if (btnUnlockUpper && canUnlockUpper) {
+                    btnUnlockUpper.addEventListener('click', () => {
+                        if (this.unlockNextUpperFloor()) {
+                            this.openLandFloorModal();
+                        }
+                    });
+                }
+            }
+
+            // =========================================================================
+            // YÊU CẦU 2: QUẢN LÝ ĐỘI NGŨ NPC ĐỨA TRẺ VUI CHƠI TRONG KHU TRỌ
+            // =========================================================================
+            syncChildNpcs() {
+                if (this.childNpcs) {
+                    this.childNpcs.forEach(c => c.destroy());
+                }
+                this.childNpcs = [];
+                if (!this.scene) return;
+
+                CHILD_NPC_PRESETS.forEach((preset, idx) => {
+                    const child = new ChildNPC(preset, idx, this.scene, this);
+                    this.childNpcs.push(child);
+                });
+            }
+
+            updateChildNpcs(deltaSec) {
+                if (!this.childNpcs || this.childNpcs.length === 0) return;
+                const dayFraction = this.state.dayProgressSeconds / GAME_CONFIG.REAL_SECONDS_PER_DAY;
+                const gameHour = Math.floor((dayFraction * 1440) / 60);
+                this.childNpcs.forEach(c => c.update(deltaSec, this.timeSpeed, gameHour));
             }
 
             syncAllCorridorCurbs(extraCorridorCell = null) {
@@ -7986,8 +8964,9 @@
                     }
 
                     const hcBadge = room.tenant ? `<span style="font-size:10px;color:#5d4037;">(${room.tenant.headcount}👤)</span>` : '';
+                    const flTag = (room.floor || 1) > 1 ? `<span style="font-size:9.5px;color:#0288d1;">[T${room.floor}]</span>` : '';
                     rTag.innerHTML = `
-                        <span>🏠 ${room.code} ${hcBadge}</span>
+                        <span>🏠 ${room.code} ${flTag} ${hcBadge}</span>
                         ${crisisBadge || statusBadge}
                     `;
                     rTag.addEventListener('click', (e) => {
@@ -8008,13 +8987,31 @@
 
                     this.labelNodes.push({ room, rTag, bTag });
                 });
+
+                // Nhãn tên và Bong bóng trò chuyện / đánh trống / đàn piano / khóc nhè của các NPC Đứa Trẻ
+                this.childLabelNodes = [];
+                if (this.childNpcs && this.childNpcs.length > 0) {
+                    this.childNpcs.forEach(child => {
+                        const cBubble = document.createElement('div');
+                        cBubble.className = 'speech-bubble';
+                        cBubble.style.borderColor = child.shirt;
+                        cBubble.style.display = 'block';
+                        cBubble.innerHTML = child.currentBubbleHtml;
+                        this.labelsContainer.appendChild(cBubble);
+                        this.childLabelNodes.push({ child, cBubble });
+                    });
+                }
             }
 
             syncLabels() {
                 const vec = new THREE.Vector3();
+                const curF = this.currentFloor || 1;
 
-                // Chiếu Cổng
+                // Chiếu Cổng hoặc Cầu Thang/Thang Máy thông tầng
                 if (this.gateTagNode) {
+                    this.gateTagNode.innerHTML = curF === 1
+                        ? '⛩️ CỔNG &amp; CHỐT BẢO VỆ 🛡️'
+                        : `🛗 THANG MÁY &amp; SẢNH TẦNG ${curF}`;
                     vec.set(GAME_CONFIG.GATE_GRID.gx * GAME_CONFIG.CELL_SIZE, 3.2, GAME_CONFIG.GATE_GRID.gz * GAME_CONFIG.CELL_SIZE);
                     vec.project(this.camera);
                     this.gateTagNode.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
@@ -8023,6 +9020,9 @@
 
                 if (this.bizLabelNodes) {
                     this.bizLabelNodes.forEach(({ biz, bTag }) => {
+                        const onCur = (biz.floor || 1) === curF;
+                        bTag.style.display = onCur ? 'flex' : 'none';
+                        if (!onCur) return;
                         vec.set(biz.x, 3.2, biz.z - 1.2);
                         vec.project(this.camera);
                         bTag.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
@@ -8032,6 +9032,9 @@
 
                 if (this.commLabelNodes) {
                     this.commLabelNodes.forEach(({ comm, cTag }) => {
+                        const onCur = (comm.floor || 1) === curF;
+                        cTag.style.display = onCur ? 'flex' : 'none';
+                        if (!onCur) return;
                         vec.set(comm.x, 2.5, comm.z - 1.0);
                         vec.project(this.camera);
                         cTag.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
@@ -8042,6 +9045,9 @@
                 // Chiếu Tiệm Tạp Hóa
                 if (this.shopLabelNodes) {
                     this.shopLabelNodes.forEach(({ shop, sTag }) => {
+                        const onCur = (shop.floor || 1) === curF;
+                        sTag.style.display = onCur ? 'flex' : 'none';
+                        if (!onCur) return;
                         vec.set(shop.x, 3.2, shop.z - 1.2);
                         vec.project(this.camera);
                         sTag.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
@@ -8049,8 +9055,37 @@
                     });
                 }
 
+                // Chiếu Bong bóng của các NPC Đứa Trẻ
+                if (this.childLabelNodes) {
+                    this.childLabelNodes.forEach(({ child, cBubble }) => {
+                        const showC = curF === 1 && child.mesh && child.mesh.visible && child.bubbleVisible;
+                        if (showC) {
+                            cBubble.style.display = 'block';
+                            cBubble.style.opacity = '1';
+                            if (cBubble.dataset.lastHtml !== child.currentBubbleHtml) {
+                                cBubble.innerHTML = child.currentBubbleHtml;
+                                cBubble.dataset.lastHtml = child.currentBubbleHtml;
+                            }
+                            vec.set(child.mesh.position.x, child.mesh.position.y + 1.35, child.mesh.position.z);
+                            vec.project(this.camera);
+                            cBubble.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
+                            cBubble.style.top = `${(vec.y * -0.5 + 0.5) * window.innerHeight}px`;
+                        } else {
+                            cBubble.style.opacity = '0';
+                            cBubble.style.display = 'none';
+                        }
+                    });
+                }
+
                 if (!this.labelNodes) return;
                 this.labelNodes.forEach(({ room, rTag, bTag }) => {
+                    const onCur = (room.floor || 1) === curF;
+                    rTag.style.display = onCur ? 'flex' : 'none';
+                    if (!onCur) {
+                        bTag.style.display = 'none';
+                        return;
+                    }
+
                     vec.set(room.x - 0.5, 3.1, room.z - 1.5);
                     vec.project(this.camera);
                     rTag.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
@@ -8133,6 +9168,31 @@
                 const pct = Math.min(100, Math.round((this.state.xp / lvlObj.xpReq) * 100));
                 document.getElementById('xp-bar-fill').style.width = `${pct}%`;
                 document.getElementById('xp-text').innerText = `${this.state.xp}/${lvlObj.xpReq} XP`;
+
+                const curF = this.currentFloor || 1;
+                const unlockedTiles = this.state.getTotalUnlockedTilesCount(curF);
+                const maxTiles = this.state.getMaxTilesPerFloor();
+                const landEl = document.getElementById('land-tiles-display');
+                if (landEl) {
+                    landEl.innerText = `T${curF}: ${unlockedTiles}/${maxTiles}`;
+                }
+
+                const floorBtnsWrap = document.getElementById('hud-floor-quick-btns');
+                if (floorBtnsWrap) {
+                    const totalF = this.state.unlockedFloors || 1;
+                    let fHtml = '';
+                    for (let f = 1; f <= totalF; f++) {
+                        const isAct = f === curF;
+                        fHtml += `<button class="mini-btn" data-quick-floor="${f}" style="background:${isAct ? '#e65100' : '#78909c'}; border-color:${isAct ? '#bf360c' : '#546e7a'}; padding:2px 6px !important;" title="Chuyển sang xem Tầng ${f}">🏢 T${f}</button>`;
+                    }
+                    floorBtnsWrap.innerHTML = fHtml;
+                    floorBtnsWrap.querySelectorAll('[data-quick-floor]').forEach(b => {
+                        b.addEventListener('click', () => {
+                            const tf = Number(b.getAttribute('data-quick-floor'));
+                            this.switchFloor(tf, false);
+                        });
+                    });
+                }
             }
 
             showToast(msg) {
@@ -8491,6 +9551,27 @@
                     });
                 }
                 document.getElementById('btn-stats').addEventListener('click', () => this.openStatsModal());
+
+                const btnOpenLandFloor = document.getElementById('btn-open-land-floor');
+                if (btnOpenLandFloor) {
+                    btnOpenLandFloor.addEventListener('click', () => this.openLandFloorModal());
+                }
+                const btnMenuLandFloor = document.getElementById('btn-menu-land-floor');
+                if (btnMenuLandFloor) {
+                    btnMenuLandFloor.addEventListener('click', () => this.openLandFloorModal());
+                }
+                const btnCloseLandFloor = document.getElementById('btn-close-land-floor');
+                if (btnCloseLandFloor) {
+                    btnCloseLandFloor.addEventListener('click', () => {
+                        document.getElementById('land-floor-modal-overlay').style.display = 'none';
+                    });
+                }
+                const lfOverlay = document.getElementById('land-floor-modal-overlay');
+                if (lfOverlay) {
+                    lfOverlay.addEventListener('pointerdown', (e) => {
+                        if (e.target === lfOverlay) lfOverlay.style.display = 'none';
+                    });
+                }
 
                 document.getElementById('btn-open-staff').addEventListener('click', () => this.openStaffModal());
                 document.getElementById('btn-close-staff').addEventListener('click', () => {
@@ -8918,6 +9999,8 @@
                     instance: instance,
                     labelName: labelName,
                     cost: 0,
+                    origFloor: instance.floor || 1,
+                    targetFloor: this.currentFloor || 1,
                     origGx: instance.gx,
                     origGz: instance.gz,
                     origRotIndex: instance.rotIndex || 0,
@@ -8956,6 +10039,8 @@
                     instance: instance,
                     labelName: labelName,
                     cost: 0,
+                    origFloor: instance.floor || 1,
+                    targetFloor: instance.floor || 1,
                     origGx: instance.gx,
                     origGz: instance.gz,
                     origRotIndex: origRot,
@@ -8977,24 +10062,28 @@
                 const st = this.placementState;
                 if (!st) return false;
                 if (gx === GAME_CONFIG.GATE_GRID.gx && gz === GAME_CONFIG.GATE_GRID.gz) return false;
+                const targetFloor = st.targetFloor || this.currentFloor || 1;
+
+                // Phải nằm trong phạm vi ô mặt bằng đã mở khóa của tầng đó
+                if (!this.state.isCellUnlocked(gx, gz, targetFloor)) return false;
 
                 if (st.actionType === 'build') {
                     const item = st.itemCode || '';
                     if (item.startsWith('cor_')) {
-                        return !this.state.getRoom(gx, gz) && !this.state.getShop(gx, gz) && !this.state.getBiz(gx, gz) && !this.state.getCommunity(gx, gz);
+                        return !this.state.getRoom(gx, gz, targetFloor) && !this.state.getShop(gx, gz, targetFloor) && !this.state.getBiz(gx, gz, targetFloor) && !this.state.getCommunity(gx, gz, targetFloor);
                     }
                     if (!item.startsWith('BIZ_') && !item.startsWith('COMM_') && item !== 'GROCERY_SHOP' && GAME_CONFIG.ROOM_TYPES[item]) {
-                        const existingRoom = this.state.getRoom(gx, gz);
+                        const existingRoom = this.state.getRoom(gx, gz, targetFloor);
                         const targetCfg = GAME_CONFIG.ROOM_TYPES[item];
                         if (existingRoom && targetCfg && targetCfg.cost > existingRoom.typeConfig.cost) {
                             return true; // Cho phép nâng cấp hạng phòng trực tiếp
                         }
                     }
-                    return !this.state.isOccupied(gx, gz);
+                    return !this.state.isOccupied(gx, gz, targetFloor);
                 } else {
-                    // relocate hoặc rotate: hợp lệ nếu là chính ô gốc của kiến trúc đó hoặc ô hoàn toàn trống
-                    if (gx === st.origGx && gz === st.origGz) return true;
-                    return !this.state.isOccupied(gx, gz);
+                    // relocate hoặc rotate: hợp lệ nếu là chính ô gốc trên cùng tầng gốc hoặc ô hoàn toàn trống trên tầng đích
+                    if (gx === st.origGx && gz === st.origGz && (st.origFloor || 1) === targetFloor) return true;
+                    return !this.state.isOccupied(gx, gz, targetFloor);
                 }
             }
 
@@ -9028,11 +10117,45 @@
                 const isCorPreview = (st.actionType === 'build' && (st.itemCode || '').startsWith('cor_')) || (st.kind === 'corridor');
                 this.syncAllCorridorCurbs(isCorPreview && valid ? { gx: st.gx, gz: st.gz } : null);
 
+                const tFloor = st.targetFloor || this.currentFloor || 1;
                 const dirNames = ['0° (Hướng Nam)', '90° (Hướng Đông)', '180° (Hướng Bắc)', '270° (Hướng Tây)'];
                 const modePrefix = st.actionType === 'build' ? '🏗️ Xây Mới' : (st.actionType === 'relocate' ? '🚚 Di Dời' : '🔄 Xoay Hướng');
                 document.getElementById('preview-bar-title').innerText = `${modePrefix}: ${st.labelName}`;
+                const flEl = document.getElementById('preview-bar-floor');
+                if (flEl) flEl.innerText = `Tầng ${tFloor}`;
                 document.getElementById('preview-bar-coord').innerText = `(${st.gx}, ${st.gz})`;
                 document.getElementById('preview-bar-angle').innerText = dirNames[st.rotIndex % 4];
+
+                // Hiển thị thanh chọn tầng ngay trên bảng xem trước nếu đã mở khóa từ Tầng 2 trở lên
+                const floorSwitchRow = document.getElementById('preview-floor-switch-row');
+                const floorBtnsBox = document.getElementById('preview-floor-btns');
+                if (floorSwitchRow && floorBtnsBox) {
+                    if ((this.state.unlockedFloors || 1) >= 2 && (st.actionType === 'relocate' || st.actionType === 'build')) {
+                        floorSwitchRow.style.display = 'flex';
+                        let fbHtml = '';
+                        for (let f = 1; f <= this.state.unlockedFloors; f++) {
+                            const activeF = f === tFloor;
+                            fbHtml += `<button class="upgrade-btn" data-prev-floor="${f}" style="padding:3px 9px; font-size:11px; background:${activeF ? '#e65100' : '#78909c'}; border-color:${activeF ? '#bf360c' : '#455a64'};">Tầng ${f}</button>`;
+                        }
+                        floorBtnsBox.innerHTML = fbHtml;
+                        floorBtnsBox.querySelectorAll('[data-prev-floor]').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                const nf = Number(btn.getAttribute('data-prev-floor'));
+                                st.targetFloor = nf;
+                                if (st.instance) {
+                                    st.instance.floor = nf;
+                                }
+                                this.switchFloor(nf, true);
+                                const avail = this.findNearestAvailableCell(st.gx, st.gz);
+                                st.gx = avail.gx;
+                                st.gz = avail.gz;
+                                this.syncPlacementPreviewTransform();
+                            });
+                        });
+                    } else {
+                        floorSwitchRow.style.display = 'none';
+                    }
+                }
 
                 const costWrap = document.getElementById('preview-bar-cost-wrap');
                 if (st.actionType === 'build') {
@@ -9043,7 +10166,12 @@
                 }
 
                 const statusEl = document.getElementById('preview-bar-status');
-                if (valid) {
+                const isUnlockedTile = this.state.isCellUnlocked(st.gx, st.gz, tFloor);
+                if (!isUnlockedTile) {
+                    statusEl.innerText = '🔒 Ô Chưa Mua Mở Rộng';
+                    statusEl.style.background = '#fff3e0';
+                    statusEl.style.color = '#e65100';
+                } else if (valid) {
                     statusEl.innerText = '✅ Vị Trí Hợp Lệ';
                     statusEl.style.background = '#e8f5e9';
                     statusEl.style.color = '#2e7d32';
@@ -9139,14 +10267,21 @@
                         document.getElementById('btn-open-build').classList.remove('active-mode');
                     }
                 } else {
-                    // Hoàn tất Di dời hoặc Xoay kiến trúc hiện có
+                    // Hoàn tất Di dời (kể cả chuyển lên/xuống tầng khác) hoặc Xoay kiến trúc hiện có
                     const inst = st.instance;
-                    const oldKey = StateStore.key(st.origGx, st.origGz);
-                    const newKey = StateStore.key(gx, gz);
+                    const origF = st.origFloor || 1;
+                    const newF = st.targetFloor || this.currentFloor || 1;
+                    const oldKey = StateStore.key(st.origGx, st.origGz, origF);
+                    const newKey = StateStore.key(gx, gz, newF);
 
+                    inst.floor = newF;
                     inst.rotIndex = rot;
-                    const targetMesh = inst.group || inst.mesh;
-                    if (targetMesh) targetMesh.rotation.y = rot * (Math.PI / 2);
+                    if (inst.decoGroup) {
+                        inst.decoGroup.rotation.y = rot * (Math.PI / 2);
+                    } else {
+                        const targetMesh = inst.group || inst.mesh;
+                        if (targetMesh) targetMesh.rotation.y = rot * (Math.PI / 2);
+                    }
 
                     if (oldKey !== newKey) {
                         if (st.kind === 'room') {
@@ -9178,10 +10313,11 @@
                     this.placementState = null;
                     this.mode = 'view';
                     document.getElementById('placement-preview-bar').style.display = 'none';
+                    this.switchFloor(newF, true);
                     this.rebuildLabels();
                     this.updateHUD();
                     this.state.saveToLocal();
-                    this.showToast(`✅ Đã xác nhận đặt "${st.labelName}" tại ô (${gx}, ${gz}) với góc xoay ${rot * 90}°!`);
+                    this.showToast(`✅ Đã xác nhận đặt "${st.labelName}" tại Tầng ${newF} • Ô (${gx}, ${gz}) • Góc ${rot * 90}°!`);
                 }
             }
 
@@ -9197,10 +10333,18 @@
                 const st = this.placementState;
                 if ((st.actionType === 'relocate' || st.actionType === 'rotate') && st.instance) {
                     const inst = st.instance;
+                    inst.floor = st.origFloor || 1;
                     inst.rotIndex = st.origRotIndex || 0;
                     inst.moveToGrid(st.origGx, st.origGz);
-                    const targetMesh = inst.group || inst.mesh;
-                    if (targetMesh) targetMesh.rotation.y = (st.origRotIndex || 0) * (Math.PI / 2);
+                    if (inst.decoGroup) {
+                        inst.decoGroup.rotation.y = (st.origRotIndex || 0) * (Math.PI / 2);
+                    } else {
+                        const targetMesh = inst.group || inst.mesh;
+                        if (targetMesh) targetMesh.rotation.y = (st.origRotIndex || 0) * (Math.PI / 2);
+                    }
+                    if (st.origFloor && st.origFloor !== this.currentFloor) {
+                        this.switchFloor(st.origFloor, true);
+                    }
                 }
                 this.cleanupPlacementPreviewMesh();
                 this.placementState = null;
@@ -9283,6 +10427,10 @@
                 document.getElementById('btn-sell-corridor').addEventListener('click', () => {
                     this.sellArchitecture('corridor', corridor, tc.name);
                 });
+                const corFloorWrap = document.createElement('div');
+                corFloorWrap.innerHTML = this.renderMoveFloorButtonsHtml('corridor', corridor);
+                body.insertBefore(corFloorWrap, document.getElementById('btn-sell-corridor').parentElement);
+                this.bindMoveFloorListeners(body, 'corridor', corridor, tc.name);
             }
 
             openCommunityInspector(comm) {
@@ -9302,6 +10450,7 @@
                             🚚 Di Dời Trên Mặt Bằng
                         </button>
                     </div>
+                    ${this.renderMoveFloorButtonsHtml('community', comm)}
                     <div style="margin-bottom:10px;">
                         <button class="upgrade-btn" id="btn-sell-comm" style="width:100%; background:#e53935; border-color:#b71c1c; box-shadow:0 3px 0 #b71c1c; padding:7px 10px; font-size:11.5px;">
                             💰 Bán ${tc.name} (Thu lại 50% giá mua: +${formatVND(commRefund)}đ)
@@ -9327,6 +10476,7 @@
                 document.getElementById('btn-sell-comm').addEventListener('click', () => {
                     this.sellArchitecture('community', comm, tc.name);
                 });
+                this.bindMoveFloorListeners(body, 'community', comm, tc.name);
                 document.getElementById('btn-comm-open-depth').addEventListener('click', () => {
                     this.openDepthModal('community');
                 });
@@ -9342,12 +10492,30 @@
                 const hit = this.getGridHit(clientX, clientY);
                 if (!hit) return;
 
+                // YÊU CẦU 1: Chế độ chạm trực tiếp vào ô trên mặt bằng để mua mở rộng diện tích
+                if (this.mode === 'expand_tile') {
+                    if (this.state.isCellUnlocked(hit.gx, hit.gz, this.currentFloor)) {
+                        this.showToast(`ℹ️ Ô (${hit.gx}, ${hit.gz}) đã thuộc phạm vi mặt bằng của bạn! Hãy chạm vào ô viền xanh bên ngoài để mua mở rộng, hoặc bấm [👀 Quản Lý] để thoát.`);
+                        return;
+                    }
+                    this.buyExpansionTileAt(hit.gx, hit.gz, this.currentFloor);
+                    if (this.state.isFloorFullyExpanded(this.currentFloor)) {
+                        this.mode = 'view';
+                        this.syncFloorTileMarkers();
+                    }
+                    return;
+                }
+
                 // YÊU CẦU 4: Chế độ xem trước Đặt Mới / Di Dời / Xoay kiến trúc trên mặt bằng
                 if (this.mode === 'preview_place' && this.placementState) {
+                    const tFloor = this.placementState.targetFloor || this.currentFloor || 1;
                     this.placementState.gx = hit.gx;
                     this.placementState.gz = hit.gz;
                     this.syncPlacementPreviewTransform();
-                    if (this.isPlacementCellValid(hit.gx, hit.gz)) {
+                    if (!this.state.isCellUnlocked(hit.gx, hit.gz, tFloor)) {
+                        const tileCost = this.state.getNextTileExpandCost(tFloor);
+                        this.showToast(`🔒 Ô (${hit.gx}, ${hit.gz}) chưa mở khóa! Bấm [🗺️ Mở Rộng & Tầng] để mua thêm ô mặt bằng (Giá: ${formatVND(tileCost)}đ).`);
+                    } else if (this.isPlacementCellValid(hit.gx, hit.gz)) {
                         this.openPlacementConfirmStep();
                     } else {
                         this.showToast('⚠️ Ô đất này đã có công trình! Hãy chạm chọn một ô trống khác trên mặt bằng.');
@@ -9798,6 +10966,10 @@
             }
 
             buildCommunityAt(gx, gz, commTypeId = 'playground', rotIndex = 0) {
+                if (!this.state.isCellUnlocked(gx, gz, this.currentFloor)) {
+                    this.showToast('🔒 Ô đất này chưa được mở khóa! Hãy mua mở rộng ô mặt bằng trước.');
+                    return false;
+                }
                 if (this.state.isOccupied(gx, gz)) {
                     this.showToast('⚠️ Ô đất này đã có công trình rồi, hãy chọn ô trống!');
                     return false;
@@ -9825,7 +10997,7 @@
                 this.updateHUD();
                 this.state.saveToLocal();
                 this.spawnFloatingText(comm.x, 2.8, comm.z, `+${cfg.happyBonus}% 😊`, '#2e7d32');
-                this.showToast(`🌳 Đã xây dựng "${cfg.name}" (Góc ${(rotIndex || 0) * 90}°)! Cư dân toàn xóm tăng +${cfg.happyBonus}% độ hài lòng.`);
+                this.showToast(`🌳 Đã xây dựng "${cfg.name}"! Các em nhỏ trong xóm trọ đang rủ nhau từ hành lang chạy ra Khu Vui Chơi để chơi đùa!`);
                 return true;
             }
 
@@ -10146,17 +11318,8 @@
                     `;
 
                     document.getElementById('btn-re-expand-grid').addEventListener('click', () => {
-                        if (this.state.cash < expandCost) {
-                            this.showToast(`💸 Cần ${formatVND(expandCost)}đ để mua mở rộng ranh giới đất!`);
-                            return;
-                        }
-                        this.state.cash -= expandCost;
-                        this.state.realEstate.expandedLots = (this.state.realEstate.expandedLots || 0) + 1;
-                        this.addXP(50);
-                        this.updateHUD();
-                        this.openDepthModal('realestate');
-                        this.state.saveToLocal();
-                        this.showToast(`🗺️ Đã mua mở rộng ranh giới đất khu trọ (+1 vòng lưới xây dựng)!`);
+                        document.getElementById('depth-modal-overlay').style.display = 'none';
+                        this.openLandFloorModal();
                     });
 
                     document.getElementById('btn-re-buy-plot').addEventListener('click', () => {
@@ -10469,6 +11632,7 @@
                     if (!this.isPaused) {
                         this.tickTime(deltaSec);
                         this.updateStaffPatrol(deltaSec);
+                        this.updateChildNpcs(deltaSec);
                         this.autoSaveElapsed += deltaSec;
                         if (this.autoSaveElapsed >= 15) {
                             this.autoSaveElapsed = 0;
