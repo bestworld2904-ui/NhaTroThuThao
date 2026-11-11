@@ -82,20 +82,29 @@
         .speech-bubble {
             position: absolute;
             transform: translate(-50%, -100%);
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.98);
             border: 2.5px solid #544646;
-            border-radius: 16px;
-            padding: 4px 10px;
+            border-radius: 15px;
+            padding: 6px 10px;
             font-size: 11.5px;
             font-weight: 800;
             color: #3e2723;
-            box-shadow: 0 4px 0 rgba(84, 70, 70, 0.25);
-            white-space: nowrap;
+            box-shadow: 0 4px 8px rgba(84, 70, 70, 0.28);
+            white-space: normal;
+            text-align: center;
+            line-height: 1.4;
+            width: max-content;
+            max-width: min(220px, 88vw);
             pointer-events: none;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.28s ease;
             opacity: 0;
             display: none;
-            z-index: 6;
+            z-index: 16;
+        }
+        .speech-bubble .thought-pill {
+            display: inline-block;
+            margin-bottom: 3px;
+            margin-right: 0;
         }
 
         .float-money {
@@ -1904,6 +1913,277 @@
         /**
          * 1. CẤU HÌNH GAME TOÀN DIỆN
          */
+
+        /**
+         * YÊU CẦU 1 & 2: ĐỊNH DẠNG BONG BÓNG CHAT TỐI ĐA 5 CHỮ 1 HÀNG & THỜI GIAN TỒN TẠI 6 GIÂY (6000ms)
+         */
+        const BUBBLE_DURATION_MS = 6000;
+
+        function wrapWordsFivePerLine(plainText) {
+            const cleaned = String(plainText || '')
+                .replace(/<br\s*\/?>/gi, ' ')
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (!cleaned) return '';
+            const words = cleaned.split(' ');
+            const lines = [];
+            for (let i = 0; i < words.length; i += 5) {
+                lines.push(words.slice(i, i + 5).join(' '));
+            }
+            return lines.join('<br>');
+        }
+
+        function formatBubbleFiveWordsPerLine(rawHtml) {
+            const str = String(rawHtml || '').trim();
+            if (!str) return '';
+            const pillMatch = str.match(/^(<span\s+class=['"]thought-pill[^'"]*['"][^>]*>.*?<\/span>)([\s\S]*)$/i);
+            if (pillMatch) {
+                const pillTag = pillMatch[1];
+                const bodyText = wrapWordsFivePerLine(pillMatch[2]);
+                return `<div>${pillTag}</div><div>${bodyText}</div>`;
+            }
+            return `<div>${wrapWordsFivePerLine(str)}</div>`;
+        }
+
+        /**
+         * YÊU CẦU 4: KHO 200 CÂU BONG BÓNG CHAT THEO NGỮ CẢNH THỰC TẾ CỦA KHU TRỌ
+         * Chia đều 8 nhóm tính năng × 25 câu = 200 câu, tự động đối chiếu với trạng thái hiện tại của người chơi
+         */
+        const CONTEXTUAL_BUBBLE_DB = [
+            // =========================================================================
+            // NHÓM 1 (25 CÂU): QUY MÔ PHÒNG TRỌ, MẬT ĐỘ CƯ DÂN & HẠNG PHÒNG ĐANG Ở
+            // =========================================================================
+            { id: 'CB_R01', cat: 'Khu trọ mới', pill: 'pill-living', icon: '🏘️', cond: (c) => c.roomCount <= 1, text: 'Cả dãy mới có mỗi phòng mình nên tối đến hơi tĩnh lặng.' },
+            { id: 'CB_R02', cat: 'Khu trọ mới', pill: 'pill-living', icon: '🌱', cond: (c) => c.roomCount <= 2, text: 'Xóm trọ mới mở còn ít hộ ở nên sân bãi thoáng đãng ghê.' },
+            { id: 'CB_R03', cat: 'Ít hàng xóm', pill: 'pill-neighbor', icon: '👋', cond: (c) => c.roomCount <= 2, text: 'Mong chủ nhà sớm xây thêm phòng để có thêm láng giềng trò chuyện.' },
+            { id: 'CB_R04', cat: 'Đông vui', pill: 'pill-neighbor', icon: '🎉', cond: (c) => c.roomCount >= 3 && c.roomCount <= 5, text: 'Dãy trọ bắt đầu có nhiều phòng sáng đèn nhìn ấm cúng hẳn lên.' },
+            { id: 'CB_R05', cat: 'Sầm uất', pill: 'pill-neighbor', icon: '🏙️', cond: (c) => c.roomCount >= 6, text: 'Khu nhà giờ đông đúc chẳng kém gì một khu phố thu nhỏ.' },
+            { id: 'CB_R06', cat: 'Phòng tiêu chuẩn', pill: 'pill-living', icon: '🏠', cond: (c, n) => n.room.typeId === 'standard', text: 'Phòng tiêu chuẩn gọn gàng vừa túi tiền với người mới đi làm.' },
+            { id: 'CB_R07', cat: 'Phòng Studio', pill: 'pill-living', icon: '✨', cond: (c, n) => n.room.typeId === 'studio', text: 'Căn Studio có gác lửng tách biệt chỗ ngủ rất tiện sinh hoạt.' },
+            { id: 'CB_R08', cat: 'Phòng Deluxe', pill: 'pill-living', icon: '💎', cond: (c, n) => n.room.typeId === 'deluxe', text: 'Ở phòng Deluxe rộng rãi thoáng mát đi làm về thấy nhẹ nhõm.' },
+            { id: 'CB_R09', cat: 'Căn Duplex', pill: 'pill-living', icon: '👑', cond: (c, n) => n.room.typeId === 'duplex', text: 'Không gian Duplex hai tầng sang trọng làm bạn bè tới chơi ai cũng khen.' },
+            { id: 'CB_R10', cat: 'Căn hộ cao cấp', pill: 'pill-living', icon: '🌟', cond: (c, n) => !['standard','studio','deluxe','duplex'].includes(n.room.typeId), text: 'Hạng phòng cao cấp mới mở của chủ trọ ở sướng như khách sạn.' },
+            { id: 'CB_R11', cat: 'Ở một mình', pill: 'pill-living', icon: '👤', cond: (c, n) => n.groupType === 'SINGLE', text: 'Ở một mình một phòng tự do giờ giấc học tập và nghỉ ngơi.' },
+            { id: 'CB_R12', cat: 'Sinh viên ghép', pill: 'pill-living', icon: '🎓', cond: (c, n) => n.groupType === 'STUDENT_SHARE', text: 'Mấy anh em sinh viên góp tiền ở ghép đỡ được bao nhiêu chi phí.' },
+            { id: 'CB_R13', cat: 'Hộ gia đình', pill: 'pill-living', icon: '👨‍👩‍👧', cond: (c, n) => n.groupType === 'FAMILY', text: 'Gia đình nhỏ quây quần bên mâm cơm tối trong phòng trọ bình yên.' },
+            { id: 'CB_R14', cat: 'Phòng trống cạnh bên', pill: 'pill-neighbor', icon: '🔑', cond: (c) => c.emptyRooms > 0, text: 'Hình như dãy mình vẫn còn phòng trống đang treo biển tìm khách thuê.' },
+            { id: 'CB_R15', cat: 'Kín phòng', pill: 'pill-neighbor', icon: '🔥', cond: (c) => c.roomCount >= 3 && c.emptyRooms === 0, text: 'Tất cả các phòng trong xóm đều đã kín người thuê không sót căn nào.' },
+            { id: 'CB_R16', cat: 'Cư dân đông', pill: 'pill-neighbor', icon: '👥', cond: (c) => c.totalResidents >= 8, text: 'Sáng sớm mọi người dắt xe đi làm rộn rã cả một góc sân.' },
+            { id: 'CB_R17', cat: 'Cư dân ít', pill: 'pill-living', icon: '🍃', cond: (c) => c.totalResidents <= 3, text: 'Cả khu mới có vài người ở nên chiều về yên ả nghe rõ tiếng gió.' },
+            { id: 'CB_R18', cat: 'Hàng xóm hiền', pill: 'pill-neighbor', icon: '🤝', cond: (c, n) => n.trait === 'HIEN_LANH', text: 'Mình thích sống hòa thuận nhường nhịn để xóm giềng luôn vui vẻ.' },
+            { id: 'CB_R19', cat: 'Tính kỹ lưỡng', pill: 'pill-living', icon: '🧹', cond: (c, n) => n.trait === 'KY_TINH', text: 'Ngày nào mình cũng lau dọn sàn nhà sạch bóng mới yên tâm làm việc.' },
+            { id: 'CB_R20', cat: 'Thích náo nhiệt', pill: 'pill-living', icon: '🎸', cond: (c, n) => n.trait === 'ON_AO', text: 'Tính mình hướng ngoại thích bật nhạc sôi động cho phòng ốc đỡ buồn.' },
+            { id: 'CB_R21', cat: 'Mới dọn vào', pill: 'pill-living', icon: '📦', cond: (c, n) => (n.room.contractDaysLived || 0) <= 3, text: 'Mới chuyển đồ đạc vào phòng được mấy hôm vẫn đang sắp xếp lại kệ.' },
+            { id: 'CB_R22', cat: 'Khách gắn bó', pill: 'pill-living', icon: '🏅', cond: (c, n) => (n.room.contractDaysLived || 0) >= 15, text: 'Ở đây lâu ngày quen hơi bén tiếng chẳng muốn chuyển đi nơi khác.' },
+            { id: 'CB_R23', cat: 'Sắp hết hợp đồng', pill: 'pill-living', icon: '📑', cond: (c, n) => (n.room.contractDaysLived || 0) >= 25, text: 'Hợp đồng thuê nhà sắp tròn tháng rồi chuẩn bị gia hạn tiếp thôi.' },
+            { id: 'CB_R24', cat: 'Cấp độ chủ trọ', pill: 'pill-neighbor', icon: '⭐', cond: (c) => c.level >= 5, text: 'Chủ trọ ngày càng lên cấp cao quản lý khu nhà bài bản thật sự.' },
+            { id: 'CB_R25', cat: 'Khởi đầu mới', pill: 'pill-living', icon: '🌅', cond: (c) => c.level <= 2, text: 'Chủ trọ mới khởi nghiệp nhưng rất chịu khó chăm chút từng căn phòng.' },
+
+            // =========================================================================
+            // NHÓM 2 (25 CÂU): NỘI THẤT TRONG PHÒNG & MÀU SƠN TƯỜNG HIỆN TẠI
+            // =========================================================================
+            { id: 'CB_F01', cat: 'Chưa có nội thất', pill: 'pill-living', icon: '🪑', cond: (c, n) => c.getFurnCount(n.room) === 0, text: 'Phòng mới có giường cơ bản ước gì chủ nhà sắm thêm tủ quần áo.' },
+            { id: 'CB_F02', cat: 'Có tủ quần áo', pill: 'pill-living', icon: '🚪', cond: (c, n) => Boolean(n.room.upgrades.wardrobe), text: 'Có chiếc tủ gỗ cao ráo treo đồ phẳng phiu không lo nhăn nhúm.' },
+            { id: 'CB_F03', cat: 'Có bàn làm việc', pill: 'pill-job', icon: '📚', cond: (c, n) => Boolean(n.room.upgrades.desk), text: 'Bàn học gỗ chắc chắn giúp mình ngồi đọc tài liệu ban đêm rất êm.' },
+            { id: 'CB_F04', cat: 'Chưa có máy lạnh', pill: 'pill-living', icon: '🥵', cond: (c, n) => !n.room.upgrades.ac, text: 'Trưa nắng hầm hập thế này mà phòng được lắp máy lạnh thì tuyệt.' },
+            { id: 'CB_F05', cat: 'Đã lắp máy lạnh', pill: 'pill-living', icon: '❄️', cond: (c, n) => Boolean(n.room.upgrades.ac), text: 'Bật điều hòa mát lạnh đắp chăn bông ngủ một mạch tới sáng.' },
+            { id: 'CB_F06', cat: 'Quạt đứng mát', pill: 'pill-living', icon: '🌀', cond: (c, n) => Boolean(n.room.upgrades.fan), text: 'Cây quạt máy quay đều thổi gió thoang thoảng tiết kiệm điện năng.' },
+            { id: 'CB_F07', cat: 'Tủ lạnh riêng', pill: 'pill-living', icon: '🧊', cond: (c, n) => Boolean(n.room.upgrades.fridge), text: 'Có tủ lạnh trữ nước mát với trái cây tươi ăn dần cả tuần.' },
+            { id: 'CB_F08', cat: 'Dàn PC xịn', pill: 'pill-job', icon: '🖥️', cond: (c, n) => Boolean(n.room.upgrades.pc), text: 'Dàn máy tính cấu hình mạnh chạy đồ họa và giải trí mượt như mơ.' },
+            { id: 'CB_F09', cat: 'Chậu cây xanh', pill: 'pill-living', icon: '🪴', cond: (c, n) => Boolean(n.room.upgrades.plant), text: 'Góc phòng có chậu cây xanh nhỏ nhắn làm dịu mắt sau giờ làm.' },
+            { id: 'CB_F10', cat: 'Nhiều nội thất', pill: 'pill-living', icon: '🛋️', cond: (c, n) => c.getFurnCount(n.room) >= 4, text: 'Căn phòng được trang bị đủ đầy tiện nghi chẳng thiếu thứ gì.' },
+            { id: 'CB_F11', cat: 'Nội thất cao cấp', pill: 'pill-living', icon: '✨', cond: (c, n) => c.getFurnCount(n.room) >= 8, text: 'Bước vào phòng nhìn dàn nội thất hiện đại mà mê mẩn không rời.' },
+            { id: 'CB_F12', cat: 'Chưa sơn mới', pill: 'pill-living', icon: '🎨', cond: (c, n) => !n.room.paintId, text: 'Tường phòng vẫn giữ màu nguyên bản nhìn giản dị và mộc mạc.' },
+            { id: 'CB_F13', cat: 'Tường sơn mới', pill: 'pill-living', icon: '🖌️', cond: (c, n) => Boolean(n.room.paintId), text: 'Lớp sơn tường mới phối màu tươi tắn làm căn phòng sáng bừng lên.' },
+            { id: 'CB_F14', cat: 'Có máy giặt', pill: 'pill-living', icon: '🧺', cond: (c, n) => Boolean(n.room.upgrades.washer), text: 'Có máy giặt riêng trong phòng khỏi phải giặt tay mỗi tối cuối tuần.' },
+            { id: 'CB_F15', cat: 'Có bình nóng lạnh', pill: 'pill-living', icon: '🚿', cond: (c, n) => Boolean(n.room.upgrades.water_heater), text: 'Tối đi làm về muộn có nước ấm tắm gội thư giãn khỏe cả người.' },
+            { id: 'CB_F16', cat: 'Có sofa êm', pill: 'pill-living', icon: '🛋️', cond: (c, n) => Boolean(n.room.upgrades.sofa), text: 'Ngả lưng trên ghế sofa đọc cuốn truyện tranh thật đúng điệu.' },
+            { id: 'CB_F17', cat: 'Có kệ sách', pill: 'pill-job', icon: '📖', cond: (c, n) => Boolean(n.room.upgrades.bookshelf), text: 'Kệ sách gọn gàng giúp mình xếp ngăn nắp cả bộ giáo trình.' },
+            { id: 'CB_F18', cat: 'Có tivi màn phẳng', pill: 'pill-living', icon: '📺', cond: (c, n) => Boolean(n.room.upgrades.tv), text: 'Tối tối bật tivi xem thời sự và bóng đá ngay tại giường.' },
+            { id: 'CB_F19', cat: 'Có bếp từ', pill: 'pill-living', icon: '🍳', cond: (c, n) => Boolean(n.room.upgrades.induction_hob), text: 'Bếp từ nấu lẩu nhanh gọn lại không lo ám khói trong phòng.' },
+            { id: 'CB_F20', cat: 'Có lò vi sóng', pill: 'pill-living', icon: '🍱', cond: (c, n) => Boolean(n.room.upgrades.microwave), text: 'Sáng dậy hâm nóng hộp cơm chỉ hai phút là có bữa sáng ngon.' },
+            { id: 'CB_F21', cat: 'Thiếu quạt mát', pill: 'pill-living', icon: '💨', cond: (c, n) => !n.room.upgrades.fan && !n.room.upgrades.ac, text: 'Phòng chưa lắp quạt hay điều hòa nên buổi trưa hơi bí gió.' },
+            { id: 'CB_F22', cat: 'WiFi tốc độ cao', pill: 'pill-job', icon: '📡', cond: (c) => true, text: 'Đường truyền mạng WiFi của xóm ổn định họp trực tuyến không giật lag.' },
+            { id: 'CB_F23', cat: 'Nhà vệ sinh riêng', pill: 'pill-living', icon: '🚽', cond: (c) => true, text: 'Phòng có nhà vệ sinh khép kín sạch sẽ tiện lợi lúc đêm hôm.' },
+            { id: 'CB_F24', cat: 'Cửa sổ thoáng', pill: 'pill-living', icon: '🪟', cond: (c) => c.isDaytime, text: 'Nắng sớm chiếu qua khung cửa sổ làm chăn gối thơm tho ấm áp.' },
+            { id: 'CB_F25', cat: 'Đèn ngủ dịu', pill: 'pill-living', icon: '💡', cond: (c) => !c.isDaytime, text: 'Ánh đèn vàng dịu nhẹ trong phòng giúp mắt dễ chịu trước giờ ngủ.' },
+
+            // =========================================================================
+            // NHÓM 3 (25 CÂU): HÀNH LANG, MỞ RỘNG Ô MẶT BẰNG & NÂNG CẤP TẦNG CAO
+            // =========================================================================
+            { id: 'CB_C01', cat: 'Hành lang ngắn', pill: 'pill-living', icon: '🛣️', cond: (c) => c.corridorCount <= 4, text: 'Lối đi bộ hiện tại còn ngắn chỉ vừa đủ nối thẳng ra cổng.' },
+            { id: 'CB_C02', cat: 'Hành lang dài', pill: 'pill-living', icon: '🚶', cond: (c) => c.corridorCount >= 7, text: 'Tuyến hành lang được lát mở rộng thông suốt đi lại rất thoải mái.' },
+            { id: 'CB_C03', cat: 'Hành lang đèn lồng', pill: 'pill-living', icon: '🏮', cond: (c) => c.hasCorType('cor_lantern'), text: 'Dãy hành lang treo đèn lồng lung linh làm lối về đêm đẹp mê hồn.' },
+            { id: 'CB_C04', cat: 'Hành lang gỗ', pill: 'pill-living', icon: '🪵', cond: (c) => c.hasCorType('cor_wood'), text: 'Sàn hành lang lát gỗ bước chân lên nghe êm ái và sang trọng.' },
+            { id: 'CB_C05', cat: 'Hành lang vườn hoa', pill: 'pill-living', icon: '🌺', cond: (c) => c.hasCorType('cor_garden'), text: 'Đi dọc lối hành lang có khóm hoa hai bên thơm ngát dễ chịu.' },
+            { id: 'CB_C06', cat: 'Hành lang mái vòm', pill: 'pill-living', icon: '⛩️', cond: (c) => c.hasCorType('cor_arch'), text: 'Mái vòm hoa hồng che nắng trên hành lang nhìn thơ mộng quá.' },
+            { id: 'CB_C07', cat: 'Mặt bằng gốc', pill: 'pill-living', icon: '📐', cond: (c) => c.unlockedTilesF1 <= 25, text: 'Diện tích mặt bằng khu trọ vẫn đang ở mức cơ bản ban đầu.' },
+            { id: 'CB_C08', cat: 'Đang mở rộng đất', pill: 'pill-living', icon: '🗺️', cond: (c) => c.unlockedTilesF1 > 25 && c.unlockedTilesF1 < 40, text: 'Chủ trọ vừa mua thêm mấy ô đất mới mở rộng khuôn viên rồi kìa.' },
+            { id: 'CB_C09', cat: 'Đất sắp gấp đôi', pill: 'pill-living', icon: '🏗️', cond: (c) => c.unlockedTilesF1 >= 40 && c.unlockedTilesF1 < 50, text: 'Khu đất tầng trệt sắp đạt ngưỡng rộng gấp đôi ban đầu luôn rồi.' },
+            { id: 'CB_C10', cat: 'Đạt tối đa mặt bằng', pill: 'pill-living', icon: '🏆', cond: (c) => c.unlockedTilesF1 >= 50 && c.unlockedFloors === 1, text: 'Mặt bằng tầng một đã mở kịch trần năm mươi ô sẵn sàng lên lầu.' },
+            { id: 'CB_C11', cat: 'Chỉ có 1 tầng', pill: 'pill-living', icon: '🏡', cond: (c) => c.unlockedFloors === 1, text: 'Hiện tại khu trọ mới xây một tầng trệt nên đi lại không cần leo thang.' },
+            { id: 'CB_C12', cat: 'Đã lên Tầng 2', pill: 'pill-living', icon: '🏢', cond: (c) => c.unlockedFloors === 2, text: 'Từ ngày khu trọ đổ sàn nâng lên tầng hai nhìn bề thế hẳn ra.' },
+            { id: 'CB_C13', cat: 'Đã lên Tầng 3+', pill: 'pill-living', icon: '🏙️', cond: (c) => c.unlockedFloors >= 3, text: 'Tòa nhà trọ cao tầng có cả thang máy thông tầng hiện đại thật.' },
+            { id: 'CB_C14', cat: 'Ở trên tầng cao', pill: 'pill-living', icon: '🌤️', cond: (c, n) => (n.room.floor || 1) >= 2, text: 'Ở phòng trên tầng cao đón gió lộng và nhìn xuống sân rất thích.' },
+            { id: 'CB_C15', cat: 'Giao lộ thông thoáng', pill: 'pill-living', icon: '🔀', cond: (c) => c.corridorCount >= 6, text: 'Các góc rẽ hành lang giao nhau bằng phẳng không vướng gờ chắn.' },
+            { id: 'CB_C16', cat: 'Đường ra cổng', pill: 'pill-job', icon: '⛩️', cond: (c) => c.corridorCount >= 4, text: 'Từ cửa phòng đi theo gạch hành lang vài bước là tới cổng chính.' },
+            { id: 'CB_C17', cat: 'Hành lang đá cẩm thạch', pill: 'pill-living', icon: '💎', cond: (c) => c.hasCorType('cor_marble'), text: 'Nền hành lang lát đá cẩm thạch bóng loáng soi gương được luôn.' },
+            { id: 'CB_C18', cat: 'Hành lang suối nước', pill: 'pill-living', icon: '💧', cond: (c) => c.hasCorType('cor_water'), text: 'Tiếng nước chảy róc rách dọc rãnh hành lang nghe mát cả tâm hồn.' },
+            { id: 'CB_C19', cat: 'Thang máy tầng trên', pill: 'pill-living', icon: '🛗', cond: (c) => c.unlockedFloors >= 2, text: 'Có sảnh thang máy nối các tầng nên chuyển đồ lên lầu khỏe re.' },
+            { id: 'CB_C20', cat: 'Chờ mở thêm đất', pill: 'pill-living', icon: '🔓', cond: (c) => c.unlockedTilesF1 < 30, text: 'Nếu chủ nhà mua mở thêm vài ô đất bên hông sẽ xây được nhiều tiện ích.' },
+            { id: 'CB_C21', cat: 'Đi dạo hành lang', pill: 'pill-living', icon: '👟', cond: (c) => true, text: 'Ăn cơm xong đi bộ vài vòng dọc hành lang cho tiêu cơm.' },
+            { id: 'CB_C22', cat: 'Quy hoạch gọn', pill: 'pill-neighbor', icon: '🧭', cond: (c) => c.roomCount >= 2, text: 'Các công trình trong xóm được xoay hướng và sắp đặt rất ngay ngắn.' },
+            { id: 'CB_C23', cat: 'Sân bãi sạch', pill: 'pill-living', icon: '✨', cond: (c) => true, text: 'Lối đi chung luôn khô ráo không có một cọng rác nào vương vãi.' },
+            { id: 'CB_C24', cat: 'Ánh đèn cổng', pill: 'pill-living', icon: '🌙', cond: (c) => !c.isDaytime, text: 'Đèn đường trước cổng bật sáng rực giúp người về khuya yên tâm.' },
+            { id: 'CB_C25', cat: 'Khuôn viên rộng', pill: 'pill-living', icon: '🌳', cond: (c) => c.unlockedTilesF1 >= 35, text: 'Diện tích mặt bằng mở rộng giúp không khí giữa các phòng thoáng hơn.' },
+
+            // =========================================================================
+            // NHÓM 4 (25 CÂU): TIỆM TẠP HÓA & CÁC MẶT HÀNG THIẾT YẾU TRONG XÓM
+            // =========================================================================
+            { id: 'CB_S01', cat: 'Chưa có tạp hóa', pill: 'pill-living', icon: '🛒', cond: (c) => c.shopCount === 0, text: 'Trong xóm chưa có tiệm tạp hóa nên muốn mua gói muối phải đi xa.' },
+            { id: 'CB_S02', cat: 'Mong mở tạp hóa', pill: 'pill-living', icon: '🏪', cond: (c) => c.shopCount === 0, text: 'Giá như chủ trọ mở một tiệm tạp hóa nhỏ ngay sân thì tiện biết mấy.' },
+            { id: 'CB_S03', cat: 'Đã có tạp hóa', pill: 'pill-living', icon: '🏪', cond: (c) => c.shopCount > 0, text: 'Từ hôm có tiệm tạp hóa trong khu trọ chẳng cần chạy ra đầu ngõ nữa.' },
+            { id: 'CB_S04', cat: 'Kệ mì tôm trứng', pill: 'pill-living', icon: '🍜', cond: (c) => c.hasShopGood('noodles'), text: 'Đêm đói bụng chạy ù ra tạp hóa mua gói mì với quả trứng là ấm lòng.' },
+            { id: 'CB_S05', cat: 'Chưa có nước bình', pill: 'pill-living', icon: '🚰', cond: (c) => c.shopCount > 0 && !c.hasShopGood('water'), text: 'Tiệm tạp hóa mà nhập thêm nước uống đóng bình hai mươi lít thì đỡ vác xa.' },
+            { id: 'CB_S06', cat: 'Có nước bình 20L', pill: 'pill-living', icon: '💧', cond: (c) => c.hasShopGood('water'), text: 'Hết nước uống chỉ cần ghé tạp hóa đổi bình nước tinh khiết ngay.' },
+            { id: 'CB_S07', cat: 'Có sạp rau thịt', pill: 'pill-living', icon: '🥬', cond: (c) => c.hasShopGood('veggies'), text: 'Sạp rau củ thịt cá tươi ở tạp hóa giúp mình nấu cơm chiều nhanh gọn.' },
+            { id: 'CB_S08', cat: 'Chưa có rau củ', pill: 'pill-living', icon: '🥕', cond: (c) => c.shopCount > 0 && !c.hasShopGood('veggies'), text: 'Tạp hóa mới bán đồ khô chứ chưa thấy nhập rau tươi với thịt cá.' },
+            { id: 'CB_S09', cat: 'Có hóa mỹ phẩm', pill: 'pill-living', icon: '🧴', cond: (c) => c.hasShopGood('toiletries'), text: 'Hết dầu gội hay bột giặt cứ ra quầy tạp hóa xóm mình là có đủ.' },
+            { id: 'CB_S10', cat: 'Có tủ kem mát', pill: 'pill-living', icon: '🍦', cond: (c) => c.hasShopGood('snacks'), text: 'Trưa nắng ghé tạp hóa mua cây kem lạnh ăn mát rượi cả cổ họng.' },
+            { id: 'CB_S11', cat: 'Có văn phòng phẩm', pill: 'pill-job', icon: '✏️', cond: (c) => c.hasShopGood('stationery'), text: 'Đang làm bài hết mực bút bi chạy ra tạp hóa mua được liền.' },
+            { id: 'CB_S12', cat: 'Có đại lý gạo gas', pill: 'pill-living', icon: '🔥', cond: (c) => c.hasShopGood('rice_gas'), text: 'Tiệm tạp hóa bán cả gạo thơm lẫn đổi bình gas tiện cho hộ gia đình.' },
+            { id: 'CB_S13', cat: 'Có tủ thuốc y tế', pill: 'pill-living', icon: '💊', cond: (c) => c.hasShopGood('medicine'), text: 'Trái gió trở trời có tủ thuốc y tế ở tạp hóa mua cảm sốt kịp thời.' },
+            { id: 'CB_S14', cat: 'Tạp hóa đủ 8 món', pill: 'pill-living', icon: '🌟', cond: (c) => c.shopGoodsCount >= 8, text: 'Tiệm tạp hóa xóm mình giờ đầy ắp tám kệ hàng chẳng thiếu món gì.' },
+            { id: 'CB_S15', cat: 'Tạp hóa ít hàng', pill: 'pill-living', icon: '📦', cond: (c) => c.shopCount > 0 && c.shopGoodsCount <= 2, text: 'Tiệm tạp hóa mới khai trương nên kệ hàng vẫn còn hơi ít món.' },
+            { id: 'CB_S16', cat: 'Cô bán hàng vui', pill: 'pill-neighbor', icon: '😊', cond: (c) => c.shopCount > 0, text: 'Ra tiệm tạp hóa mua đồ còn được tán gẫu vài câu vui vẻ.' },
+            { id: 'CB_S17', cat: 'Tiết kiệm thời gian', pill: 'pill-job', icon: '⏱️', cond: (c) => c.shopCount > 0, text: 'Đi làm về muộn vẫn kịp ghé tạp hóa xóm mua đồ ăn tối.' },
+            { id: 'CB_S18', cat: 'Mua đồ vặt', pill: 'pill-living', icon: '🍿', cond: (c) => c.hasShopGood('snacks'), text: 'Cuối tuần mua bịch bánh tráng với ly trà sữa về phòng cày phim.' },
+            { id: 'CB_S19', cat: 'Giá cả bình dân', pill: 'pill-living', icon: '💵', cond: (c) => c.shopCount > 0, text: 'Đồ bán ở tạp hóa nội khu giá rất mềm đúng chất phục vụ cư dân.' },
+            { id: 'CB_S20', cat: 'Gạo mới thơm', pill: 'pill-living', icon: '🍚', cond: (c) => c.hasShopGood('rice_gas'), text: 'Gạo mua ở quầy tạp hóa xóm nấu lên dẻo thơm lừng cả gian bếp.' },
+            { id: 'CB_S21', cat: 'Sơ cứu nhanh', pill: 'pill-living', icon: '🩹', cond: (c) => c.hasShopGood('medicine'), text: 'Đứt tay nhẹ chạy ra tạp hóa mua cuộn băng cá nhân dán ngay.' },
+            { id: 'CB_S22', cat: 'Mua trứng buổi sáng', pill: 'pill-living', icon: '🥚', cond: (c) => c.hasShopGood('noodles'), text: 'Sáng sớm mua vỉ trứng gà về ốp la ăn kèm bánh mì ngon tuyệt.' },
+            { id: 'CB_S23', cat: 'Nhiều tiệm tạp hóa', pill: 'pill-living', icon: '🏬', cond: (c) => c.shopCount >= 2, text: 'Khu trọ có tới mấy quầy tạp hóa nên chẳng bao giờ phải xếp hàng.' },
+            { id: 'CB_S24', cat: 'Nhu yếu phẩm', pill: 'pill-living', icon: '🧻', cond: (c) => c.hasShopGood('toiletries'), text: 'Khăn giấy với nước rửa chén đều có sẵn ngay dưới sân trọ.' },
+            { id: 'CB_S25', cat: 'Đi chợ tại chỗ', pill: 'pill-living', icon: '🐟', cond: (c) => c.hasShopGood('veggies'), text: 'Chẳng cần đi chợ xa vì tạp hóa xóm ngày nào cũng có đồ tươi.' },
+
+            // =========================================================================
+            // NHÓM 5 (25 CÂU): HỆ THỐNG KINH DOANH DỊCH VỤ THEO CẤP ĐỘ
+            // =========================================================================
+            { id: 'CB_B01', cat: 'Chưa có hàng quán', pill: 'pill-living', icon: '🍽️', cond: (c) => c.bizCount === 0, text: 'Khu mình chưa mở quán ăn hay cà phê nên muốn ăn tiệm phải ra phố.' },
+            { id: 'CB_B02', cat: 'Có Quán Ăn', pill: 'pill-living', icon: '🍜', cond: (c) => c.hasBiz('eatery'), text: 'Quán ăn bình dân trong xóm nấu cơm trưa với phở sáng thơm nức mũi.' },
+            { id: 'CB_B03', cat: 'Chưa có Quán Ăn', pill: 'pill-living', icon: '🥡', cond: (c) => !c.hasBiz('eatery'), text: 'Hôm nào lười nấu cơm lại ước trong xóm có một quán cơm bình dân.' },
+            { id: 'CB_B04', cat: 'Có Quán Cà Phê', pill: 'pill-living', icon: '☕', cond: (c) => c.hasBiz('cafe'), text: 'Sáng ngồi nhâm nhi ly cà phê đá ngay quán sân vườn xóm trọ tỉnh cả người.' },
+            { id: 'CB_B05', cat: 'Chưa có Cà Phê', pill: 'pill-living', icon: '🥤', cond: (c) => !c.hasBiz('cafe'), text: 'Nếu xóm mình mở thêm quán cà phê nhỏ để cuối tuần ngồi chill thì hay.' },
+            { id: 'CB_B06', cat: 'Có Siêu Thị Mini', pill: 'pill-living', icon: '🛒', cond: (c) => c.hasBiz('minimart'), text: 'Siêu thị mini mở cửa mát lạnh bước vào chọn đồ tiện lợi vô cùng.' },
+            { id: 'CB_B07', cat: 'Có Tiệm Giặt Là', pill: 'pill-living', icon: '🧺', cond: (c) => c.hasBiz('laundry'), text: 'Mùa mưa mang chăn mền ra tiệm giặt sấy của xóm thơm phức khô ngay.' },
+            { id: 'CB_B08', cat: 'Chưa có Giặt Là', pill: 'pill-living', icon: '👕', cond: (c) => !c.hasBiz('laundry'), text: 'Chưa có tiệm giặt sấy chung nên hôm nào trời nồm phơi đồ hơi lâu khô.' },
+            { id: 'CB_B09', cat: 'Có Bãi Giữ Xe', pill: 'pill-living', icon: '🛵', cond: (c) => c.hasBiz('parking'), text: 'Gửi xe ở bãi giữ xe có rào chắn của xóm không lo nắng mưa.' },
+            { id: 'CB_B10', cat: 'Chưa có Bãi Xe', pill: 'pill-living', icon: '🚲', cond: (c) => !c.hasBiz('parking'), text: 'Mong chủ trọ sớm quy hoạch bãi giữ xe riêng cho gọn lối đi.' },
+            { id: 'CB_B11', cat: 'Có Phòng Tập Gym', pill: 'pill-living', icon: '🏋️', cond: (c) => c.hasBiz('gym'), text: 'Chiều đi làm về ghé phòng tập thể hình nâng tạ chạy bộ khỏe khoắn.' },
+            { id: 'CB_B12', cat: 'Có Quán Trà Sữa', pill: 'pill-living', icon: '🧋', cond: (c) => c.hasBiz('milk_tea'), text: 'Quán trà sữa ăn vặt trong xóm lúc nào cũng đông các bạn trẻ ghé mua.' },
+            { id: 'CB_B13', cat: 'Có Cyber Game', pill: 'pill-living', icon: '🎮', cond: (c) => c.hasBiz('cyber_cafe'), text: 'Phòng net Cyber cấu hình cao ngay nội khu cho anh em giải trí cuối tuần.' },
+            { id: 'CB_B14', cat: 'Có Phòng Khám', pill: 'pill-living', icon: '🩺', cond: (c) => c.hasBiz('pharmacy_clinic'), text: 'Có hiệu thuốc và phòng khám tư ngay trong khu trọ yên tâm sức khỏe.' },
+            { id: 'CB_B15', cat: 'Có Co-working', pill: 'pill-job', icon: '💻', cond: (c) => c.hasBiz('coworking'), text: 'Không gian làm việc chung yên tĩnh giúp dân văn phòng tập trung cao độ.' },
+            { id: 'CB_B16', cat: 'Có Spa Gội Đầu', pill: 'pill-living', icon: '💆', cond: (c) => c.hasBiz('spa_relax'), text: 'Cuối tuần ghé tiệm Spa gội đầu dưỡng sinh xả hết mệt mỏi.' },
+            { id: 'CB_B17', cat: 'Tổ hợp đa dịch vụ', pill: 'pill-living', icon: '🏬', cond: (c) => c.bizCount >= 3, text: 'Khu trọ giờ có đủ chuỗi dịch vụ ăn uống mua sắm chẳng thiếu gì.' },
+            { id: 'CB_B18', cat: 'Cà phê cuối tuần', pill: 'pill-neighbor', icon: '🎶', cond: (c) => c.hasBiz('cafe') && c.isWeekend, text: 'Cuối tuần quán cà phê xóm mở nhạc du dương thu hút cả khách vãng lai.' },
+            { id: 'CB_B19', cat: 'Bữa tối nóng hổi', pill: 'pill-living', icon: '🍲', cond: (c) => c.hasBiz('eatery') && !c.isDaytime, text: 'Tối về ghé quán ăn làm tô hủ tiếu nóng hổi khỏi cần nấu nướng.' },
+            { id: 'CB_B20', cat: 'Rèn luyện thể lực', pill: 'pill-living', icon: '💪', cond: (c) => c.hasBiz('gym'), text: 'Từ ngày có phòng Gym ngay dưới nhà mình chăm tập thể dục hẳn.' },
+            { id: 'CB_B21', cat: 'Xe cộ ngăn nắp', pill: 'pill-living', icon: '🅿️', cond: (c) => c.hasBiz('parking'), text: 'Nhờ có bãi giữ xe chuyên nghiệp nên hành lang không bị xe máy chắn lối.' },
+            { id: 'CB_B22', cat: 'Quần áo thơm tho', pill: 'pill-living', icon: '✨', cond: (c) => c.hasBiz('laundry'), text: 'Máy sấy công nghiệp ở tiệm giặt là giúp quần áo phẳng phiu thơm dịu.' },
+            { id: 'CB_B23', cat: 'Mua sắm đêm', pill: 'pill-living', icon: '🏪', cond: (c) => c.hasBiz('minimart'), text: 'Siêu thị mini sáng đèn suốt tối cần mua gì cũng có ngay lập tức.' },
+            { id: 'CB_B24', cat: 'Họp nhóm tiện lợi', pill: 'pill-job', icon: '📊', cond: (c) => c.hasBiz('cafe') || c.hasBiz('coworking'), text: 'Mời đối tác tới quán nội khu bàn công việc vừa lịch sự vừa gần phòng.' },
+            { id: 'CB_B25', cat: 'Khu phố tiện ích', pill: 'pill-living', icon: '🌆', cond: (c) => c.bizCount >= 5, text: 'Sống ở đây tiện hơn cả chung cư vì bước ra cửa là có đủ dịch vụ.' },
+
+            // =========================================================================
+            // NHÓM 6 (25 CÂU): HỆ THỐNG NHÂN SỰ TỰ ĐỘNG & ĐĂNG KÝ TẠM TRÚ
+            // =========================================================================
+            { id: 'CB_M01', cat: 'Chưa thuê bảo vệ', pill: 'pill-living', icon: '🛡️', cond: (c) => !c.staff.guard, text: 'Chốt cổng chưa có bảo vệ chuyên trách nên chủ trọ phải tự ra mở cổng.' },
+            { id: 'CB_M02', cat: 'Đã có Bảo vệ', pill: 'pill-living', icon: '👮', cond: (c) => Boolean(c.staff.guard), text: 'Có chú bảo vệ mặc đồng phục đi tuần tra dọc hành lang yên tâm hẳn.' },
+            { id: 'CB_M03', cat: 'Chưa có Thu ngân', pill: 'pill-living', icon: '📋', cond: (c) => !c.staff.collector, text: 'Chủ trọ vẫn đang tự mình đi ghi sổ điện nước và làm giấy tạm trú.' },
+            { id: 'CB_M04', cat: 'Đã có Thu ngân', pill: 'pill-living', icon: '💼', cond: (c) => Boolean(c.staff.collector), text: 'Chị quản lý thu ngân làm thủ tục tạm trú và sổ sách nhanh gọn quá.' },
+            { id: 'CB_M05', cat: 'Chưa có Thợ sửa', pill: 'pill-living', icon: '🔧', cond: (c) => !c.staff.handyman, text: 'Mỗi lần hỏng ống nước hay cầu dao phải chờ chủ trọ gọi thợ bên ngoài.' },
+            { id: 'CB_M06', cat: 'Đã có Thợ kỹ thuật', pill: 'pill-living', icon: '🛠️', cond: (c) => Boolean(c.staff.handyman), text: 'Anh thợ kỹ thuật trực sẵn trong xóm sửa điện nước trong nháy mắt.' },
+            { id: 'CB_M07', cat: 'Có NV Phục vụ', pill: 'pill-living', icon: '👩‍🍳', cond: (c) => Boolean(c.staff.service_staff), text: 'Đội nhân viên phục vụ ở các quầy dịch vụ niềm nở và chu đáo ghê.' },
+            { id: 'CB_M08', cat: 'Đủ bộ nhân sự', pill: 'pill-living', icon: '🌟', cond: (c) => c.staffCount >= 4, text: 'Khu trọ có nguyên đội ngũ nhân sự vận hành tự động chuyên nghiệp.' },
+            { id: 'CB_M09', cat: 'Chưa có nhân sự', pill: 'pill-living', icon: '🏃', cond: (c) => c.staffCount === 0, text: 'Một mình chủ trọ quán xuyến hết mọi việc từ cổng vào tới từng phòng.' },
+            { id: 'CB_M10', cat: 'Đã ĐK tạm trú', pill: 'pill-living', icon: '✅', cond: (c, n) => Boolean(n.room.isRegistered), text: 'Phòng mình đã đăng ký tạm trú đầy đủ với phường nên ngủ ngon giấc.' },
+            { id: 'CB_M11', cat: 'Chưa ĐK tạm trú', pill: 'pill-crisis', icon: '⚠️', cond: (c, n) => !n.room.isRegistered, text: 'Phòng mình chưa làm giấy tạm trú, lỡ công an kiểm tra là bị phạt đấy.' },
+            { id: 'CB_M12', cat: 'Có lao công dọn', pill: 'pill-living', icon: '🧹', cond: (c) => Boolean(c.staff.cleaner), text: 'Cô lao công quét dọn hành lang mỗi sáng nên sàn gạch lúc nào cũng sạch.' },
+            { id: 'CB_M13', cat: 'Có thợ làm vườn', pill: 'pill-living', icon: '🌿', cond: (c) => Boolean(c.staff.gardener), text: 'Bác làm vườn cắt tỉa cây cảnh gọn gàng nhìn khuôn viên xanh mát.' },
+            { id: 'CB_M14', cat: 'Có bảo vệ ca đêm', pill: 'pill-living', icon: '🔦', cond: (c) => Boolean(c.staff.night_watch), text: 'Đêm khuya có nhân viên tuần tra ca đêm canh gác giấc ngủ cho cả xóm.' },
+            { id: 'CB_M15', cat: 'Có quản gia', pill: 'pill-living', icon: '🎩', cond: (c) => Boolean(c.staff.concierge), text: 'Dịch vụ lễ tân đón khách ở khu trọ chu đáo chẳng kém căn hộ hạng sang.' },
+            { id: 'CB_M16', cat: 'Làm thêm cho xóm', pill: 'pill-job', icon: '🤝', cond: (c, n) => Boolean(n.isPartTimeStaff), text: 'Mình vừa ở trọ vừa phụ làm nhân viên bán thời gian cho chủ nhà.' },
+            { id: 'CB_M17', cat: 'Trật tự hành lang', pill: 'pill-neighbor', icon: '🤫', cond: (c) => Boolean(c.staff.guard), text: 'Từ khi có bảo vệ nhắc nhở thường xuyên chẳng phòng nào dám mở loa khuya.' },
+            { id: 'CB_M18', cat: 'Đối soát cổng kỹ', pill: 'pill-living', icon: '🪪', cond: (c) => Boolean(c.staff.guard), text: 'Khách lạ vào thăm đều được chốt bảo vệ kiểm tra tên tuổi cẩn thận.' },
+            { id: 'CB_M19', cat: 'Không lo hỏng điện', pill: 'pill-living', icon: '⚡', cond: (c) => Boolean(c.staff.handyman), text: 'Có thợ điện nước túc trực nên thiết bị trong phòng luôn chạy êm ru.' },
+            { id: 'CB_M20', cat: 'Thu tiền minh bạch', pill: 'pill-living', icon: '🧾', cond: (c) => Boolean(c.staff.collector), text: 'Bảng kê tiền điện nước hàng tháng rõ ràng từng khoản rất minh bạch.' },
+            { id: 'CB_M21', cat: 'An tâm đi công tác', pill: 'pill-job', icon: '🧳', cond: (c) => Boolean(c.staff.guard), text: 'Đi làm xa mấy ngày cũng không lo vì đã có bảo vệ trông coi phòng.' },
+            { id: 'CB_M22', cat: 'Có IT hỗ trợ', pill: 'pill-job', icon: '💻', cond: (c) => Boolean(c.staff.it_admin), text: 'Kỹ thuật viên mạng nội khu bảo trì modem thường xuyên nên mạng cực khỏe.' },
+            { id: 'CB_M23', cat: 'Kế toán chuẩn chỉ', pill: 'pill-job', icon: '📊', cond: (c) => Boolean(c.staff.accountant), text: 'Hóa đơn thu chi của khu trọ được kế toán tổng hợp đâu ra đấy.' },
+            { id: 'CB_M24', cat: 'Giám đốc vận hành', pill: 'pill-living', icon: '👔', cond: (c) => Boolean(c.staff.ceo_manager), text: 'Có tổng quản lý điều hành nên mọi dịch vụ trong xóm đều trơn tru.' },
+            { id: 'CB_M25', cat: 'Toàn bộ hợp pháp', pill: 'pill-living', icon: '🛡️', cond: (c) => c.unregisteredRooms === 0, text: 'Tất cả các phòng trong khu đều đã hoàn tất khai báo tạm trú hợp lệ.' },
+
+            // =========================================================================
+            // NHÓM 7 (25 CÂU): KHÔNG GIAN CỘNG ĐỒNG, KHU VUI CHƠI & ĐỜI SỐNG TRẺ EM
+            // =========================================================================
+            { id: 'CB_K01', cat: 'Chưa có sân chơi', pill: 'pill-neighbor', icon: '🧒', cond: (c) => c.commCount === 0, text: 'Chưa có sân chơi riêng nên mấy đứa nhỏ toàn mang đồ ra hành lang chơi.' },
+            { id: 'CB_K02', cat: 'Trẻ chơi hành lang', pill: 'pill-neighbor', icon: '🥁', cond: (c) => !c.hasComm('playground'), text: 'Nghe tiếng trống tùng tùng của tụi nhỏ vang dọc lối hành lang xóm trọ.' },
+            { id: 'CB_K03', cat: 'Đã có Sân Chơi', pill: 'pill-living', icon: '🎠', cond: (c) => c.hasComm('playground'), text: 'Từ ngày có sân chơi cầu trượt mới mấy đứa trẻ chạy ra đó chơi suốt.' },
+            { id: 'CB_K04', cat: 'Tiếng đàn thiếu nhi', pill: 'pill-living', icon: '🎹', cond: (c) => true, text: 'Có bé đang tập đàn piano bài nhạc thiếu nhi nghe dễ thương thật đấy.' },
+            { id: 'CB_K05', cat: 'Trẻ rủ nhau chơi', pill: 'pill-neighbor', icon: '🤸', cond: (c) => true, text: 'Tụi con nít trong xóm thân nhau lắm cứ chiều về là í ới rủ đi chơi.' },
+            { id: 'CB_K06', cat: 'Có Sân Cầu Lông', pill: 'pill-living', icon: '🏸', cond: (c) => c.hasComm('badminton'), text: 'Chiều mát ra sân cầu lông nội khu đánh vài séc với hàng xóm khỏe người.' },
+            { id: 'CB_K07', cat: 'Chưa có Sân Cầu Lông', pill: 'pill-living', icon: '🏸', cond: (c) => !c.hasComm('badminton'), text: 'Mình có đôi vợt cầu lông mà trong xóm chưa có sân kẻ vạch để đánh.' },
+            { id: 'CB_K08', cat: 'Có Bàn Bóng Bàn', pill: 'pill-living', icon: '🏓', cond: (c) => c.hasComm('pingpong'), text: 'Khu bàn bóng bàn lúc nào cũng rộn tiếng cười của anh em thanh niên.' },
+            { id: 'CB_K09', cat: 'Có Khu Tập Thể Dục', pill: 'pill-living', icon: '🤸', cond: (c) => c.hasComm('outdoor_gym'), text: 'Sáng dậy sớm ra khu xà đơn máy tập ngoài trời vận động giãn gân cốt.' },
+            { id: 'CB_K10', cat: 'Có Vườn Cây Xanh', pill: 'pill-living', icon: '🌳', cond: (c) => c.hasComm('garden'), text: 'Vườn cây tiểu cảnh tỏa bóng mát làm nhiệt độ toàn khu dịu hẳn xuống.' },
+            { id: 'CB_K11', cat: 'Chưa có Vườn Cây', pill: 'pill-living', icon: '🌱', cond: (c) => !c.hasComm('garden'), text: 'Nếu chủ nhà trồng thêm một khu vườn cây xanh thì xóm trọ sẽ mát hơn.' },
+            { id: 'CB_K12', cat: 'Có Khu BBQ', pill: 'pill-neighbor', icon: '🍖', cond: (c) => c.hasComm('bbq_park'), text: 'Cuối tuần cả xóm góp đồ ra vườn nướng BBQ liên hoan thơm phức.' },
+            { id: 'CB_K13', cat: 'Có Hồ Cá Koi', pill: 'pill-living', icon: '🐟', cond: (c) => c.hasComm('koi_pond'), text: 'Đứng ngắm đàn cá Koi bơi lội dưới hồ nước trong veo thấy bình yên lạ.' },
+            { id: 'CB_K14', cat: 'Có Sân Yoga', pill: 'pill-living', icon: '🧘', cond: (c) => c.hasComm('yoga_deck'), text: 'Sàn gỗ tập Yoga buổi sáng yên tĩnh giúp tinh thần thư thái nhẹ nhàng.' },
+            { id: 'CB_K15', cat: 'Có Rạp Phim Đêm', pill: 'pill-neighbor', icon: '🎬', cond: (c) => c.hasComm('cinema_lawn'), text: 'Tối thứ bảy ra bãi cỏ xem chiếu phim màn ảnh rộng cùng cả xóm.' },
+            { id: 'CB_K16', cat: 'Có Hồ Bơi', pill: 'pill-living', icon: '🏊', cond: (c) => c.hasComm('rooftop_pool'), text: 'Khu trọ có cả hồ bơi xanh mát chẳng khác nào khu nghỉ dưỡng cao cấp.' },
+            { id: 'CB_K17', cat: 'Dỗ bé khóc nhè', pill: 'pill-neighbor', icon: '🍬', cond: (c) => true, text: 'Có bé con bị mẹ phạt đòn đang khóc nhè được các bạn chạy lại dỗ dành.' },
+            { id: 'CB_K18', cat: 'Hành lang gọn hơn', pill: 'pill-living', icon: '🛣️', cond: (c) => c.hasComm('playground'), text: 'Từ lúc có sân chơi riêng tụi nhỏ ra đó hết nên hành lang thông thoáng hẳn.' },
+            { id: 'CB_K19', cat: 'Nhiều tiện ích chung', pill: 'pill-living', icon: '🌟', cond: (c) => c.commCount >= 3, text: 'Khu sinh hoạt cộng đồng đa dạng giúp cư dân gắn kết như người một nhà.' },
+            { id: 'CB_K20', cat: 'Thiếu chỗ hóng mát', pill: 'pill-living', icon: '🪑', cond: (c) => c.commCount === 0, text: 'Chiều tối muốn ra ngoài ngồi ghế đá hóng gió mà chưa có khu công viên.' },
+            { id: 'CB_K21', cat: 'Tiếng cười trẻ thơ', pill: 'pill-neighbor', icon: '🎈', cond: (c) => true, text: 'Nhìn mấy đứa trẻ nô đùa ríu rít làm cả khu nhà tràn đầy sức sống.' },
+            { id: 'CB_K22', cat: 'Giao lưu bóng bàn', pill: 'pill-neighbor', icon: '🏅', cond: (c) => c.hasComm('pingpong'), text: 'Tối nay hẹn phòng bên cạnh làm vài ván bóng bàn phân thắng bại.' },
+            { id: 'CB_K23', cat: 'Tập thể dục sáng', pill: 'pill-living', icon: '☀️', cond: (c) => c.hasComm('outdoor_gym') && c.isDaytime, text: 'Sáng nào mình cũng ra khu máy tập xoay eo mười lăm phút trước khi đi làm.' },
+            { id: 'CB_K24', cat: 'Không gian xanh', pill: 'pill-living', icon: '🍃', cond: (c) => c.commCount >= 2, text: 'Nhiều mảng xanh và sân tập giúp đời sống tinh thần ở xóm trọ tăng cao.' },
+            { id: 'CB_K25', cat: 'Ban nhạc nhí', pill: 'pill-neighbor', icon: '🎵', cond: (c) => true, text: 'Một đứa đánh trống một đứa đàn piano hợp tấu nghe vui tai ghê.' },
+
+            // =========================================================================
+            // NHÓM 8 (25 CÂU): LỄ HỘI, AN NINH THÔNG MINH, MÔI TRƯỜNG & TÀI CHÍNH
+            // =========================================================================
+            { id: 'CB_E01', cat: 'Đèn lồng lễ hội', pill: 'pill-living', icon: '🏮', cond: (c) => Boolean(c.festivalDecorated), text: 'Cổng xóm trọ treo đèn lồng và chậu hoa lễ hội rực rỡ sắc xuân.' },
+            { id: 'CB_E02', cat: 'Chưa trang trí cổng', pill: 'pill-living', icon: '🎋', cond: (c) => !c.festivalDecorated, text: 'Dịp lễ sắp tới mà cổng xóm treo thêm đèn lồng đỏ thì đẹp lắm.' },
+            { id: 'CB_E03', cat: 'Có Camera AI', pill: 'pill-living', icon: '📹', cond: (c) => Boolean(c.sec.cctv), text: 'Hệ thống camera an ninh lắp khắp các góc hành lang chống trộm tuyệt đối.' },
+            { id: 'CB_E04', cat: 'Chưa lắp Camera', pill: 'pill-living', icon: '👀', cond: (c) => !c.sec.cctv, text: 'Hành lang chưa lắp camera giám sát nên tối về nhớ khóa cửa cẩn thận.' },
+            { id: 'CB_E05', cat: 'Khóa cổng vân tay', pill: 'pill-living', icon: '🔐', cond: (c) => Boolean(c.sec.smart_lock), text: 'Cổng chính dùng khóa vân tay thẻ từ nên kẻ lạ không thể lẻn vào.' },
+            { id: 'CB_E06', cat: 'Có Báo cháy sớm', pill: 'pill-living', icon: '🚨', cond: (c) => Boolean(c.sec.fire_alarm), text: 'Đầu báo khói tự động trên trần giúp mọi người an tâm phòng cháy.' },
+            { id: 'CB_E07', cat: 'Đạt chuẩn PCCC', pill: 'pill-living', icon: '🧯', cond: (c) => Boolean(c.sec.pccc_sys), text: 'Hệ thống vòi phun chữa cháy tự động đạt chuẩn an toàn cao nhất.' },
+            { id: 'CB_E08', cat: 'Môi trường sạch', pill: 'pill-living', icon: '🌿', cond: (c) => !c.activeDisaster, text: 'Không khí khu trọ hôm nay trong lành mát mẻ không chút ô nhiễm.' },
+            { id: 'CB_E09', cat: 'Đang gặp sự cố MT', pill: 'pill-crisis', icon: '🌧️', cond: (c) => Boolean(c.activeDisaster), text: 'Khu vực đang gặp thời tiết bất lợi mong chủ trọ sớm nâng cấp hạ tầng.' },
+            { id: 'CB_E10', cat: 'Đã chống ngập', pill: 'pill-living', icon: '🌊', cond: (c) => Boolean(c.env.flood), text: 'Cống thoát nước đã nâng cấp nên mưa lớn mấy sân trọ cũng không ngập.' },
+            { id: 'CB_E11', cat: 'Cách âm yên tĩnh', pill: 'pill-living', icon: '🔇', cond: (c) => Boolean(c.env.noise), text: 'Tường vách đã làm chống ồn nên đóng cửa lại là yên tĩnh tuyệt đối.' },
+            { id: 'CB_E12', cat: 'Mái mát chống nóng', pill: 'pill-living', icon: '☂️', cond: (c) => Boolean(c.env.heatwave), text: 'Hệ thống phun sương và mái cách nhiệt giúp mùa hè dịu mát hẳn.' },
+            { id: 'CB_E13', cat: 'Sắp tới mùng 5', pill: 'pill-job', icon: '🗓️', cond: (c) => c.day >= 1 && c.day <= 4, text: 'Sắp tới mùng năm đầu tháng rồi chuẩn bị tiền mặt đóng tiền nhà thôi.' },
+            { id: 'CB_E14', cat: 'Vừa đóng tiền nhà', pill: 'pill-job', icon: '💸', cond: (c) => c.day >= 5 && c.day <= 8, text: 'Đã thanh toán xong tiền phòng điện nước tháng này nhẹ cả người.' },
+            { id: 'CB_E15', cat: 'Quan hệ thân thiết', pill: 'pill-neighbor', icon: '❤️', cond: (c, n) => (n.relationship || 65) >= 80, text: 'Chủ trọ sống tình cảm hay hỏi thăm nên mình quý như người thân.' },
+            { id: 'CB_E16', cat: 'Hài lòng tuyệt đối', pill: 'pill-living', icon: '😍', cond: (c, n) => (n.happiness || 80) >= 90, text: 'Chất lượng sống ở xóm trọ này xứng đáng mười điểm không có chỗ chê.' },
+            { id: 'CB_E17', cat: 'Hơi kém vui', pill: 'pill-crisis', icon: '😕', cond: (c, n) => (n.happiness || 80) < 60, text: 'Dạo này sinh hoạt hơi bất tiện mong chủ nhà quan tâm cải thiện thêm.' },
+            { id: 'CB_E18', cat: 'Đất khu vực sốt', pill: 'pill-job', icon: '📈', cond: (c) => c.marketIndex >= 1.08, text: 'Nghe nói giá bất động sản quanh khu mình dạo này đang tăng mạnh.' },
+            { id: 'CB_E19', cat: 'Giá đất hạ nhiệt', pill: 'pill-job', icon: '📉', cond: (c) => c.marketIndex <= 0.94, text: 'Thị trường nhà đất vùng ven đang dịu xuống rất hợp để mua gom thêm.' },
+            { id: 'CB_E20', cat: 'Được giảm giá thuê', pill: 'pill-living', icon: '🎁', cond: (c, n) => (n.negotiatedRentDelta || 0) < 0, text: 'Được chủ trọ ưu đãi giảm giá phòng tháng này mừng rơi nước mắt.' },
+            { id: 'CB_E21', cat: 'Buổi sáng đi làm', pill: 'pill-job', icon: '☀️', cond: (c) => c.gameHour >= 6 && c.gameHour <= 9, text: 'Chào buổi sáng cả xóm mình tranh thủ đi làm sớm kẻo kẹt xe.' },
+            { id: 'CB_E22', cat: 'Giờ cơm trưa', pill: 'pill-living', icon: '🍱', cond: (c) => c.gameHour >= 11 && c.gameHour <= 13, text: 'Trưa rồi nghỉ tay ăn bữa cơm ngon nạp lại năng lượng làm việc.' },
+            { id: 'CB_E23', cat: 'Chiều tan tầm', pill: 'pill-living', icon: '🌇', cond: (c) => c.gameHour >= 17 && c.gameHour <= 19, text: 'Chiều tan ca về tới xóm trọ nghe tiếng cười nói là hết mệt mỏi.' },
+            { id: 'CB_E24', cat: 'Buổi tối thư giãn', pill: 'pill-living', icon: '🌙', cond: (c) => c.gameHour >= 20 && c.gameHour < 22, text: 'Tối mát mẻ ngồi trò chuyện với hàng xóm rồi chuẩn bị nghỉ ngơi.' },
+            { id: 'CB_E25', cat: 'Ngày nghỉ cuối tuần', pill: 'pill-living', icon: '🎉', cond: (c) => c.isWeekend, text: 'Cuối tuần thảnh thơi không phải đặt báo thức dậy sớm đi làm.' }
+        ];
+
         const GAME_CONFIG = {
             STORAGE_KEY: 'XOM_TRO_BA_DAO_V2_SAVE',
             CELL_SIZE: 4, // Kích thước chuẩn mỗi ô lưới
@@ -3655,48 +3935,48 @@
                 return { cat: 'Hàng xóm', tag: 'neighbor', text: '🛣️ Xóm trọ văn minh, cuối tuần rủ nhau uống cà phê rôm rả!' };
             }
 
-            cycleThought(neighbors, gameHour, isWeekend = false) {
-                const now = performance.now();
+            cycleThought(neighbors, gameHour, isWeekend = false, gameManager = null) {
+                const gm = gameManager || window.game;
                 if (this.room.crisis) {
                     const t = this.getLivingThought();
-                    this.currentBubbleHtml = `<span class="thought-pill pill-crisis">🚨 ${t.cat}</span>${t.text}`;
-                    this.bubbleVisible = true;
-                    this.bubbleHideAt = now + 5500;
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-crisis">🚨 ${t.cat}</span>${t.text}`);
                     return;
                 }
                 if (this.state === 'SLEEPING') {
-                    this.currentBubbleHtml = `<span class="thought-pill pill-living">💤 Ngủ đêm</span>Khò khò... Đang ngủ say giấc!`;
-                    this.bubbleVisible = true;
-                    this.bubbleHideAt = now + 5500;
-                    this.nextThoughtAt = now + 5500 + 22000;
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-living">💤 Ngủ đêm</span>Khò khò đang ngủ say giấc tới sáng!`);
                     return;
+                }
+
+                // Ưu tiên lấy câu chuyện từ kho 200 câu bong bóng ngữ cảnh theo đúng những gì người chơi đang có
+                if (gm && typeof gm.pickContextualBubbleForNpc === 'function') {
+                    const picked = gm.pickContextualBubbleForNpc(this, gameHour, isWeekend);
+                    if (picked) {
+                        this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill ${picked.pill}">${picked.icon} ${picked.cat}</span>${picked.text}`);
+                        return;
+                    }
                 }
 
                 if (this.thoughtCategory === 'living') {
                     this.thoughtCategory = 'job';
                     const t = this.getCareerThought(gameHour, isWeekend);
-                    this.currentBubbleHtml = `<span class="thought-pill pill-job">💼 ${t.cat}</span>${t.text}`;
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-job">💼 ${t.cat}</span>${t.text}`);
                 } else if (this.thoughtCategory === 'job') {
                     this.thoughtCategory = 'neighbor';
                     const t = this.getNeighborThought(neighbors);
-                    this.currentBubbleHtml = `<span class="thought-pill pill-neighbor">👥 ${t.cat}</span>${t.text}`;
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-neighbor">👥 ${t.cat}</span>${t.text}`);
                 } else {
                     this.thoughtCategory = 'living';
                     const t = this.getLivingThought();
-                    this.currentBubbleHtml = `<span class="thought-pill pill-living">🏠 ${t.cat}</span>${t.text}`;
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-living">🏠 ${t.cat}</span>${t.text}`);
                 }
-
-                this.bubbleVisible = true;
-                this.bubbleHideAt = now + 5500;
-                this.nextThoughtAt = now + 5500 + 18000 + Math.random() * 10000;
             }
 
             triggerThought(neighbors, gameHour, isWeekend = false) {
-                this.cycleThought(neighbors, gameHour, isWeekend);
-                const now = performance.now();
-                this.bubbleVisible = true;
-                this.bubbleHideAt = now + 5500;
-                this.nextThoughtAt = now + 5500 + 18000 + Math.random() * 10000;
+                const gm = window.game;
+                this.cycleThought(neighbors, gameHour, isWeekend, gm);
+                if (gm && typeof gm.activateSingleBubbleFor === 'function') {
+                    gm.activateSingleBubbleFor({ type: 'room', room: this.room }, this.currentBubbleHtml);
+                }
             }
 
             update(timeScale, gameHour, gateWorldPos, neighbors = [], shopInstance = null, gameManager = null) {
@@ -3704,24 +3984,11 @@
                 const time = Date.now() * 0.015;
                 const isWeekend = gameManager ? gameManager.isWeekend() : false;
 
-                // Quản lý thời gian hiển thị bong bóng suy nghĩ (tồn tại cố định 5.5 giây)
+                // Bong bóng chat được điều phối tuần tự từng cái một (mỗi cái 6 giây) bởi GameManager
                 const nowMs = performance.now();
                 if (this.room.crisis) {
-                    this.bubbleVisible = true;
-                    if (!this.currentBubbleHtml || !this.currentBubbleHtml.includes('Khẩn cấp')) {
-                        const t = this.getLivingThought();
-                        this.currentBubbleHtml = `<span class="thought-pill pill-crisis">🚨 ${t.cat}</span>${t.text}`;
-                    }
-                } else {
-                    if (this.bubbleVisible) {
-                        if (nowMs >= this.bubbleHideAt) {
-                            this.bubbleVisible = false;
-                        }
-                    } else {
-                        if (nowMs >= this.nextThoughtAt) {
-                            this.cycleThought(neighbors, gameHour, isWeekend);
-                        }
-                    }
+                    const t = this.getLivingThought();
+                    this.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-crisis">🚨 ${t.cat}</span>${t.text}`);
                 }
 
                 // YÊU CẦU 7: Buổi tối (22:00 - 05:00) tất cả NPC về giường đi ngủ; Buổi sáng (từ 05:00) thức dậy hoạt động
@@ -4025,9 +4292,9 @@
                 this.targetPos = new THREE.Vector3(startSpot.x, 0, startSpot.z);
                 this.scene.add(this.mesh);
 
-                this.bubbleVisible = true;
-                this.bubbleHideAt = performance.now() + 8000;
-                this.nextBubbleAt = performance.now() + 1500;
+                this.bubbleVisible = false;
+                this.bubbleHideAt = 0;
+                this.nextBubbleAt = 0;
                 this.currentBubbleHtml = '';
                 this.refreshActivityBubble(false);
             }
@@ -4168,41 +4435,41 @@
 
             refreshActivityBubble(justInvited = false, friendName = 'bạn') {
                 const locBadge = this.isPlayingAtPlayground ? '🎠 Sân Chơi' : '🛣️ Hành Lang';
+                let raw = '';
                 if (justInvited) {
-                    this.currentBubbleHtml = `<span class="thought-pill pill-neighbor">🧒 Rủ bạn (${locBadge})</span>"Ê ${friendName} ơi! Qua ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} chơi chung với tụi mình đi!"`;
-                    return;
-                }
-                if (this.activity === 'DRUMS') {
+                    raw = `<span class="thought-pill pill-neighbor">🧒 Rủ bạn (${locBadge})</span>Ê ${friendName} ơi qua ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} chơi chung với tụi mình đi!`;
+                } else if (this.activity === 'DRUMS') {
                     const lines = [
-                        `Tùng! Tùng! Tùng! ${this.name} đang đánh trống rộn ràng ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
-                        `🥁 Tập đánh trống bài nhạc thiếu nhi vui quá các bạn ơi!`,
-                        `🥁 Đánh trống cổ vũ cả xóm trọ náo nhiệt lên nào!`
+                        `Tùng tùng tùng ${this.name} đang đánh trống rộn ràng ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
+                        `Tập đánh trống bài nhạc thiếu nhi vui quá các bạn ơi!`,
+                        `Đánh trống cổ vũ cả xóm trọ náo nhiệt lên nào!`
                     ];
-                    this.currentBubbleHtml = `<span class="thought-pill pill-job">🥁 Đánh trống (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                    raw = `<span class="thought-pill pill-job">🥁 Đánh trống (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
                 } else if (this.activity === 'PIANO') {
                     const lines = [
-                        `🎹 Đồ Rê Mi Pha Sol~ ${this.name} đang đàn piano cho các bạn nghe ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
-                        `🎹 Tiếng đàn piano ngân vang khắp xóm trọ bình yên!`,
-                        `🎹 Tập đàn piano chăm chỉ để mai mốt thành nghệ sĩ tí hon!`
+                        `Đồ Rê Mi Pha Sol ${this.name} đang đàn piano ở ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'}!`,
+                        `Tiếng đàn piano ngân vang khắp xóm trọ bình yên!`,
+                        `Tập đàn piano chăm chỉ để thành nghệ sĩ tí hon!`
                     ];
-                    this.currentBubbleHtml = `<span class="thought-pill pill-living">🎹 Đàn Piano (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                    raw = `<span class="thought-pill pill-living">🎹 Đàn Piano (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
                 } else if (this.activity === 'CRYING') {
                     const lines = [
-                        `😭 Hu hu... Hôm nay em nghịch làm vỡ đồ bị ba mẹ đánh đòn đau quá hu hu!`,
-                        `😭 Hu hu bị mẹ mắng đánh vào mông rồi, có bạn nào ra chơi dỗ em với!`,
-                        `😭 Oa oa... Bị ba phạt đòn đau quá, đứng ở ${this.isPlayingAtPlayground ? 'sân chơi' : 'hành lang'} khóc nhè hu hu!`
+                        `Hu hu hôm nay em nghịch bị ba mẹ đánh đòn đau quá!`,
+                        `Hu hu bị mẹ mắng đánh đòn rồi ai ra dỗ em với!`,
+                        `Oa oa bị ba phạt đòn đứng ở ${this.isPlayingAtPlayground ? 'sân chơi' : 'hành lang'} khóc nhè!`
                     ];
-                    this.currentBubbleHtml = `<span class="thought-pill pill-crisis">😭 Khóc nhè (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                    raw = `<span class="thought-pill pill-crisis">😭 Khóc nhè (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
                 } else {
                     const others = (this.gm && this.gm.childNpcs) ? this.gm.childNpcs.filter(c => c.id !== this.id) : [];
                     const buddy = others.length > 0 ? others[Math.floor(Math.random() * others.length)].name : 'các bạn';
                     const lines = [
-                        `🧒 "Ê ${buddy} ơi! Ra ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} tụ tập chơi chung đi!"`,
-                        `🤸‍♀️ Mấy đứa nhỏ trong khu trọ rủ nhau vừa nghe đàn vừa chơi đùa vui quá!`,
-                        `👦 "Nín khóc đi bạn ơi, lại đây nghe đánh trống với đàn piano cùng tụi mình nè!"`
+                        `Ê ${buddy} ơi ra ${this.isPlayingAtPlayground ? 'Khu Vui Chơi' : 'hành lang'} tụ tập chơi chung đi!`,
+                        `Mấy đứa nhỏ trong khu trọ rủ nhau chơi đùa vui quá!`,
+                        `Nín khóc đi bạn ơi lại đây nghe trống với đàn piano nè!`
                     ];
-                    this.currentBubbleHtml = `<span class="thought-pill pill-neighbor">🧒 Trò chuyện (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
+                    raw = `<span class="thought-pill pill-neighbor">🧒 Trò chuyện (${locBadge})</span>${lines[Math.floor(Math.random() * lines.length)]}`;
                 }
+                this.currentBubbleHtml = formatBubbleFiveWordsPerLine(raw);
             }
 
             update(deltaSec, timeScale, gameHour) {
@@ -4307,11 +4574,8 @@
                     if (this.activity === 'INVITING' && peers.length > 0) {
                         const cryingPeer = peers.find(p => p.activity === 'CRYING');
                         const targetPeer = cryingPeer || peers[Math.floor(Math.random() * peers.length)];
-                        const dest = this.pickPlayDestination(false);
                         this.targetPos.set(targetPeer.mesh.position.x + (Math.random() - 0.5) * 0.7, 0, targetPeer.mesh.position.z + (Math.random() - 0.5) * 0.7);
                         this.refreshActivityBubble(true, targetPeer.name);
-                        this.bubbleVisible = true;
-                        this.bubbleHideAt = nowMs + 6000;
 
                         // Nếu bạn đang khóc vì bị ba mẹ đánh, được rủ đi chơi sẽ nín khóc và vui vẻ đi chơi chung!
                         if (cryingPeer) {
@@ -4319,9 +4583,7 @@
                                 if (cryingPeer && cryingPeer.activity === 'CRYING') {
                                     cryingPeer.activity = 'INVITING';
                                     cryingPeer.syncPropsVisibility();
-                                    cryingPeer.currentBubbleHtml = `<span class="thought-pill pill-living">😊 Nín khóc</span>"Cảm ơn ${this.name} đã dỗ mình nha! Mình hết khóc rồi, đi chơi chung thôi!"`;
-                                    cryingPeer.bubbleVisible = true;
-                                    cryingPeer.bubbleHideAt = performance.now() + 5500;
+                                    cryingPeer.currentBubbleHtml = formatBubbleFiveWordsPerLine(`<span class="thought-pill pill-living">😊 Nín khóc</span>Cảm ơn ${this.name} đã dỗ mình nha, hết khóc rồi đi chơi thôi!`);
                                 }
                             }, 1800);
                         }
@@ -4329,19 +4591,8 @@
                         const dest = this.pickPlayDestination(false);
                         this.targetPos.set(dest.x, 0, dest.z);
                         this.refreshActivityBubble(false);
-                        this.bubbleVisible = true;
-                        this.bubbleHideAt = nowMs + 6000;
                     }
                     this.syncPropsVisibility();
-                }
-
-                if (this.bubbleVisible && nowMs >= this.bubbleHideAt) {
-                    this.bubbleVisible = false;
-                    this.nextBubbleAt = nowMs + 4500 + Math.random() * 5000;
-                } else if (!this.bubbleVisible && nowMs >= this.nextBubbleAt) {
-                    this.refreshActivityBubble(false);
-                    this.bubbleVisible = true;
-                    this.bubbleHideAt = nowMs + 5800;
                 }
             }
 
@@ -7006,11 +7257,8 @@
                 shop.totalEarned += bill;
                 shop.bounceAnim();
 
-                const nowMs = performance.now();
-                npc.currentBubbleHtml = `<span class="thought-pill pill-living">🛒 Mua sắm</span>Vừa mua ${goodCfg.name} hết ${formatVND(bill)}đ!`;
-                npc.bubbleVisible = true;
-                npc.bubbleHideAt = nowMs + 5500;
-                npc.nextThoughtAt = nowMs + 5500 + 18000;
+                const rawMsg = `<span class="thought-pill pill-living">🛒 Mua sắm</span>Vừa mua ${goodCfg.name} hết ${formatVND(bill)}đ!`;
+                this.activateSingleBubbleFor({ type: 'room', room: npc.room }, rawMsg);
 
                 this.spawnFloatingText(shop.x, 3.3, shop.z, `+${formatVND(bill)}đ 🛒`, '#43a047');
                 this.updateHUD();
@@ -7174,10 +7422,8 @@
                     parking: 'Gửi xe an toàn tại Bãi giữ xe thông minh của xóm trọ!',
                     gym: 'Tập thể hình rèn luyện sức khỏe tại Phòng tập Gym xóm trọ!'
                 };
-                npc.currentBubbleHtml = `<span class="thought-pill pill-living">${biz.typeConfig.icon || '🏪'} Dịch vụ</span>${actMap[biz.typeId] || 'Sử dụng dịch vụ tiện ích khu trọ!'}`;
-                npc.bubbleVisible = true;
-                npc.bubbleHideAt = performance.now() + 5500;
-                npc.nextThoughtAt = performance.now() + 5500 + 18000;
+                const rawMsg = `<span class="thought-pill pill-living">${biz.typeConfig.icon || '🏪'} Dịch vụ</span>${actMap[biz.typeId] || 'Sử dụng dịch vụ tiện ích khu trọ!'}`;
+                this.activateSingleBubbleFor({ type: 'room', room: npc.room }, rawMsg);
                 this.updateHUD();
             }
 
@@ -8278,9 +8524,8 @@
                             this.showToast(`🚫 VI PHẠM 3 LẦN — THANH LÝ & TRỤC XUẤT: Khách ${offenderName} (${room.code}) bị đuổi khỏi xóm trọ, MẤT TOÀN BỘ TIỀN CỌC (${formatVND(keptDeposit)}đ) và nộp phạt +${formatVND(penaltyFine)}đ!`);
                         } else {
                             room.tenant.happiness = Math.max(25, room.tenant.happiness - 5);
-                            room.tenant.currentBubbleHtml = `<span class="thought-pill pill-neighbor">🙇 Xin lỗi</span>Đã bị nhắc lần ${room.warnings}/3, tôi xin giữ trật tự ngay ạ!`;
-                            room.tenant.bubbleVisible = true;
-                            room.tenant.bubbleHideAt = performance.now() + 5500;
+                            const rawMsg = `<span class="thought-pill pill-neighbor">🙇 Xin lỗi</span>Đã bị nhắc lần ${room.warnings}/3 tôi xin giữ trật tự ngay ạ!`;
+                            this.activateSingleBubbleFor({ type: 'room', room: room }, rawMsg);
 
                             this.addXP(10);
                             this.rebuildLabels();
@@ -9003,9 +9248,209 @@
                 }
             }
 
+            /**
+             * YÊU CẦU 4: TẠO NGỮ CẢNH HIỆN TẠI CỦA NGƯỜI CHƠI & CHỌN CÂU THOẠI TRONG 200 CÂU BONG BÓNG CHAT
+             */
+            buildLiveContextForBubbles(gameHour = 12, isWeekend = false) {
+                const rooms = Array.from(this.state.roomMap.values());
+                const shops = Array.from(this.state.shopMap.values());
+                const bizs = this.state.bizMap ? Array.from(this.state.bizMap.values()) : [];
+                const comms = this.state.communityMap ? Array.from(this.state.communityMap.values()) : [];
+                const cors = Array.from(this.state.corridorMap.values());
+
+                const firstShop = shops.length > 0 ? shops[0] : null;
+                const shopGoodsMap = firstShop && firstShop.unlockedGoods ? firstShop.unlockedGoods : {};
+                const shopGoodsCount = Object.values(shopGoodsMap).filter(Boolean).length;
+
+                const bizSet = new Set(bizs.map(b => b.typeId));
+                const commSet = new Set(comms.map(cm => cm.typeId));
+                const corSet = new Set(cors.map(c => c.typeId));
+                const staffObj = this.state.hiredStaff || {};
+                const staffCount = Object.values(staffObj).filter(Boolean).length;
+
+                return {
+                    level: this.state.level || 1,
+                    day: this.state.day || 1,
+                    gameHour: gameHour,
+                    isDaytime: (gameHour >= 5 && gameHour < 17),
+                    isWeekend: isWeekend,
+                    roomCount: rooms.length,
+                    emptyRooms: rooms.filter(r => !r.tenant).length,
+                    unregisteredRooms: rooms.filter(r => !r.isRegistered).length,
+                    totalResidents: rooms.reduce((s, r) => s + (r.tenant ? (r.tenant.headcount || 1) : 0), 0),
+                    corridorCount: cors.length,
+                    hasCorType: (tId) => corSet.has(tId),
+                    unlockedFloors: this.state.unlockedFloors || 1,
+                    unlockedTilesF1: this.state.getTotalUnlockedTilesCount(1),
+                    shopCount: shops.length,
+                    hasShopGood: (gId) => Boolean(shopGoodsMap[gId]),
+                    shopGoodsCount: shopGoodsCount,
+                    bizCount: bizs.length,
+                    hasBiz: (bId) => bizSet.has(bId),
+                    commCount: comms.length,
+                    hasComm: (cId) => commSet.has(cId),
+                    staff: staffObj,
+                    staffCount: staffCount,
+                    sec: this.state.smartSecurity || {},
+                    env: this.state.envProtection || {},
+                    activeDisaster: this.state.activeDisaster,
+                    festivalDecorated: Boolean(this.state.festivalDecorated),
+                    marketIndex: this.state.realEstate ? (this.state.realEstate.marketIndex || 1.0) : 1.0,
+                    getFurnCount: (rm) => rm && rm.upgrades ? Object.values(rm.upgrades).filter(Boolean).length : 0
+                };
+            }
+
+            pickContextualBubbleForNpc(npc, gameHour = 12, isWeekend = false) {
+                if (!npc || !npc.room) return null;
+                const ctx = this.buildLiveContextForBubbles(gameHour, isWeekend);
+                const matching = CONTEXTUAL_BUBBLE_DB.filter(item => {
+                    try {
+                        return Boolean(item.cond(ctx, npc));
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                if (matching.length === 0) return null;
+
+                if (!Array.isArray(this.recentContextualBubbleIds)) {
+                    this.recentContextualBubbleIds = [];
+                }
+                const recentSet = new Set(this.recentContextualBubbleIds);
+                let pool = matching.filter(item => !recentSet.has(item.id));
+                if (pool.length === 0) {
+                    this.recentContextualBubbleIds = this.recentContextualBubbleIds.slice(-15);
+                    const shorterSet = new Set(this.recentContextualBubbleIds);
+                    pool = matching.filter(item => !shorterSet.has(item.id));
+                    if (pool.length === 0) pool = matching;
+                }
+
+                const chosen = pool[Math.floor(Math.random() * pool.length)];
+                this.recentContextualBubbleIds.push(chosen.id);
+                if (this.recentContextualBubbleIds.length > 45) {
+                    this.recentContextualBubbleIds.shift();
+                }
+                return chosen;
+            }
+
+            /**
+             * YÊU CẦU 2 & 3: BỘ ĐIỀU PHỐI HIỂN THỊ BONG BÓNG TUẦN TỰ TỪNG CÁI MỘT (MỖI CÁI TỒN TẠI ĐÚNG 6 GIÂY)
+             * - Tại mọi thời điểm chỉ có DUY NHẤT 1 bong bóng chat được hiện trên màn hình.
+             * - Cái hiện tại hiển thị đủ 6 giây (6000ms) và tắt hẳn rồi mới đến lượt cái tiếp theo.
+             */
+            activateSingleBubbleFor(targetDesc, formattedOrRawHtml) {
+                const nowMs = performance.now();
+                const formatted = formatBubbleFiveWordsPerLine(formattedOrRawHtml);
+
+                // Tắt toàn bộ cờ bubbleVisible cũ để không bao giờ hiện trùng 2 cái
+                this.state.roomMap.forEach(r => {
+                    if (r.tenant) r.tenant.bubbleVisible = false;
+                });
+                if (this.childNpcs) {
+                    this.childNpcs.forEach(c => { c.bubbleVisible = false; });
+                }
+
+                if (targetDesc.type === 'room' && targetDesc.room && targetDesc.room.tenant) {
+                    targetDesc.room.tenant.currentBubbleHtml = formatted;
+                    targetDesc.room.tenant.bubbleVisible = true;
+                    targetDesc.room.tenant.bubbleHideAt = nowMs + BUBBLE_DURATION_MS;
+                } else if (targetDesc.type === 'child' && targetDesc.child) {
+                    targetDesc.child.currentBubbleHtml = formatted;
+                    targetDesc.child.bubbleVisible = true;
+                    targetDesc.child.bubbleHideAt = nowMs + BUBBLE_DURATION_MS;
+                }
+
+                this.activeSingleBubble = {
+                    type: targetDesc.type,
+                    room: targetDesc.room || null,
+                    child: targetDesc.child || null,
+                    hideAt: nowMs + BUBBLE_DURATION_MS
+                };
+                this.nextSequentialBubbleAt = nowMs + BUBBLE_DURATION_MS + 450;
+            }
+
+            updateSequentialBubbleQueue() {
+                const nowMs = performance.now();
+                const curF = this.currentFloor || 1;
+                const dayFraction = this.state.dayProgressSeconds / GAME_CONFIG.REAL_SECONDS_PER_DAY;
+                const gameHour = Math.floor((dayFraction * 1440) / 60);
+                const isWknd = this.isWeekend();
+
+                // Nếu đang có 1 bong bóng đang hiển thị và chưa hết 6 giây:
+                if (this.activeSingleBubble) {
+                    if (nowMs < this.activeSingleBubble.hideAt) {
+                        const act = this.activeSingleBubble;
+                        const stillValid = (act.type === 'room' && act.room && (act.room.floor || 1) === curF && act.room.tenant && act.room.tenant.mesh && act.room.tenant.mesh.visible) ||
+                                           (act.type === 'child' && act.child && curF === 1 && act.child.mesh && act.child.mesh.visible);
+                        if (stillValid) {
+                            return; // Giữ nguyên bong bóng hiện tại cho đủ 6 giây
+                        }
+                    }
+                    // Đã hết 6 giây -> Tắt bong bóng hiện tại trước khi chuyển sang cái tiếp theo
+                    if (this.activeSingleBubble.room && this.activeSingleBubble.room.tenant) {
+                        this.activeSingleBubble.room.tenant.bubbleVisible = false;
+                    }
+                    if (this.activeSingleBubble.child) {
+                        this.activeSingleBubble.child.bubbleVisible = false;
+                    }
+                    this.activeSingleBubble = null;
+                    this.nextSequentialBubbleAt = Math.max(this.nextSequentialBubbleAt || 0, nowMs + 400);
+                    return;
+                }
+
+                if (nowMs < (this.nextSequentialBubbleAt || 0)) {
+                    return;
+                }
+
+                // Xây dựng danh sách ứng viên hiển thị bong bóng trên tầng hiện tại
+                const candidates = [];
+                // Ưu tiên phòng đang gặp sự cố khẩn cấp nếu có
+                const crisisRooms = [];
+                this.state.roomMap.forEach(r => {
+                    if ((r.floor || 1) === curF && r.tenant && r.tenant.mesh && r.tenant.mesh.visible) {
+                        if (r.crisis) crisisRooms.push({ type: 'room', room: r });
+                        else candidates.push({ type: 'room', room: r });
+                    }
+                });
+                if (curF === 1 && this.childNpcs) {
+                    this.childNpcs.forEach(c => {
+                        if (c.mesh && c.mesh.visible) {
+                            candidates.push({ type: 'child', child: c });
+                        }
+                    });
+                }
+
+                const pool = crisisRooms.length > 0 ? crisisRooms : candidates;
+                if (pool.length === 0) return;
+
+                if (typeof this.sequentialBubbleCursor !== 'number') {
+                    this.sequentialBubbleCursor = 0;
+                }
+                const picked = pool[this.sequentialBubbleCursor % pool.length];
+                this.sequentialBubbleCursor = (this.sequentialBubbleCursor + 1) % Math.max(1, pool.length);
+
+                if (picked.type === 'room') {
+                    const rm = picked.room;
+                    const neighbors = this.state.getNeighbors(rm.gx, rm.gz, rm.floor || 1);
+                    rm.tenant.cycleThought(neighbors, gameHour, isWknd, this);
+                    this.activateSingleBubbleFor(picked, rm.tenant.currentBubbleHtml);
+                } else if (picked.type === 'child') {
+                    const ch = picked.child;
+                    ch.refreshActivityBubble(false);
+                    this.activateSingleBubbleFor(picked, ch.currentBubbleHtml);
+                }
+            }
+
+            clampBubbleScreenX(rawX) {
+                const margin = Math.min(105, Math.floor(window.innerWidth * 0.42));
+                return Math.max(margin, Math.min(window.innerWidth - margin, rawX));
+            }
+
             syncLabels() {
+                this.updateSequentialBubbleQueue();
+
                 const vec = new THREE.Vector3();
                 const curF = this.currentFloor || 1;
+                const act = this.activeSingleBubble;
 
                 // Chiếu Cổng hoặc Cầu Thang/Thang Máy thông tầng
                 if (this.gateTagNode) {
@@ -9055,20 +9500,23 @@
                     });
                 }
 
-                // Chiếu Bong bóng của các NPC Đứa Trẻ
+                // Chiếu Bong bóng của các NPC Đứa Trẻ (Chỉ hiển thị duy nhất đứa trẻ đang tới lượt trong activeSingleBubble)
                 if (this.childLabelNodes) {
                     this.childLabelNodes.forEach(({ child, cBubble }) => {
-                        const showC = curF === 1 && child.mesh && child.mesh.visible && child.bubbleVisible;
+                        const isThisActiveChild = Boolean(act && act.type === 'child' && act.child === child);
+                        const showC = isThisActiveChild && curF === 1 && child.mesh && child.mesh.visible;
                         if (showC) {
                             cBubble.style.display = 'block';
                             cBubble.style.opacity = '1';
-                            if (cBubble.dataset.lastHtml !== child.currentBubbleHtml) {
-                                cBubble.innerHTML = child.currentBubbleHtml;
-                                cBubble.dataset.lastHtml = child.currentBubbleHtml;
+                            const formattedHtml = formatBubbleFiveWordsPerLine(child.currentBubbleHtml);
+                            if (cBubble.dataset.lastHtml !== formattedHtml) {
+                                cBubble.innerHTML = formattedHtml;
+                                cBubble.dataset.lastHtml = formattedHtml;
                             }
-                            vec.set(child.mesh.position.x, child.mesh.position.y + 1.35, child.mesh.position.z);
+                            vec.set(child.mesh.position.x, child.mesh.position.y + 1.45, child.mesh.position.z);
                             vec.project(this.camera);
-                            cBubble.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
+                            const sx = this.clampBubbleScreenX((vec.x * 0.5 + 0.5) * window.innerWidth);
+                            cBubble.style.left = `${sx}px`;
                             cBubble.style.top = `${(vec.y * -0.5 + 0.5) * window.innerHeight}px`;
                         } else {
                             cBubble.style.opacity = '0';
@@ -9096,20 +9544,22 @@
                         rTag.innerHTML = `<span>🏠 ${room.code}</span><span class="badge-crisis">⚠️ ${room.crisis.name} (${Math.ceil(room.crisis.timeLeft)}s)</span>`;
                     }
 
-                    const shouldShowBubble = room.tenant && room.tenant.mesh && room.tenant.mesh.visible && 
-                                             (Boolean(room.crisis) || Boolean(room.tenant.bubbleVisible));
+                    // Chỉ hiển thị duy nhất bong bóng của phòng đang tới lượt trong activeSingleBubble
+                    const isThisActiveRoom = Boolean(act && act.type === 'room' && act.room === room);
+                    const shouldShowBubble = isThisActiveRoom && room.tenant && room.tenant.mesh && room.tenant.mesh.visible;
 
                     if (shouldShowBubble) {
                         bTag.style.display = 'block';
                         bTag.style.opacity = '1';
-                        const targetHtml = room.tenant.currentBubbleHtml || room.tenant.emoji;
+                        const targetHtml = formatBubbleFiveWordsPerLine(room.tenant.currentBubbleHtml || room.tenant.emoji);
                         if (bTag.dataset.lastHtml !== targetHtml) {
                             bTag.innerHTML = targetHtml;
                             bTag.dataset.lastHtml = targetHtml;
                         }
-                        vec.set(room.tenant.mesh.position.x, room.tenant.mesh.position.y + 1.7, room.tenant.mesh.position.z);
+                        vec.set(room.tenant.mesh.position.x, room.tenant.mesh.position.y + 1.75, room.tenant.mesh.position.z);
                         vec.project(this.camera);
-                        bTag.style.left = `${(vec.x * 0.5 + 0.5) * window.innerWidth}px`;
+                        const sx = this.clampBubbleScreenX((vec.x * 0.5 + 0.5) * window.innerWidth);
+                        bTag.style.left = `${sx}px`;
                         bTag.style.top = `${(vec.y * -0.5 + 0.5) * window.innerHeight}px`;
                     } else {
                         bTag.style.opacity = '0';
@@ -10955,9 +11405,8 @@
 
                 t.chatHistory.push({ sender: 'owner', text: ownerMsg });
                 t.chatHistory.push({ sender: 'npc', text: npcReply });
-                t.currentBubbleHtml = `<span class="thought-pill pill-living">💬 Trò chuyện</span>${npcReply.slice(0, 48)}...`;
-                t.bubbleVisible = true;
-                t.bubbleHideAt = performance.now() + 5500;
+                const rawMsg = `<span class="thought-pill pill-living">💬 Trò chuyện</span>${npcReply.slice(0, 48)}...`;
+                this.activateSingleBubbleFor({ type: 'room', room: room }, rawMsg);
 
                 this.openNpcInteractionModal(room);
                 this.updateHUD();
