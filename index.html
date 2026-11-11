@@ -2444,8 +2444,72 @@
                 { level: 30, title: 'Huyền Thoại Đế Chế Trọ',  xpReq: 22000, unlockText: 'Mở: [Dinh Thự Hoàng Gia Sky Villa] & Đặc quyền +35% Tổng Thu Nhập Toàn Khu!' }
             ],
 
-            // 11 MÔ HÌNH KINH DOANH MỞ THEO CẤP ĐỘ (XÂY KIẾN TRÚC KINH DOANH MỚI CHO LƯỢNG EXP RẤT CAO)
+            // DANH MỤC 4 GIỐNG THÚ CƯNG 3D SỐNG ĐỘNG (CHÓ CORGI, CHÓ HUSKY, MÈO TAM THỂ, MÈO CAM)
+            PET_BREEDS: {
+                corgi: {
+                    id: 'corgi',
+                    kind: 'DOG',
+                    icon: '🐶',
+                    name: 'Chó Corgi Chân Ngắn 🐶',
+                    bodyColor: '#f57c00',
+                    secondaryColor: '#ffffff',
+                    earColor: '#e65100',
+                    adoptCost: 800000,
+                    desc: 'Chó Corgi mông tròn đáng yêu, rất quấn chủ và sủa báo động khi có kẻ gian ban đêm.'
+                },
+                husky: {
+                    id: 'husky',
+                    kind: 'DOG',
+                    icon: '🐺',
+                    name: 'Chó Husky Ngáo Tuyết 🐺',
+                    bodyColor: '#455a64',
+                    secondaryColor: '#eceff1',
+                    earColor: '#263238',
+                    adoptCost: 1000000,
+                    desc: 'Chó Husky năng động, thích chạy ra Khu vui chơi đùa giỡn với trẻ em và canh cổng ban đêm.'
+                },
+                calico_cat: {
+                    id: 'calico_cat',
+                    kind: 'CAT',
+                    icon: '🐱',
+                    name: 'Mèo Tam Thể Đáng Yêu 🐱',
+                    bodyColor: '#fff8e1',
+                    secondaryColor: '#ff7043',
+                    earColor: '#3e2723',
+                    adoptCost: 700000,
+                    desc: 'Mèo Tam Thể nhanh nhẹn, chuyên bắt chuột bảo vệ Tiệm tạp hóa và Quán ăn khỏi hư hại.'
+                },
+                orange_cat: {
+                    id: 'orange_cat',
+                    kind: 'CAT',
+                    icon: '🐈',
+                    name: 'Mèo Cam Ú Nu 🐈',
+                    bodyColor: '#ffa726',
+                    secondaryColor: '#fff3e0',
+                    earColor: '#ef6c00',
+                    adoptCost: 750000,
+                    desc: 'Mèo Cam thân thiện, thích nằm sưởi nắng và tuần tra đuổi chuột quanh kho hàng tạp hóa.'
+                }
+            },
+
+            // 12 MÔ HÌNH KINH DOANH MỞ THEO CẤP ĐỘ (BAO GỒM CỬA HÀNG CHĂM SÓC & MUA BÁN THÚ CƯNG)
             BIZ_TYPES: {
+                pet_shop: {
+                    id: 'pet_shop',
+                    icon: '🐾',
+                    name: 'Cửa Hàng Chăm Sóc & Mua Bán Thú Cưng 🐾',
+                    cost: 14500000,
+                    reqLevel: 2,
+                    xpGain: 125,
+                    leaseMonthlyRent: 4200000,
+                    selfProfitPerPerson: 52000,
+                    roofColor: '#ff7043',
+                    wallColor: '#fff3e0',
+                    specialUpgradeName: 'Phòng Spa Tắm Gội & Khách Sạn Thú Cưng 🐶🐱',
+                    specialUpgradeCost: 2600000,
+                    specialBonus: 0.40,
+                    desc: 'Mở ở Cấp 2: Mua bán, nhận nuôi và chăm sóc Chó Corgi, Husky, Mèo tam thể, Mèo cam cho cư dân xóm trọ!'
+                },
                 eatery: {
                     id: 'eatery',
                     icon: '🍜',
@@ -2694,6 +2758,7 @@
             // 9 KHÔNG GIAN CỘNG ĐỒNG 3D MỞ KHÓA THEO CẤP ĐỘ (XÂY KIẾN TRÚC CỘNG ĐỒNG CHO LƯỢNG EXP CAO)
             COMMUNITY_TYPES: {
                 playground:     { id: 'playground',     icon: '🎠', name: 'Sân Chơi Chung Khu Trọ 🎠',        cost: 3500000,  reqLevel: 1,  xpGain: 80,  happyBonus: 6,  floorColor: '#fff9c4', borderColor: '#fbc02d', desc: 'Mở ở Cấp 1: Sân sinh hoạt chung có ghế đá, cầu trượt cho cư dân giao lưu.' },
+                pet_park:       { id: 'pet_park',       icon: '🐕', name: 'Bãi Cỏ Thú Cưng (Pet Park) 🐕',    cost: 3200000,  reqLevel: 2,  xpGain: 85,  happyBonus: 8,  floorColor: '#c8e6c9', borderColor: '#43a047', desc: 'Mở ở Cấp 2: Bãi cỏ riêng có cầu chui, nhà gỗ và khay cát vệ sinh giúp Chó Mèo không làm bẩn hành lang hay sủa đêm!' },
                 badminton:      { id: 'badminton',      icon: '🏸', name: 'Sân Cầu Lông Ngoài Trời 🏸',       cost: 5000000,  reqLevel: 4,  xpGain: 105, happyBonus: 9,  floorColor: '#81c784', borderColor: '#2e7d32', desc: 'Mở ở Cấp 4: Sân kẻ vạch tiêu chuẩn kèm lưới cầu lông để NPC rèn luyện.' },
                 garden:         { id: 'garden',         icon: '🌳', name: 'Vườn Cây Cảnh & Tiểu Cảnh 🌳',      cost: 3800000,  reqLevel: 6,  xpGain: 90,  happyBonus: 7,  floorColor: '#a5d6a7', borderColor: '#388e3c', desc: 'Mở ở Cấp 6: Vườn cây xanh mát lọc không khí, chống nắng nóng và giảm tiếng ồn.' },
                 pingpong:       { id: 'pingpong',       icon: '🏓', name: 'Bàn Bóng Bàn Giải Trí 🏓',         cost: 4200000,  reqLevel: 8,  xpGain: 110, happyBonus: 8,  floorColor: '#bbdefb', borderColor: '#1976d2', desc: 'Mở ở Cấp 8: Khu bàn bóng bàn đối kháng giúp gắn kết tình làng nghĩa xóm.' },
@@ -3769,12 +3834,25 @@
                 this.nextThoughtAt = performance.now() + 3000 + Math.random() * 5000;
                 this.currentBubbleHtml = '';
 
+                // THÚ CƯNG 3D CỦA PHÒNG (Chó Corgi / Husky hoặc Mèo tam thể / Mèo cam)
+                const breedKeys = Object.keys(GAME_CONFIG.PET_BREEDS);
+                if (typeof data.petType === 'string') {
+                    this.petType = data.petType;
+                } else {
+                    // Mặc định khoảng 65% phòng có nuôi thú cưng (hoặc phòng P.101 luôn có để người chơi trải nghiệm ngay)
+                    const isFirstRoom = room && room.code === 'P.101';
+                    this.petType = (isFirstRoom || Math.random() < 0.65)
+                        ? breedKeys[Math.floor(Math.random() * breedKeys.length)]
+                        : '';
+                }
+
                 this.memberFollowers = [];
                 this.limbs = { leftArm: null, rightArm: null, leftLeg: null, rightLeg: null };
                 this.mesh = this.buildMesh();
                 this.mesh.position.set(room.x, 0, room.z);
                 this.scene.add(this.mesh);
                 this.buildCompanionMeshes();
+                this.initPet3D();
             }
 
             // YÊU CẦU 8: Tạo mô hình nhân vật 3D có đủ 2 tay, 2 chân, và kiểu tóc phân biệt Nam / Nữ
@@ -3840,6 +3918,37 @@
                 return group;
             }
 
+            buildMotorbike3DMesh() {
+                const bikeGroup = new THREE.Group();
+                const bodyColor = this.shirt || '#29b6f6';
+
+                // 2 bánh xe máy 3D
+                const wheelGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.1, 10);
+                const wheelFront = createToonMesh(wheelGeo, '#212121');
+                wheelFront.rotation.z = Math.PI / 2;
+                wheelFront.position.set(0, 0.18, 0.42);
+                const wheelRear = createToonMesh(wheelGeo, '#212121');
+                wheelRear.rotation.z = Math.PI / 2;
+                wheelRear.position.set(0, 0.18, -0.38);
+                bikeGroup.add(wheelFront, wheelRear);
+
+                // Thân xe & yếm trước
+                const chassis = createToonMesh(new THREE.BoxGeometry(0.32, 0.28, 0.85), bodyColor, '#263238');
+                chassis.position.set(0, 0.34, 0);
+                const seat = createToonMesh(new THREE.BoxGeometry(0.28, 0.1, 0.48), '#37474f');
+                seat.position.set(0, 0.5, -0.12);
+                const frontShield = createToonMesh(new THREE.BoxGeometry(0.3, 0.52, 0.14), bodyColor);
+                frontShield.position.set(0, 0.52, 0.34);
+                const handleBar = createToonMesh(new THREE.BoxGeometry(0.58, 0.06, 0.06), '#cfd8dc');
+                handleBar.position.set(0, 0.78, 0.3);
+                const headLight = createToonMesh(new THREE.BoxGeometry(0.16, 0.12, 0.06), '#fff59d', '#fbc02d');
+                headLight.position.set(0, 0.76, 0.38);
+
+                bikeGroup.add(chassis, seat, frontShield, handleBar, headLight);
+                bikeGroup.visible = false;
+                return bikeGroup;
+            }
+
             buildMesh() {
                 const primary = this.members[0] || { shirt: this.shirt, scale: 1.0, gender: 'M', hairColor: '#212121' };
                 const m = this.buildSingleCharacterMesh(
@@ -3849,6 +3958,8 @@
                     primary.hairColor || '#212121'
                 );
                 this.limbs = m.userData.limbs;
+                this.motorbikeMesh = this.buildMotorbike3DMesh();
+                m.add(this.motorbikeMesh);
                 return m;
             }
 
@@ -3872,6 +3983,227 @@
                         targetZ: this.room.z + oz,
                         timer: 80 + i * 50
                     });
+                }
+            }
+
+            /**
+             * TẠO MÔ HÌNH 3D SỐNG ĐỘNG CHO CHÓ CORGI / HUSKY & MÈO TAM THỂ / MÈO CAM
+             */
+            initPet3D() {
+                if (this.petObj && this.petObj.mesh && this.scene) {
+                    this.scene.remove(this.petObj.mesh);
+                }
+                this.petObj = null;
+                if (!this.petType || !GAME_CONFIG.PET_BREEDS[this.petType] || !this.scene) return;
+
+                const breed = GAME_CONFIG.PET_BREEDS[this.petType];
+                const mesh = this.buildSinglePet3DMesh(breed);
+                mesh.position.set(this.room.x - 0.55, 0, this.room.z + 0.55);
+                this.scene.add(mesh);
+
+                this.petObj = {
+                    breed: breed,
+                    mesh: mesh,
+                    mode: 'ROOM_ROAM', // 'ROOM_ROAM' | 'FOLLOW_OWNER' | 'PLAY_WITH_KIDS'
+                    targetX: this.room.x - 0.55,
+                    targetZ: this.room.z + 0.55,
+                    pathWaypoints: [],
+                    timer: 90 + Math.random() * 90,
+                    phase: Math.random() * 6.28
+                };
+            }
+
+            buildSinglePet3DMesh(breed) {
+                const group = new THREE.Group();
+                const isDog = breed.kind === 'DOG';
+                const sc = isDog ? (breed.id === 'husky' ? 1.05 : 0.88) : 0.76;
+
+                // 4 chân nhỏ nhắn
+                const legH = (breed.id === 'corgi' ? 0.14 : 0.20) * sc;
+                const legGeo = new THREE.BoxGeometry(0.08 * sc, legH, 0.08 * sc);
+                const legs = [];
+                [[-0.11 * sc, 0.18 * sc], [0.11 * sc, 0.18 * sc], [-0.11 * sc, -0.18 * sc], [0.11 * sc, -0.18 * sc]].forEach(([lx, lz]) => {
+                    const leg = createToonMesh(legGeo, breed.secondaryColor || '#ffffff');
+                    leg.position.set(lx, legH / 2, lz);
+                    group.add(leg);
+                    legs.push(leg);
+                });
+
+                // Thân thú cưng
+                const bodyY = legH + 0.11 * sc;
+                const body = createToonMesh(new THREE.BoxGeometry(0.28 * sc, 0.22 * sc, 0.48 * sc), breed.bodyColor);
+                body.position.set(0, bodyY, 0);
+                group.add(body);
+
+                // Đốm lông ngực / đốm tam thể
+                if (breed.id === 'calico_cat') {
+                    const patch1 = createToonMesh(new THREE.BoxGeometry(0.29 * sc, 0.14 * sc, 0.18 * sc), '#ff7043');
+                    patch1.position.set(0.01, bodyY + 0.03, 0.06);
+                    const patch2 = createToonMesh(new THREE.BoxGeometry(0.29 * sc, 0.14 * sc, 0.16 * sc), '#3e2723');
+                    patch2.position.set(-0.01, bodyY + 0.02, -0.12);
+                    group.add(patch1, patch2);
+                } else {
+                    const chest = createToonMesh(new THREE.BoxGeometry(0.24 * sc, 0.18 * sc, 0.16 * sc), breed.secondaryColor || '#ffffff');
+                    chest.position.set(0, bodyY - 0.01, 0.18 * sc);
+                    group.add(chest);
+                }
+
+                // Đầu thú cưng
+                const headY = bodyY + 0.16 * sc;
+                const head = createToonMesh(new THREE.SphereGeometry(0.18 * sc, 8, 8), breed.bodyColor);
+                head.position.set(0, headY, 0.24 * sc);
+                group.add(head);
+
+                // Mõm (Chó dài hơn, Mèo tròn nhỏ xinh)
+                const snout = createToonMesh(
+                    new THREE.BoxGeometry(isDog ? 0.14 * sc : 0.10 * sc, 0.10 * sc, isDog ? 0.16 * sc : 0.08 * sc),
+                    breed.secondaryColor || '#ffffff'
+                );
+                snout.position.set(0, headY - 0.03 * sc, 0.38 * sc);
+                group.add(snout);
+
+                // 2 Tai dựng (Tai Corgi/Husky hoặc tai Mèo nhọn)
+                const earGeo = new THREE.ConeGeometry(0.065 * sc, 0.15 * sc, 5);
+                const earL = createToonMesh(earGeo, breed.earColor);
+                earL.position.set(-0.10 * sc, headY + 0.16 * sc, 0.22 * sc);
+                const earR = createToonMesh(earGeo, breed.earColor);
+                earR.position.set(0.10 * sc, headY + 0.16 * sc, 0.22 * sc);
+                group.add(earL, earR);
+
+                // Đuôi ngoắt ngoéo phía sau
+                const tail = createToonMesh(
+                    new THREE.CylinderGeometry(0.035 * sc, 0.045 * sc, isDog ? 0.22 * sc : 0.32 * sc, 6),
+                    breed.earColor
+                );
+                tail.position.set(0, bodyY + 0.12 * sc, -0.26 * sc);
+                tail.rotation.x = -0.55;
+                group.add(tail);
+
+                group.userData.legs = legs;
+                group.userData.tail = tail;
+                return group;
+            }
+
+            updatePet3D(timeScale, gameHour, gameManager) {
+                if (!this.petObj || !this.petObj.mesh) return;
+                const pm = this.petObj.mesh;
+                const allowPets = gameManager && gameManager.state ? Boolean(gameManager.state.allowPetsPolicy) : true;
+                const onCurFloor = (this.room.floor || 1) === (gameManager ? gameManager.currentFloor : 1);
+                const isSleeping = (gameHour >= 22 || gameHour < 5);
+
+                pm.visible = allowPets && onCurFloor;
+                if (!pm.visible) return;
+
+                if (isSleeping) {
+                    // Ban đêm thú cưng nằm cuộn tròn ngủ cạnh chân giường chủ
+                    pm.position.set(this.room.x - 0.4, 0.05, this.room.z + 0.4);
+                    return;
+                }
+
+                const p = this.petObj;
+                p.phase += 0.18 * timeScale;
+
+                // Xác định chế độ hoạt động của thú cưng:
+                // 1) Nếu chủ đang đi bộ trên hành lang -> Đi dạo bám theo chủ trên hành lang!
+                const ownerWalkingCorridor = ['WALKING_CORRIDOR_STROLL', 'WALKING_TO_SHOP', 'WALKING_TO_BIZ', 'WALKING_TO_COMM', 'RETURNING'].includes(this.state);
+                if (ownerWalkingCorridor && this.mesh.visible) {
+                    p.mode = 'FOLLOW_OWNER';
+                    p.pathWaypoints = [];
+                    p.targetX = this.mesh.position.x - Math.sin(this.mesh.rotation.y) * 0.58;
+                    p.targetZ = this.mesh.position.z - Math.cos(this.mesh.rotation.y) * 0.58;
+                } else {
+                    p.timer -= timeScale;
+                    if (p.timer <= 0) {
+                        p.timer = 110 + Math.random() * 120;
+                        // 2) Nếu ở Tầng 1 và có các NPC đứa trẻ hoặc Bãi cỏ thú cưng / Khu vui chơi -> Chạy ra chơi đùa cùng trẻ em!
+                        const kids = (gameManager && (this.room.floor || 1) === 1 && gameManager.childNpcs)
+                            ? gameManager.childNpcs.filter(c => c.mesh && c.mesh.visible)
+                            : [];
+                        const petParks = (gameManager && gameManager.state && gameManager.state.communityMap)
+                            ? Array.from(gameManager.state.communityMap.values()).filter(cm => (cm.floor || 1) === (this.room.floor || 1) && (cm.typeId === 'pet_park' || cm.typeId === 'playground'))
+                            : [];
+
+                        if ((kids.length > 0 || petParks.length > 0) && Math.random() < 0.52) {
+                            p.mode = 'PLAY_WITH_KIDS';
+                            let destGx = this.room.gx;
+                            let destGz = this.room.gz;
+                            let finalX = this.room.x;
+                            let finalZ = this.room.z;
+
+                            if (petParks.length > 0 && Math.random() < 0.65) {
+                                const pk = petParks[Math.floor(Math.random() * petParks.length)];
+                                destGx = pk.gx;
+                                destGz = pk.gz;
+                                finalX = pk.x + (Math.random() - 0.5) * 1.6;
+                                finalZ = pk.z + (Math.random() - 0.5) * 1.6;
+                            } else if (kids.length > 0) {
+                                const kid = kids[Math.floor(Math.random() * kids.length)];
+                                destGx = Math.round(kid.mesh.position.x / GAME_CONFIG.CELL_SIZE);
+                                destGz = Math.round(kid.mesh.position.z / GAME_CONFIG.CELL_SIZE);
+                                finalX = kid.mesh.position.x + (Math.random() - 0.5) * 0.9;
+                                finalZ = kid.mesh.position.z + (Math.random() - 0.5) * 0.9;
+                            }
+
+                            const s = GAME_CONFIG.CELL_SIZE;
+                            const curGx = Math.round(pm.position.x / s);
+                            const curGz = Math.round(pm.position.z / s);
+                            const path = gameManager ? gameManager.state.findCorridorPath(curGx, curGz, destGx, destGz) : null;
+                            if (path && path.length > 0) {
+                                p.pathWaypoints = path.map(cell => ({ x: cell.gx * s, z: cell.gz * s }));
+                                p.pathWaypoints.push({ x: finalX, z: finalZ });
+                                const wp = p.pathWaypoints.shift();
+                                p.targetX = wp.x;
+                                p.targetZ = wp.z;
+                            } else {
+                                p.targetX = this.room.x + (Math.random() - 0.5) * 1.25;
+                                p.targetZ = this.room.z + (Math.random() - 0.5) * 1.25;
+                            }
+                        } else {
+                            // 3) Chạy lon ton quanh phòng chủ
+                            p.mode = 'ROOM_ROAM';
+                            const s = GAME_CONFIG.CELL_SIZE;
+                            const curGx = Math.round(pm.position.x / s);
+                            const curGz = Math.round(pm.position.z / s);
+                            if (curGx !== this.room.gx || curGz !== this.room.gz) {
+                                const pathBack = gameManager ? gameManager.state.findCorridorPath(curGx, curGz, this.room.gx, this.room.gz) : null;
+                                if (pathBack && pathBack.length > 0) {
+                                    p.pathWaypoints = pathBack.map(cell => ({ x: cell.gx * s, z: cell.gz * s }));
+                                } else {
+                                    pm.position.set(this.room.x, 0, this.room.z);
+                                }
+                            }
+                            p.targetX = this.room.x + (Math.random() - 0.5) * 1.3;
+                            p.targetZ = this.room.z + (Math.random() - 0.5) * 1.3;
+                        }
+                    }
+                }
+
+                const pdx = p.targetX - pm.position.x;
+                const pdz = p.targetZ - pm.position.z;
+                const pdist = Math.hypot(pdx, pdz);
+                if (pdist > 0.1) {
+                    const step = Math.min(pdist, 0.056 * timeScale);
+                    pm.position.x += (pdx / pdist) * step;
+                    pm.position.z += (pdz / pdist) * step;
+                    pm.position.y = Math.abs(Math.sin(p.phase * 1.5)) * 0.11;
+                    pm.rotation.y = Math.atan2(pdx, pdz);
+                    if (pm.userData.legs) {
+                        pm.userData.legs.forEach((lg, idx) => {
+                            lg.rotation.x = Math.sin(p.phase * 2 + idx * 1.5) * 0.55;
+                        });
+                    }
+                } else if (p.pathWaypoints && p.pathWaypoints.length > 0) {
+                    const nextWp = p.pathWaypoints.shift();
+                    p.targetX = nextWp.x;
+                    p.targetZ = nextWp.z;
+                } else {
+                    pm.position.y = 0;
+                    if (pm.userData.legs) {
+                        pm.userData.legs.forEach(lg => { lg.rotation.x = 0; });
+                    }
+                }
+                if (pm.userData.tail) {
+                    pm.userData.tail.rotation.z = Math.sin(p.phase * 2.5) * 0.45;
                 }
             }
 
@@ -4021,6 +4353,9 @@
                     });
                 }
 
+                // Cập nhật chuyển động Thú Cưng 3D của phòng (Chó Corgi/Husky, Mèo tam thể/Mèo cam)
+                this.updatePet3D(timeScale, gameHour, gameManager);
+
                 // YÊU CẦU 2: Các thành viên cùng phòng chỉ đi trong phạm vi sàn phòng hoặc bám theo trên hành lang, tuyệt đối không đi lung tung ra bãi đất
                 this.memberFollowers.forEach((f, idx) => {
                     f.mesh.visible = this.mesh.visible;
@@ -4065,9 +4400,16 @@
 
                 const shouldGoWorkWeekdays = !isWeekend && (this.workType === 'OFFICE') && !this.isOnLeaveToday;
 
+                const parkingLot = gameManager ? gameManager.getFirstParkingLotOnFloor(this.room.floor || 1) : null;
+
                 if (this.state === 'IN_ROOM') {
+                    if (this.motorbikeMesh) this.motorbikeMesh.visible = false;
                     if (shouldGoWorkWeekdays && gameHour >= 7 && gameHour < 17 && Math.random() < 0.22 * Math.max(0.5, timeScale)) {
-                        if (this.planCorridorRoute(GAME_CONFIG.GATE_GRID.gx, GAME_CONFIG.GATE_GRID.gz, gameManager)) {
+                        // VÒNG LẶP ĐI LÀM BẰNG XE MÁY 3D: Nếu đã xây Bãi giữ xe, 07:00 đi bộ từ phòng ra bãi lấy xe máy rồi chạy qua cổng đi làm
+                        if (parkingLot && this.planCorridorRoute(parkingLot.gx, parkingLot.gz, gameManager)) {
+                            this.state = 'WALKING_TO_PARKING_MORNING';
+                            this.targetParking = parkingLot;
+                        } else if (this.planCorridorRoute(GAME_CONFIG.GATE_GRID.gx, GAME_CONFIG.GATE_GRID.gz, gameManager)) {
                             this.state = 'WALKING_TO_GATE';
                         }
                     } else if (randomBiz && canVisitShopNow && Math.random() < (isWeekend ? 0.028 : 0.005) * timeScale) {
@@ -4144,9 +4486,45 @@
                         this.planCorridorRoute(this.room.gx, this.room.gz, gameManager);
                         this.state = 'RETURNING';
                     }
+                } else if (this.state === 'WALKING_TO_PARKING_MORNING') {
+                    // Đi bộ từ phòng tới Bãi giữ xe -> Lấy xe máy 3D chạy ra cổng đi làm
+                    if (!this.targetParking || this.hasReachedFinalWaypoint()) {
+                        if (this.motorbikeMesh) this.motorbikeMesh.visible = true;
+                        if (this.targetParking && gameManager) {
+                            gameManager.handleResidentUseParking(this, this.targetParking, 'DEPART');
+                        }
+                        if (this.planCorridorRoute(GAME_CONFIG.GATE_GRID.gx, GAME_CONFIG.GATE_GRID.gz, gameManager)) {
+                            this.state = 'RIDING_BIKE_TO_GATE';
+                        } else {
+                            this.targetPos.set(gateWorldPos.x, 0, gateWorldPos.z);
+                            this.state = 'RIDING_BIKE_TO_GATE';
+                        }
+                    }
+                } else if (this.state === 'RIDING_BIKE_TO_GATE') {
+                    if (this.motorbikeMesh) this.motorbikeMesh.visible = true;
+                    if (this.hasReachedFinalWaypoint()) {
+                        // Chạy xe máy từ cổng ra làn đường nhựa phía trước rồi phóng đi làm
+                        this.pathWaypoints = [
+                            { x: gateWorldPos.x, z: gateWorldPos.z + 2.4 },
+                            { x: gateWorldPos.x + 18, z: gateWorldPos.z + 2.4 }
+                        ];
+                        const firstWp = this.pathWaypoints.shift();
+                        this.targetPos.set(firstWp.x, 0, firstWp.z);
+                        this.state = 'RIDING_ON_STREET_TO_WORK';
+                    }
+                } else if (this.state === 'RIDING_ON_STREET_TO_WORK') {
+                    if (this.motorbikeMesh) this.motorbikeMesh.visible = true;
+                    if (this.hasReachedFinalWaypoint()) {
+                        this.state = 'OUTSIDE';
+                        this.rodeBikeToWork = true;
+                        this.mesh.visible = false;
+                        this.memberFollowers.forEach(f => { f.mesh.visible = false; });
+                        this.timer = 220 + Math.random() * 180;
+                    }
                 } else if (this.state === 'WALKING_TO_GATE') {
                     if (this.hasReachedFinalWaypoint()) {
                         this.state = 'OUTSIDE';
+                        this.rodeBikeToWork = false;
                         this.mesh.visible = false;
                         this.memberFollowers.forEach(f => { f.mesh.visible = false; });
                         this.timer = 220 + Math.random() * 180;
@@ -4154,9 +4532,53 @@
                 } else if (this.state === 'OUTSIDE') {
                     this.timer -= timeScale;
                     if (this.timer <= 0 || gameHour >= 17 || gameHour < 6) {
-                        this.mesh.visible = true;
-                        this.memberFollowers.forEach(f => { f.mesh.visible = true; });
-                        this.mesh.position.set(gateWorldPos.x, 0, gateWorldPos.z);
+                        this.mesh.visible = (this.room.floor || 1) === (gameManager ? gameManager.currentFloor : 1);
+                        this.memberFollowers.forEach(f => { f.mesh.visible = this.mesh.visible; });
+
+                        // Chiều 17:00 đi làm về: Nếu có Bãi giữ xe -> Chạy xe máy từ đường phố qua cổng vào Bãi giữ xe cất xe rồi mới đi bộ về phòng!
+                        const returnParking = gameManager ? gameManager.getFirstParkingLotOnFloor(this.room.floor || 1) : null;
+                        if (returnParking && (this.rodeBikeToWork || gameHour >= 17)) {
+                            if (this.motorbikeMesh) this.motorbikeMesh.visible = true;
+                            this.targetParking = returnParking;
+                            this.mesh.position.set(gateWorldPos.x - 14, 0, gateWorldPos.z + 3.8);
+                            this.pathWaypoints = [{ x: gateWorldPos.x, z: gateWorldPos.z }];
+                            const routeToPark = gameManager.state.findCorridorPath(
+                                GAME_CONFIG.GATE_GRID.gx,
+                                GAME_CONFIG.GATE_GRID.gz,
+                                returnParking.gx,
+                                returnParking.gz
+                            );
+                            if (routeToPark && routeToPark.length > 0) {
+                                routeToPark.forEach(cell => {
+                                    this.pathWaypoints.push({ x: cell.gx * GAME_CONFIG.CELL_SIZE, z: cell.gz * GAME_CONFIG.CELL_SIZE });
+                                });
+                            } else {
+                                this.pathWaypoints.push({ x: returnParking.x, z: returnParking.z });
+                            }
+                            const firstWp = this.pathWaypoints.shift();
+                            this.targetPos.set(firstWp.x, 0, firstWp.z);
+                            this.state = 'RIDING_BIKE_TO_PARKING_EVENING';
+                        } else {
+                            if (this.motorbikeMesh) this.motorbikeMesh.visible = false;
+                            this.mesh.position.set(gateWorldPos.x, 0, gateWorldPos.z);
+                            if (!this.planCorridorRoute(this.room.gx, this.room.gz, gameManager)) {
+                                this.mesh.position.set(this.room.x, 0, this.room.z);
+                                this.targetPos.set(this.room.x, 0, this.room.z);
+                                this.state = 'IN_ROOM';
+                            } else {
+                                this.state = 'RETURNING';
+                            }
+                        }
+                    }
+                } else if (this.state === 'RIDING_BIKE_TO_PARKING_EVENING') {
+                    if (this.motorbikeMesh) this.motorbikeMesh.visible = true;
+                    if (this.hasReachedFinalWaypoint()) {
+                        // Đã cất xe máy vào Bãi giữ xe -> Tắt xe máy và đi bộ về phòng!
+                        if (this.motorbikeMesh) this.motorbikeMesh.visible = false;
+                        this.rodeBikeToWork = false;
+                        if (this.targetParking && gameManager) {
+                            gameManager.handleResidentUseParking(this, this.targetParking, 'RETURN');
+                        }
                         if (!this.planCorridorRoute(this.room.gx, this.room.gz, gameManager)) {
                             this.mesh.position.set(this.room.x, 0, this.room.z);
                             this.targetPos.set(this.room.x, 0, this.room.z);
@@ -4166,6 +4588,7 @@
                         }
                     }
                 } else if (this.state === 'RETURNING') {
+                    if (this.motorbikeMesh) this.motorbikeMesh.visible = false;
                     if (this.hasReachedFinalWaypoint()) {
                         this.state = 'IN_ROOM';
                         this.timer = 140;
@@ -4176,9 +4599,11 @@
                     const dx = this.targetPos.x - this.mesh.position.x;
                     const dz = this.targetPos.z - this.mesh.position.z;
                     const dist = Math.sqrt(dx * dx + dz * dz);
+                    const isRidingBike = Boolean(this.motorbikeMesh && this.motorbikeMesh.visible);
+                    const effSpeed = isRidingBike ? (this.speed * 2.1) : this.speed;
 
                     if (dist > 0.14) {
-                        const step = Math.min(dist, this.speed * timeScale);
+                        const step = Math.min(dist, effSpeed * timeScale);
                         this.mesh.position.x += (dx / dist) * step;
                         this.mesh.position.z += (dz / dist) * step;
                         this.mesh.position.y = Math.abs(Math.sin(time)) * 0.16;
@@ -4198,6 +4623,9 @@
 
             destroy() {
                 if (this.mesh && this.scene) this.scene.remove(this.mesh);
+                if (this.petObj && this.petObj.mesh && this.scene) {
+                    this.scene.remove(this.petObj.mesh);
+                }
                 if (this.memberFollowers) {
                     this.memberFollowers.forEach(f => {
                         if (f.mesh && this.scene) this.scene.remove(f.mesh);
@@ -4246,6 +4674,7 @@
                     rentMultiplier: this.rentMultiplier,
                     workType: this.workType,
                     isOnLeaveToday: this.isOnLeaveToday,
+                    petType: this.petType || '',
                     members: this.members
                 };
             }
@@ -4672,8 +5101,11 @@
                     }
                 });
 
-                const totalUtility = waterFee + elecBaseFee + elecEquipFee + wifiFee;
-                return { headcount: hc, elecEquipCount, waterFee, elecBaseFee, elecEquipFee, wifiFee, totalUtility };
+                const allowPets = (!window.game || !window.game.state) ? true : Boolean(window.game.state.allowPetsPolicy);
+                const hasPet = Boolean(allowPets && this.tenant && this.tenant.petType && GAME_CONFIG.PET_BREEDS[this.tenant.petType]);
+                const petFee = hasPet ? 150000 : 0; // Phí nuôi thú cưng +150.000đ/tháng/phòng
+                const totalUtility = waterFee + elecBaseFee + elecEquipFee + wifiFee + petFee;
+                return { headcount: hc, elecEquipCount, waterFee, elecBaseFee, elecEquipFee, wifiFee, petFee, hasPet, totalUtility };
             }
 
             getMonthlyRent(ownerLevel = 1) {
@@ -4986,6 +5418,11 @@
                 if (this.tenant) {
                     this.tenant.mesh.position.set(this.x, 0, this.z);
                     this.tenant.targetPos.set(this.x, 0, this.z);
+                    if (this.tenant.petObj && this.tenant.petObj.mesh) {
+                        this.tenant.petObj.mesh.position.set(this.x - 0.5, 0, this.z + 0.5);
+                        this.tenant.petObj.targetX = this.x - 0.5;
+                        this.tenant.petObj.targetZ = this.z + 0.5;
+                    }
                     if (this.tenant.memberFollowers) {
                         this.tenant.memberFollowers.forEach((f, idx) => {
                             f.mesh.position.set(this.x + (idx - 0.5) * 0.6, 0, this.z + (idx - 0.5) * 0.6);
@@ -5400,6 +5837,11 @@
                 if (this.tenant) {
                     this.tenant.mesh.position.set(this.x, 0, this.z);
                     this.tenant.targetPos.set(this.x, 0, this.z);
+                    if (this.tenant.petObj && this.tenant.petObj.mesh) {
+                        this.tenant.petObj.mesh.position.set(this.x - 0.5, 0, this.z + 0.5);
+                        this.tenant.petObj.targetX = this.x - 0.5;
+                        this.tenant.petObj.targetZ = this.z + 0.5;
+                    }
                     if (this.tenant.memberFollowers) {
                         this.tenant.memberFollowers.forEach((f, idx) => {
                             f.mesh.position.set(this.x + (idx - 0.5) * 0.6, 0, this.z + (idx - 0.5) * 0.6);
@@ -5452,6 +5894,8 @@
 
                 this.mode = config.mode || 'SELF';
                 this.upgradedSpecial = Boolean(config.upgradedSpecial);
+                this.hasParkingFireSafety = Boolean(config.hasParkingFireSafety);
+                this.evChargerUpgraded = Boolean(config.evChargerUpgraded);
                 this.billingType = config.billingType || 'PER_USE';
                 this.totalEarned = config.totalEarned || 0;
                 this.rotIndex = config.rotIndex || 0;
@@ -5568,6 +6012,28 @@
                         bike.position.set(bx, 0.48, bz);
                         this.group.add(bike);
                     });
+
+                    // Tủ Bình Chữa Cháy & PCCC 3D tại Bãi giữ xe
+                    this.fireSafetyMeshGroup = new THREE.Group();
+                    const pcccBox = createToonMesh(new THREE.BoxGeometry(0.42, 0.68, 0.28), '#d32f2f', '#b71c1c');
+                    pcccBox.position.set(-1.55, 0.56, -0.95);
+                    const extCyl = createToonMesh(new THREE.CylinderGeometry(0.1, 0.1, 0.42, 8), '#ff1744', '#212121');
+                    extCyl.position.set(-1.15, 0.42, -1.1);
+                    this.fireSafetyMeshGroup.add(pcccBox, extCyl);
+                    this.fireSafetyMeshGroup.visible = Boolean(this.hasParkingFireSafety || this.evChargerUpgraded);
+                    this.group.add(this.fireSafetyMeshGroup);
+
+                    // Trạm Sạc Xe Máy Điện Thông Minh 3D (3 Trụ sạc LED xanh lá)
+                    this.evChargerMeshGroup = new THREE.Group();
+                    [-0.9, 0.0, 0.9].forEach(cx => {
+                        const pillar = createToonMesh(new THREE.BoxGeometry(0.32, 1.15, 0.24), '#e8f5e9', '#00c853');
+                        pillar.position.set(cx, 0.78, -1.32);
+                        const ledScreen = createToonMesh(new THREE.BoxGeometry(0.22, 0.26, 0.06), '#00e676', '#1b5e20');
+                        ledScreen.position.set(cx, 0.96, -1.18);
+                        this.evChargerMeshGroup.add(pillar, ledScreen);
+                    });
+                    this.evChargerMeshGroup.visible = Boolean(this.evChargerUpgraded);
+                    this.group.add(this.evChargerMeshGroup);
                 } else if (this.typeId === 'gym') {
                     [-0.9, -0.1].forEach(gx => {
                         const base = createToonMesh(new THREE.BoxGeometry(0.55, 0.12, 1.2), '#263238');
@@ -5584,6 +6050,25 @@
                     barbell.position.set(1.0, 0.72, 0.1);
                     this.group.add(bench);
                     this.group.add(barbell);
+                } else if (this.typeId === 'pet_shop') {
+                    // Quầy chăm sóc & tắm gội thú cưng + Chuồng trưng bày Corgi/Mèo
+                    const counter = createToonMesh(new THREE.BoxGeometry(1.5, 0.65, 0.55), '#ff7043', '#d84315');
+                    counter.position.set(0.85, 0.52, 0.85);
+                    this.group.add(counter);
+
+                    const kennel1 = createToonMesh(new THREE.BoxGeometry(0.95, 0.85, 0.65), '#fff8e1', '#ff8f00');
+                    kennel1.position.set(-0.95, 0.62, -1.25);
+                    const kennel2 = createToonMesh(new THREE.BoxGeometry(0.95, 0.85, 0.65), '#fce4ec', '#ec407a');
+                    kennel2.position.set(0.25, 0.62, -1.25);
+                    const groomTable = createToonMesh(new THREE.CylinderGeometry(0.45, 0.45, 0.55, 10), '#4dd0e1', '#00838f');
+                    groomTable.position.set(-0.85, 0.48, 0.65);
+
+                    // Mô hình Corgi & Mèo trưng bày tại Pet Shop
+                    const corgiFig = createToonMesh(new THREE.BoxGeometry(0.28, 0.26, 0.42), '#f57c00', '#ffffff');
+                    corgiFig.position.set(-0.85, 0.9, 0.65);
+                    const catFig = createToonMesh(new THREE.SphereGeometry(0.2, 8, 8), '#ffa726');
+                    catFig.position.set(0.85, 0.98, 0.85);
+                    this.group.add(kennel1, kennel2, groomTable, corgiFig, catFig);
                 }
             }
 
@@ -5620,6 +6105,8 @@
                     typeId: this.typeId,
                     mode: this.mode,
                     upgradedSpecial: this.upgradedSpecial,
+                    hasParkingFireSafety: Boolean(this.hasParkingFireSafety),
+                    evChargerUpgraded: Boolean(this.evChargerUpgraded),
                     billingType: this.billingType,
                     totalEarned: this.totalEarned
                 };
@@ -5682,6 +6169,24 @@
                         this.group.add(trunk);
                         this.group.add(crown);
                     });
+                } else if (this.typeId === 'pet_park') {
+                    // Bãi cỏ thú cưng 3D: Nhà gỗ cho chó mèo, cầu chui vận động, trụ cứu hỏa đỏ & khay cát vệ sinh
+                    const petHouse = createToonMesh(new THREE.BoxGeometry(0.95, 0.75, 0.85), '#ffe082', '#ff8f00');
+                    petHouse.position.set(-1.0, 0.48, -0.9);
+                    const houseRoof = createToonMesh(new THREE.ConeGeometry(0.78, 0.45, 4), '#e53935');
+                    houseRoof.rotation.y = Math.PI / 4;
+                    houseRoof.position.set(-1.0, 1.05, -0.9);
+
+                    const tunnel = createToonMesh(new THREE.CylinderGeometry(0.38, 0.38, 1.2, 10), '#29b6f6', '#0288d1');
+                    tunnel.rotation.z = Math.PI / 2;
+                    tunnel.position.set(0.75, 0.45, -0.6);
+
+                    const sandbox = createToonMesh(new THREE.BoxGeometry(1.1, 0.16, 0.95), '#ffe0b2', '#8d6e63');
+                    sandbox.position.set(-0.85, 0.22, 0.95);
+
+                    const hydrant = createToonMesh(new THREE.CylinderGeometry(0.14, 0.16, 0.55, 8), '#d32f2f', '#b71c1c');
+                    hydrant.position.set(1.05, 0.42, 0.85);
+                    this.group.add(petHouse, houseRoof, tunnel, sandbox, hydrant);
                 } else {
                     const slide = createToonMesh(new THREE.BoxGeometry(0.8, 1.1, 1.4), '#ff7043');
                     slide.position.set(-0.7, 0.7, -0.4);
@@ -5785,6 +6290,7 @@
                 this.baseTilesPerFloor = 25;     // Mặt bằng ban đầu mỗi tầng: 25 ô (5x5 quanh trục chính)
                 this.maxExtraTilesPerFloor = 25; // Giới hạn mở rộng tối đa thêm 25 ô -> Tổng 50 ô (gấp đôi mặt bằng gốc!)
                 this.floorUnlockedCells = {};
+                this.allowPetsPolicy = true;     // Quy định cho phép nuôi thú cưng (+150.000đ/tháng/phòng)
                 this.ensureFloorCellsInitialized(1);
             }
 
@@ -6047,6 +6553,7 @@
                     realEstate: this.realEstate,
                     unlockedFloors: this.unlockedFloors || 1,
                     floorUnlockedCells: this.floorUnlockedCells || {},
+                    allowPetsPolicy: this.allowPetsPolicy !== undefined ? Boolean(this.allowPetsPolicy) : true,
                     rooms: Array.from(this.roomMap.values()).map(r => r.serialize()),
                     corridors: Array.from(this.corridorMap.values()).map(c => c.serialize()),
                     shops: Array.from(this.shopMap.values()).map(s => s.serialize()),
@@ -6297,6 +6804,19 @@
                     const leavingRoom = occupiedRooms[Math.floor(Math.random() * occupiedRooms.length)];
                     this.gm.triggerTenantCheckoutEvent(leavingRoom);
                 } else if (rollType < 0.32 && occupiedRooms.length > 0) {
+                    // Nếu khu trọ có nuôi Chó (Corgi / Husky) vào buổi tối -> Chó sủa báo động phát hiện kẻ lạ ở cổng ngay lập tức!
+                    const dogOwnerRoom = this.gm.state.allowPetsPolicy
+                        ? occupiedRooms.find(r => r.tenant && (r.tenant.petType === 'corgi' || r.tenant.petType === 'husky'))
+                        : null;
+                    if (dogOwnerRoom && (gameHour >= 18 || gameHour <= 6) && Math.random() < 0.55) {
+                        const dogName = GAME_CONFIG.PET_BREEDS[dogOwnerRoom.tenant.petType].name;
+                        const bonus = 400000;
+                        this.gm.state.cash += bonus;
+                        this.gm.addXP(15);
+                        this.gm.updateHUD();
+                        this.gm.showToast(`🐕 BÁO ĐỘNG BAN ĐÊM: ${dogName} của phòng ${dogOwnerRoom.code} phát hiện kẻ lạ rình mò ở cổng và sủa vang đuổi trộm chạy mất dép (+${formatVND(bonus)}đ, +15 XP)!`);
+                        return;
+                    }
                     // Sự kiện đối soát tại Chốt Bảo Vệ Cổng (nếu đã thuê Bảo Vệ thì tự xử lý và nhường suất cho Sự Kiện Ngẫu Nhiên 200 Event)
                     if ((this.gm.state.hiredStaff && this.gm.state.hiredStaff.guard && this.gm.state.autoSettings.autoVerifyGate) ||
                         (this.gm.state.smartSecurity && this.gm.state.smartSecurity.smart_lock)) {
@@ -6856,6 +7376,503 @@
                 this.scene.add(this.gatePointLight);
 
                 this.scene.add(this.gateGroup);
+
+                // Khởi tạo Con Đường Phố Sống Động Phía Trước Cổng Chính (0, 5) & Các Phương Tiện 3D
+                this.initFrontStreetAndVehicles();
+            }
+
+            /**
+             * THIẾT KẾ ĐƯỜNG PHỐ SỐNG ĐỘNG PHÍA TRƯỚC CỔNG CHÍNH (0, 5) & 5 LOẠI PHƯƠNG TIỆN 3D
+             * - Xe máy của cư dân, Xe buýt, Xe tải giao hàng tạp hóa, Xe thu gom rác, Xe tuần tra
+             */
+            initFrontStreetAndVehicles() {
+                this.streetGroup = new THREE.Group();
+                const roadZ = (GAME_CONFIG.GATE_GRID.gz * GAME_CONFIG.CELL_SIZE) + 3.6; // z = 23.6 phía ngoài cổng (0, 5)
+                const roadLen = 56;
+                const roadWidth = 5.2;
+
+                // 1. Vỉa hè lát gạch nối từ Cổng chính ra đường nhựa
+                const sidewalk = createToonMesh(new THREE.BoxGeometry(roadLen, 0.22, 1.3), '#cfd8dc', '#90a4ae');
+                sidewalk.position.set(0, 0.02, roadZ - roadWidth / 2 - 0.65);
+                this.streetGroup.add(sidewalk);
+
+                const outerCurb = createToonMesh(new THREE.BoxGeometry(roadLen, 0.22, 0.8), '#cfd8dc', '#90a4ae');
+                outerCurb.position.set(0, 0.02, roadZ + roadWidth / 2 + 0.4);
+                this.streetGroup.add(outerCurb);
+
+                // 2. Mặt đường nhựa 2 làn xe (Asphalt Road)
+                const asphalt = createToonMesh(new THREE.BoxGeometry(roadLen, 0.14, roadWidth), '#37474f', '#263238');
+                asphalt.position.set(0, -0.02, roadZ);
+                this.streetGroup.add(asphalt);
+
+                // 3. Vạch kẻ phân làn đứt đoạn ở tim đường
+                for (let x = -24; x <= 24; x += 3.2) {
+                    const dash = createToonMesh(new THREE.BoxGeometry(1.5, 0.03, 0.16), '#ffd54f');
+                    dash.position.set(x, 0.06, roadZ);
+                    this.streetGroup.add(dash);
+                }
+
+                // 4. Vạch kẻ qua đường (Zebra crossing) ngay trước Cổng chính (x = 0)
+                for (let i = -2; i <= 2; i++) {
+                    const stripe = createToonMesh(new THREE.BoxGeometry(0.45, 0.035, 1.6), '#ffffff');
+                    stripe.position.set(i * 0.7, 0.065, roadZ - 1.4);
+                    this.streetGroup.add(stripe);
+                }
+
+                // 5. Trạm chờ Xe buýt 3D & Cột đèn đường phố bên vỉa hè
+                const busStopRoof = createToonMesh(new THREE.BoxGeometry(2.8, 0.18, 1.1), '#0288d1', '#01579b');
+                busStopRoof.position.set(5.5, 2.2, roadZ - roadWidth / 2 - 0.6);
+                const busStopBack = createToonMesh(new THREE.BoxGeometry(2.6, 2.0, 0.12), '#e1f5fe', '#0288d1');
+                busStopBack.position.set(5.5, 1.1, roadZ - roadWidth / 2 - 1.05);
+                const busBench = createToonMesh(new THREE.BoxGeometry(1.8, 0.35, 0.45), '#ffb74d', '#e65100');
+                busBench.position.set(5.5, 0.3, roadZ - roadWidth / 2 - 0.65);
+                this.streetGroup.add(busStopRoof, busStopBack, busBench);
+
+                [-14, 14].forEach(lx => {
+                    const lampPole = createToonMesh(new THREE.CylinderGeometry(0.08, 0.1, 3.4, 8), '#455a64');
+                    lampPole.position.set(lx, 1.7, roadZ - roadWidth / 2 - 0.5);
+                    const lampHead = createToonMesh(new THREE.BoxGeometry(0.6, 0.16, 0.3), '#fff59d', '#fbc02d');
+                    lampHead.position.set(lx, 3.4, roadZ - roadWidth / 2 - 0.2);
+                    this.streetGroup.add(lampPole, lampHead);
+                });
+
+                this.scene.add(this.streetGroup);
+
+                // 6. Khởi tạo 5 loại phương tiện 3D chạy sống động trên đường phố
+                this.streetVehicles = [];
+                const vehicleConfigs = [
+                    { type: 'MOTORBIKE',      name: '🛵 Xe máy cư dân',            lane: 1, z: roadZ - 1.25, dir: 1,  speed: 6.2, startX: -22 },
+                    { type: 'BUS',            name: '🚌 Xe buýt thành phố',        lane: 2, z: roadZ + 1.25, dir: -1, speed: 3.8, startX: 18 },
+                    { type: 'DELIVERY_TRUCK', name: '🚚 Xe tải giao hàng tạp hóa', lane: 1, z: roadZ - 1.25, dir: 1,  speed: 4.5, startX: -8 },
+                    { type: 'GARBAGE_TRUCK',  name: '🚛 Xe thu gom rác',           lane: 2, z: roadZ + 1.25, dir: -1, speed: 3.4, startX: -12 },
+                    { type: 'PATROL_CAR',     name: '🚓 Xe tuần tra an ninh',      lane: 1, z: roadZ - 1.25, dir: 1,  speed: 5.4, startX: 8 },
+                    { type: 'MOTORBIKE_2',    name: '🛵 Xe máy cư dân',            lane: 2, z: roadZ + 1.25, dir: -1, speed: 6.5, startX: 4 }
+                ];
+
+                vehicleConfigs.forEach((vc, idx) => {
+                    const mesh = this.buildStreetVehicle3DMesh(vc.type);
+                    mesh.position.set(vc.startX, 0.06, vc.z);
+                    mesh.rotation.y = vc.dir > 0 ? (Math.PI / 2) : (-Math.PI / 2);
+                    this.streetGroup.add(mesh);
+                    this.streetVehicles.push({
+                        ...vc,
+                        mesh: mesh,
+                        pauseTimer: 0,
+                        sirenPhase: idx * 1.3
+                    });
+                });
+            }
+
+            buildStreetVehicle3DMesh(vType) {
+                const group = new THREE.Group();
+                const addWheels = (lenX, widthZ, radius = 0.24) => {
+                    const wGeo = new THREE.CylinderGeometry(radius, radius, 0.16, 10);
+                    [[-widthZ, lenX], [widthZ, lenX], [-widthZ, -lenX], [widthZ, -lenX]].forEach(([wx, wz]) => {
+                        const w = createToonMesh(wGeo, '#212121');
+                        w.rotation.z = Math.PI / 2;
+                        w.position.set(wx, radius, wz);
+                        group.add(w);
+                    });
+                };
+
+                if (vType.startsWith('MOTORBIKE')) {
+                    const col = vType === 'MOTORBIKE' ? '#e53935' : '#00acc1';
+                    const wGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.1, 10);
+                    const wf = createToonMesh(wGeo, '#212121');
+                    wf.rotation.z = Math.PI / 2;
+                    wf.position.set(0, 0.18, 0.42);
+                    const wr = createToonMesh(wGeo, '#212121');
+                    wr.rotation.z = Math.PI / 2;
+                    wr.position.set(0, 0.18, -0.4);
+                    const body = createToonMesh(new THREE.BoxGeometry(0.32, 0.3, 0.88), col);
+                    body.position.set(0, 0.34, 0);
+                    const riderBody = createToonMesh(new THREE.CylinderGeometry(0.16, 0.18, 0.45, 8), '#1e88e5');
+                    riderBody.position.set(0, 0.68, -0.08);
+                    const riderHead = createToonMesh(new THREE.SphereGeometry(0.19, 8, 8), '#ffca28');
+                    riderHead.position.set(0, 1.02, -0.05);
+                    group.add(wf, wr, body, riderBody, riderHead);
+                } else if (vType === 'BUS') {
+                    addWheels(1.25, 0.58, 0.28);
+                    const body = createToonMesh(new THREE.BoxGeometry(1.18, 1.25, 3.4), '#2e7d32', '#1b5e20');
+                    body.position.set(0, 0.85, 0);
+                    const winStrip = createToonMesh(new THREE.BoxGeometry(1.22, 0.42, 2.8), '#b3e5fc', '#0288d1');
+                    winStrip.position.set(0, 1.05, 0.1);
+                    const roof = createToonMesh(new THREE.BoxGeometry(1.1, 0.12, 3.2), '#ffffff');
+                    roof.position.set(0, 1.52, 0);
+                    group.add(body, winStrip, roof);
+                } else if (vType === 'DELIVERY_TRUCK') {
+                    addWheels(0.95, 0.52, 0.25);
+                    const cargo = createToonMesh(new THREE.BoxGeometry(1.1, 1.15, 1.75), '#ffb300', '#e65100');
+                    cargo.position.set(0, 0.82, -0.35);
+                    const cab = createToonMesh(new THREE.BoxGeometry(1.02, 0.88, 0.82), '#ffffff', '#0288d1');
+                    cab.position.set(0, 0.68, 0.95);
+                    const windshield = createToonMesh(new THREE.BoxGeometry(0.92, 0.36, 0.1), '#81d4fa');
+                    windshield.position.set(0, 0.82, 1.34);
+                    group.add(cargo, cab, windshield);
+                } else if (vType === 'GARBAGE_TRUCK') {
+                    addWheels(0.95, 0.52, 0.25);
+                    const bin = createToonMesh(new THREE.BoxGeometry(1.12, 1.05, 1.8), '#43a047', '#1b5e20');
+                    bin.position.set(0, 0.78, -0.35);
+                    const cab = createToonMesh(new THREE.BoxGeometry(1.0, 0.85, 0.78), '#e8f5e9', '#2e7d32');
+                    cab.position.set(0, 0.66, 0.95);
+                    group.add(bin, cab);
+                } else if (vType === 'PATROL_CAR') {
+                    addWheels(0.68, 0.46, 0.22);
+                    const lower = createToonMesh(new THREE.BoxGeometry(0.96, 0.42, 2.0), '#ffffff', '#1565c0');
+                    lower.position.set(0, 0.42, 0);
+                    const cabin = createToonMesh(new THREE.BoxGeometry(0.84, 0.38, 1.05), '#1565c0', '#0d47a1');
+                    cabin.position.set(0, 0.8, -0.05);
+                    const sirenL = createToonMesh(new THREE.BoxGeometry(0.24, 0.1, 0.14), '#ff1744');
+                    sirenL.position.set(-0.16, 1.04, 0);
+                    const sirenR = createToonMesh(new THREE.BoxGeometry(0.24, 0.1, 0.14), '#00e5ff');
+                    sirenR.position.set(0.16, 1.04, 0);
+                    group.userData.sirenL = sirenL;
+                    group.userData.sirenR = sirenR;
+                    group.add(lower, cabin, sirenL, sirenR);
+                }
+                return group;
+            }
+
+            updateStreetTraffic(deltaSec) {
+                if (!this.streetGroup) return;
+                const onFloor1 = (this.currentFloor || 1) === 1;
+                this.streetGroup.visible = onFloor1;
+                if (!onFloor1 || !this.streetVehicles) return;
+
+                const effDt = deltaSec * Math.min(3.5, Math.max(0.8, this.timeSpeed * 0.65));
+                this.streetVehicles.forEach(v => {
+                    if (v.pauseTimer > 0) {
+                        v.pauseTimer -= deltaSec * this.timeSpeed;
+                        return;
+                    }
+                    v.mesh.position.x += v.dir * v.speed * effDt;
+
+                    // Xe buýt dừng đón khách ngắn tại Trạm xe buýt (x ≈ 5.5) và Xe tải giao hàng dừng ngắn trước Cổng khi có Tiệm tạp hóa
+                    if (v.type === 'BUS' && Math.abs(v.mesh.position.x - 5.5) < 0.22 && !v.justStopped) {
+                        v.pauseTimer = 1.8;
+                        v.justStopped = true;
+                    } else if (v.type === 'DELIVERY_TRUCK' && this.state.shopMap.size > 0 && Math.abs(v.mesh.position.x - 0) < 0.22 && !v.justStopped) {
+                        v.pauseTimer = 1.6;
+                        v.justStopped = true;
+                    }
+
+                    // Hiệu ứng nhấp nháy đèn còi ưu tiên cho Xe tuần tra
+                    if (v.type === 'PATROL_CAR' && v.mesh.userData.sirenL) {
+                        v.sirenPhase += deltaSec * 10;
+                        const flash = Math.sin(v.sirenPhase) > 0;
+                        v.mesh.userData.sirenL.scale.y = flash ? 1.45 : 0.75;
+                        v.mesh.userData.sirenR.scale.y = flash ? 0.75 : 1.45;
+                    }
+
+                    if (v.dir > 0 && v.mesh.position.x > 27) {
+                        v.mesh.position.x = -27;
+                        v.justStopped = false;
+                    } else if (v.dir < 0 && v.mesh.position.x < -27) {
+                        v.mesh.position.x = 27;
+                        v.justStopped = false;
+                    }
+                });
+            }
+
+            /**
+             * TRẠM SẠC XE ĐIỆN THÔNG MINH & BÌNH CHỮA CHÁY / PCCC TRONG BÃI GIỮ XE
+             */
+            getFirstParkingLotOnFloor(floor = 1) {
+                if (!this.state || !this.state.bizMap) return null;
+                for (const bz of this.state.bizMap.values()) {
+                    if (bz.typeId === 'parking' && (bz.floor || 1) === Number(floor)) {
+                        return bz;
+                    }
+                }
+                return null;
+            }
+
+            hasFireSafetyForParking(parkingBiz) {
+                if (parkingBiz && parkingBiz.hasParkingFireSafety) return true;
+                if (this.state && this.state.smartSecurity) {
+                    if (this.state.smartSecurity.pccc_sys || this.state.smartSecurity.fire_alarm) return true;
+                }
+                if (this.state && this.state.roomMap) {
+                    for (const rm of this.state.roomMap.values()) {
+                        if (rm.upgrades && rm.upgrades.fire_ext) return true;
+                    }
+                }
+                return false;
+            }
+
+            renderParkingEVChargerHtml(biz) {
+                const hasPccc = this.hasFireSafetyForParking(biz);
+                const evDone = Boolean(biz.evChargerUpgraded);
+                const totalResidents = Array.from(this.state.roomMap.values()).reduce((s, r) => s + (r.tenant ? (r.tenant.headcount || 1) : 0), 0);
+                const estEvDaily = totalResidents * 45000;
+
+                return `
+                    <div style="font-size:13px; font-weight:900; color:#00695c; margin:10px 0 6px;">⚡ Trạm Sạc Xe Máy Điện Thông Minh &amp; An Toàn PCCC:</div>
+                    <div class="upgrade-item" style="${hasPccc ? 'border-color:#43a047;background:#e8f5e9;' : 'border-color:#e53935;background:#ffebee;'}">
+                        <div style="flex:1; padding-right:8px;">
+                            <div class="upgrade-info">🧯 Bình Chữa Cháy &amp; Tủ PCCC Bãi Giữ Xe (Điều Kiện Bắt Buộc)</div>
+                            <div class="upgrade-sub" style="color:${hasPccc ? '#2e7d32' : '#c62828'};">
+                                ${hasPccc
+                                    ? '✅ Đã đảm bảo an toàn PCCC tuyệt đối (Đủ điều kiện lắp Trạm sạc xe điện)'
+                                    : '⚠️ Yêu cầu trang bị Bình chữa cháy / PCCC (1.500.000đ) trước khi mở khóa Trạm sạc xe điện!'}
+                            </div>
+                        </div>
+                        <button class="upgrade-btn" id="btn-parking-pccc-upg" ${hasPccc ? 'disabled' : ''} style="background:#d32f2f; border-color:#b71c1c;">
+                            ${hasPccc ? 'Đã Trang Bị ✓' : 'Lắp PCCC (1.5Tr)'}
+                        </button>
+                    </div>
+
+                    <div class="upgrade-item" style="${evDone ? 'border-color:#00c853;background:#e8f5e9;' : (!hasPccc ? 'opacity:0.75;' : '')}">
+                        <div style="flex:1; padding-right:8px;">
+                            <div class="upgrade-info">⚡ Hệ Thống Trạm Sạc Xe Máy Điện Thông Minh 3D</div>
+                            <div class="upgrade-sub">
+                                Thu phí sạc hàng ngày: <b>+45.000đ/người/ngày</b> (+${formatVND(estEvDaily)}đ/ngày) + phí sạc theo lượt khi cư dân lấy/cất xe! | Vốn: <b>3.800.000đ</b>
+                            </div>
+                        </div>
+                        <button class="upgrade-btn" id="btn-parking-ev-upg" ${(evDone || !hasPccc) ? 'disabled' : ''} style="background:${evDone ? '#43a047' : '#00897b'}; border-color:#004d40;">
+                            ${evDone ? 'Đang Thu Phí Sạc ✓' : (!hasPccc ? '🔒 Cần PCCC' : 'Nâng Cấp (3.8Tr)')}
+                        </button>
+                    </div>
+                `;
+            }
+
+            bindParkingEVChargerListeners(biz) {
+                const btnPccc = document.getElementById('btn-parking-pccc-upg');
+                if (btnPccc && !this.hasFireSafetyForParking(biz)) {
+                    btnPccc.addEventListener('click', () => {
+                        const cost = 1500000;
+                        if (this.state.cash < cost) {
+                            this.showToast('💸 Cần 1.500.000đ để trang bị Bình chữa cháy & Tủ PCCC chuyên dụng cho Bãi giữ xe!');
+                            return;
+                        }
+                        this.state.cash -= cost;
+                        biz.hasParkingFireSafety = true;
+                        if (biz.fireSafetyMeshGroup) biz.fireSafetyMeshGroup.visible = true;
+                        biz.bounceAnim();
+                        this.addXP(30);
+                        this.updateHUD();
+                        this.openBizInspector(biz);
+                        this.state.saveToLocal();
+                        this.showToast('🧯 Đã trang bị Bình chữa cháy & Hệ thống PCCC cho Bãi giữ xe! Hiện bạn đã có thể lắp đặt Trạm sạc xe điện thông minh.');
+                    });
+                }
+
+                const btnEv = document.getElementById('btn-parking-ev-upg');
+                if (btnEv && !biz.evChargerUpgraded) {
+                    btnEv.addEventListener('click', () => {
+                        if (!this.hasFireSafetyForParking(biz)) {
+                            this.showToast('⚠️ Phải trang bị Bình chữa cháy / Hệ thống PCCC trước khi nâng cấp Trạm sạc xe điện để đảm bảo an toàn tuyệt đối!');
+                            return;
+                        }
+                        const cost = 3800000;
+                        if (this.state.cash < cost) {
+                            this.showToast(`💸 Cần ${formatVND(cost)}đ để lắp đặt Trạm sạc xe máy điện thông minh!`);
+                            return;
+                        }
+                        this.state.cash -= cost;
+                        biz.evChargerUpgraded = true;
+                        biz.hasParkingFireSafety = true;
+                        if (biz.fireSafetyMeshGroup) biz.fireSafetyMeshGroup.visible = true;
+                        if (biz.evChargerMeshGroup) biz.evChargerMeshGroup.visible = true;
+                        biz.bounceAnim();
+                        this.addXP(65);
+                        this.updateHUD();
+                        this.openBizInspector(biz);
+                        this.state.saveToLocal();
+                        this.showToast('⚡ Đã lắp đặt Trạm Sạc Xe Máy Điện Thông Minh! Bãi giữ xe bắt đầu thu phí sạc điện hàng ngày.');
+                    });
+                }
+            }
+
+            handleResidentUseParking(npc, parkingBiz, phase = 'DEPART') {
+                if (!npc || !parkingBiz) return;
+                parkingBiz.bounceAnim();
+                if (parkingBiz.evChargerUpgraded) {
+                    const chargeFee = 35000 * (npc.headcount || 1);
+                    this.state.cash += chargeFee;
+                    parkingBiz.totalEarned += chargeFee;
+                    this.spawnFloatingText(parkingBiz.x, 3.2, parkingBiz.z, `+${formatVND(chargeFee)}đ ⚡Sạc xe`, '#00c853');
+                    if (phase === 'RETURN') {
+                        const rawMsg = `<span class="thought-pill pill-living">⚡ Cất &amp; Sạc xe</span>Đi làm về cất xe vào bãi và cắm sạc điện an toàn!`;
+                        this.activateSingleBubbleFor({ type: 'room', room: npc.room }, rawMsg);
+                    }
+                    this.updateHUD();
+                } else if (phase === 'DEPART') {
+                    const parkFee = 15000;
+                    this.state.cash += parkFee;
+                    parkingBiz.totalEarned += parkFee;
+                    this.spawnFloatingText(parkingBiz.x, 3.1, parkingBiz.z, `+${formatVND(parkFee)}đ 🛵Lấy xe`, '#0288d1');
+                    this.updateHUD();
+                }
+            }
+
+            /**
+             * GIAO DIỆN QUẢN LÝ THÚ CƯNG 3D & QUY ĐỊNH NUÔI THÚ CƯNG (+150.000Đ/THÁNG/PHÒNG)
+             */
+            renderRoomPetSectionHtml(room) {
+                if (!room || !room.tenant) return '';
+                const t = room.tenant;
+                const allowPets = Boolean(this.state.allowPetsPolicy);
+                const curPet = t.petType ? GAME_CONFIG.PET_BREEDS[t.petType] : null;
+                const hasCleaner = Boolean(this.state.hiredStaff && this.state.hiredStaff.cleaner);
+                const hasPetPark = this.state.communityMap && Array.from(this.state.communityMap.values()).some(cm => cm.typeId === 'pet_park');
+
+                const breedBtns = Object.values(GAME_CONFIG.PET_BREEDS).map(b => {
+                    const isSelected = t.petType === b.id;
+                    return `
+                        <button class="mini-btn" data-room-pet-pick="${b.id}" style="font-size:10.5px; padding:4px 7px !important; background:${isSelected ? '#e65100' : '#8d6e63'}; border-color:${isSelected ? '#bf360c' : '#5d4037'};">
+                            ${b.icon} ${b.id === 'corgi' ? 'Corgi' : (b.id === 'husky' ? 'Husky' : (b.id === 'calico_cat' ? 'Mèo Tam Thể' : 'Mèo Cam'))} ${isSelected ? '✓' : ''}
+                        </button>
+                    `;
+                }).join('');
+
+                return `
+                    <div style="background:#fff8e1; border:2px solid #ffb74d; border-radius:12px; padding:8px 10px; margin-top:7px; font-size:11.5px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px;">
+                            <span style="font-weight:900; color:#e65100;">🐾 Thú Cưng Của Phòng &amp; Quy Định Nuôi (+150k/tháng):</span>
+                            <button class="upgrade-btn" id="btn-toggle-allow-pets" style="padding:3px 8px; font-size:10.5px; background:${allowPets ? '#2e7d32' : '#78909c'}; border-color:${allowPets ? '#1b5e20' : '#455a64'};">
+                                ${allowPets ? '✅ Đang Cho Phép Nuôi' : '🚫 Đang Cấm Nuôi'}
+                            </button>
+                        </div>
+                        <div style="color:#5d4037; margin-bottom:5px;">
+                            • Đang nuôi: <b>${curPet ? `${curPet.name} (${curPet.kind === 'DOG' ? 'Sủa báo động trộm đêm' : 'Bắt chuột bảo vệ Tạp hóa & Quán ăn'})` : 'Chưa nuôi thú cưng'}</b><br>
+                            • An toàn vệ sinh: ${(hasCleaner || hasPetPark)
+                                ? '<span style="color:#2e7d32; font-weight:800;">✅ Đã có Bãi cỏ thú cưng / Cô lao công (Không lo bẩn hành lang)</span>'
+                                : '<span style="color:#c62828; font-weight:800;">⚠️ Chưa có Bãi cỏ thú cưng & Cô lao công (Dễ làm bẩn hành lang / sủa đêm!)</span>'}
+                        </div>
+                        <div style="display:flex; gap:4px; flex-wrap:wrap; align-items:center;">
+                            ${breedBtns}
+                            ${curPet ? `<button class="mini-btn warn" id="btn-remove-room-pet" style="font-size:10px; padding:3px 6px !important;">Bỏ nuôi</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            bindRoomPetSectionListeners(room) {
+                if (!room || !room.tenant) return;
+                const btnTogglePolicy = document.getElementById('btn-toggle-allow-pets');
+                if (btnTogglePolicy) {
+                    btnTogglePolicy.addEventListener('click', () => {
+                        this.state.allowPetsPolicy = !this.state.allowPetsPolicy;
+                        this.switchFloor(this.currentFloor, true);
+                        this.openRoomInspector(room);
+                        this.updateHUD();
+                        this.state.saveToLocal();
+                        this.showToast(this.state.allowPetsPolicy
+                            ? '🐾 Đã BẬT cho phép nuôi thú cưng toàn khu trọ (+150.000đ/tháng/phòng có thú cưng)!'
+                            : '🚫 Đã TẮT quy định nuôi thú cưng trong khu trọ.');
+                    });
+                }
+
+                document.querySelectorAll('[data-room-pet-pick]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pId = btn.getAttribute('data-room-pet-pick');
+                        const cfg = GAME_CONFIG.PET_BREEDS[pId];
+                        if (!cfg) return;
+                        room.tenant.petType = pId;
+                        room.tenant.initPet3D();
+                        room.tenant.happiness = Math.min(100, room.tenant.happiness + 10);
+                        this.state.allowPetsPolicy = true;
+                        this.openRoomInspector(room);
+                        this.updateHUD();
+                        this.state.saveToLocal();
+                        this.showToast(`${cfg.icon} Phòng ${room.code} đã nhận nuôi "${cfg.name}" (+150.000đ phí thú cưng/tháng, +10% Hài lòng)!`);
+                    });
+                });
+
+                const btnRemovePet = document.getElementById('btn-remove-room-pet');
+                if (btnRemovePet) {
+                    btnRemovePet.addEventListener('click', () => {
+                        room.tenant.petType = '';
+                        room.tenant.initPet3D();
+                        this.openRoomInspector(room);
+                        this.updateHUD();
+                        this.state.saveToLocal();
+                        this.showToast(`🐾 Phòng ${room.code} đã ngừng nuôi thú cưng.`);
+                    });
+                }
+            }
+
+            renderPetShopCatalogHtml(biz) {
+                const allowPets = Boolean(this.state.allowPetsPolicy);
+                const allRooms = Array.from(this.state.roomMap.values());
+                const petRooms = allRooms.filter(r => r.tenant && r.tenant.petType);
+                const hasCleaner = Boolean(this.state.hiredStaff && this.state.hiredStaff.cleaner);
+                const hasPetPark = this.state.communityMap && Array.from(this.state.communityMap.values()).some(cm => cm.typeId === 'pet_park');
+
+                return `
+                    <div style="background:#fff3e0; border:2px solid #ff7043; border-radius:14px; padding:10px 12px; margin:10px 0; font-size:12px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+                            <span style="font-weight:900; color:#d84315; font-size:13px;">🐾 Quy Định Nuôi Thú Cưng Toàn Khu Trọ (+150.000đ/tháng/phòng)</span>
+                            <button class="upgrade-btn" id="btn-petshop-toggle-policy" style="background:${allowPets ? '#2e7d32' : '#78909c'}; border-color:${allowPets ? '#1b5e20' : '#455a64'};">
+                                ${allowPets ? '✅ Đang Bật Cho Phép Nuôi' : '🚫 Đang Tắt (Bấm Để Bật)'}
+                            </button>
+                        </div>
+                        <div style="color:#4e342e; line-height:1.45; margin-bottom:8px;">
+                            • Số phòng đang nuôi thú cưng: <b>${petRooms.length}/${allRooms.length} phòng</b> (Thu thêm: <b>+${formatVND(allowPets ? petRooms.length * 150000 : 0)}đ/tháng</b>).<br>
+                            • <b>Lợi ích:</b> 🐱 <b>Mèo</b> bắt chuột bảo vệ Tiệm tạp hóa &amp; Quán ăn; 🐶 <b>Chó</b> sủa báo động đuổi kẻ gian ở cổng ban đêm.<br>
+                            • <b>Kiểm soát rủi ro:</b> ${(hasCleaner || hasPetPark)
+                                ? '<b style="color:#2e7d32;">✅ Đã có Bãi cỏ thú cưng / Cô lao công (Hành lang luôn sạch, không ồn đêm)</b>'
+                                : '<b style="color:#c62828;">⚠️ Hãy xây [🐕 Bãi Cỏ Thú Cưng] (ở mục Không gian cộng đồng) hoặc thuê [🧹 Cô Lao Công] để thú cưng không làm bẩn hành lang &amp; sủa đêm!</b>'}
+                        </div>
+                        <div style="font-weight:900; color:#5d4037; margin-bottom:6px;">🐶🐱 Mua / Trao Tặng Thú Cưng 3D Cho Các Phòng Trọ:</div>
+                        ${Object.values(GAME_CONFIG.PET_BREEDS).map(b => `
+                            <div class="upgrade-item" style="margin-bottom:5px;">
+                                <div style="flex:1; padding-right:8px;">
+                                    <div class="upgrade-info">${b.name} (${b.kind === 'DOG' ? 'Chó giữ nhà' : 'Mèo bắt chuột'})</div>
+                                    <div class="upgrade-sub">${b.desc}</div>
+                                </div>
+                                <button class="upgrade-btn" data-petshop-gift="${b.id}" style="white-space:nowrap;">
+                                    Tặng Phòng (${formatVND(b.adoptCost)}đ)
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            bindPetShopCatalogListeners(biz) {
+                const btnPol = document.getElementById('btn-petshop-toggle-policy');
+                if (btnPol) {
+                    btnPol.addEventListener('click', () => {
+                        this.state.allowPetsPolicy = !this.state.allowPetsPolicy;
+                        this.switchFloor(this.currentFloor, true);
+                        this.openBizInspector(biz);
+                        this.updateHUD();
+                        this.state.saveToLocal();
+                        this.showToast(this.state.allowPetsPolicy
+                            ? '🐾 Đã BẬT cho phép nuôi thú cưng (+150.000đ/tháng/phòng)!'
+                            : '🚫 Đã TẮT quy định nuôi thú cưng.');
+                    });
+                }
+
+                document.querySelectorAll('[data-petshop-gift]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const bId = btn.getAttribute('data-petshop-gift');
+                        const cfg = GAME_CONFIG.PET_BREEDS[bId];
+                        if (!cfg) return;
+                        if (this.state.cash < cfg.adoptCost) {
+                            this.showToast(`💸 Cần ${formatVND(cfg.adoptCost)}đ để mua ${cfg.name} cho cư dân!`);
+                            return;
+                        }
+                        const occupied = Array.from(this.state.roomMap.values()).filter(r => r.tenant);
+                        if (occupied.length === 0) {
+                            this.showToast('⚠️ Hiện chưa có khách thuê nào để nhận nuôi thú cưng!');
+                            return;
+                        }
+                        const targetRoom = occupied.find(r => !r.tenant.petType) || occupied[Math.floor(Math.random() * occupied.length)];
+                        this.state.cash -= cfg.adoptCost;
+                        this.state.allowPetsPolicy = true;
+                        targetRoom.tenant.petType = bId;
+                        targetRoom.tenant.initPet3D();
+                        targetRoom.tenant.happiness = Math.min(100, targetRoom.tenant.happiness + 15);
+                        this.addXP(25);
+                        this.openBizInspector(biz);
+                        this.updateHUD();
+                        this.state.saveToLocal();
+                        this.showToast(`🎉 Đã trao "${cfg.name}" cho phòng ${targetRoom.code} (${targetRoom.tenant.name})! Tăng +15% Hài lòng & thu thêm +150.000đ/tháng phí thú cưng!`);
+                    });
+                });
             }
 
             initBuildHologram() {
@@ -6944,6 +7961,7 @@
                 this.state.activeDisaster = saved.activeDisaster || null;
                 if (saved.realEstate) this.state.realEstate = { ...this.state.realEstate, ...saved.realEstate };
                 this.state.unlockedFloors = Math.max(1, Number(saved.unlockedFloors || 1));
+                this.state.allowPetsPolicy = saved.allowPetsPolicy !== undefined ? Boolean(saved.allowPetsPolicy) : true;
                 if (saved.floorUnlockedCells && typeof saved.floorUnlockedCells === 'object') {
                     this.state.floorUnlockedCells = saved.floorUnlockedCells;
                 }
@@ -7415,6 +8433,7 @@
                     npc.happiness = Math.min(100, npc.happiness + 4);
                 }
                 const actMap = {
+                    pet_shop: 'Ghé Cửa hàng thú cưng mua hạt dinh dưỡng và tắm spa cho Boss!',
                     eatery: 'Ghé quán ăn thưởng thức suất cơm nóng hổi ngon tuyệt!',
                     cafe: 'Ngồi nhâm nhi cà phê giao lưu cùng bạn bè và khách khu vực!',
                     minimart: 'Mua sắm đồ ăn, nước uống và nhu yếu phẩm tại Siêu thị mini!',
@@ -7473,6 +8492,8 @@
                             ${biz.upgradedSpecial ? 'Đã Nâng Cấp ✓' : 'Nâng Cấp'}
                         </button>
                     </div>
+                    ${biz.typeId === 'parking' ? this.renderParkingEVChargerHtml(biz) : ''}
+                    ${biz.typeId === 'pet_shop' ? this.renderPetShopCatalogHtml(biz) : ''}
 
                     <div style="font-size:13px; font-weight:900; color:#544646; margin:8px 0 6px;">⚙️ Chuyển Đổi Phương Thức Vận Hành:</div>
 
@@ -7537,6 +8558,12 @@
                         this.state.saveToLocal();
                         this.showToast(`🎉 Đã nâng cấp "${tc.specialUpgradeName}" cho ${tc.name}!`);
                     });
+                }
+                if (biz.typeId === 'parking') {
+                    this.bindParkingEVChargerListeners(biz);
+                }
+                if (biz.typeId === 'pet_shop') {
+                    this.bindPetShopCatalogListeners(biz);
                 }
 
                 const btnSelf = document.getElementById('btn-biz-mode-self');
@@ -7749,10 +8776,17 @@
                         if (biz.mode === 'SELF') {
                             const mult = isWknd ? 1.5 : 1.0;
                             const outsideGuestBonus = (biz.typeId === 'cafe') ? 250000 : 0;
-                            const p = Math.round(biz.getEffectiveProfitPerPerson(hasServiceStaff) * totalResidents * mult + outsideGuestBonus);
+                            const evDailyFee = (biz.typeId === 'parking' && biz.evChargerUpgraded) ? (totalResidents * 45000) : 0;
+                            const p = Math.round(biz.getEffectiveProfitPerPerson(hasServiceStaff) * totalResidents * mult + outsideGuestBonus + evDailyFee);
                             dailyBizProfit += p;
                             biz.totalEarned += p;
-                            this.spawnFloatingText(biz.x, 3.4, biz.z, `+${formatVND(p)}đ ${biz.typeConfig.icon || '🏪'}`, '#d84315');
+                            this.spawnFloatingText(biz.x, 3.4, biz.z, `+${formatVND(p)}đ ${biz.evChargerUpgraded ? '⚡🛵' : (biz.typeConfig.icon || '🏪')}`, '#d84315');
+                        } else if (biz.typeId === 'parking' && biz.evChargerUpgraded) {
+                            // Ngay cả khi cho thuê mặt bằng bãi xe, Trạm sạc xe điện thông minh vẫn thu phí sạc hàng ngày cho chủ trọ!
+                            const evFeeOnly = totalResidents * 45000;
+                            dailyBizProfit += evFeeOnly;
+                            biz.totalEarned += evFeeOnly;
+                            this.spawnFloatingText(biz.x, 3.4, biz.z, `+${formatVND(evFeeOnly)}đ ⚡Sạc điện`, '#00c853');
                         }
                     });
                     if (dailyBizProfit > 0) this.state.cash += dailyBizProfit;
@@ -7798,6 +8832,71 @@
                         this.state.realEstate.marketingBoostDays--;
                     }
                 }
+                // YÊU CẦU MỚI: LỢI ÍCH & RỦI RO THỰC TẾ CỦA HỆ THỐNG THÚ CƯNG 3D (CHÓ & MÈO)
+                if (this.state.allowPetsPolicy) {
+                    const allRooms = Array.from(this.state.roomMap.values());
+                    const dogRooms = allRooms.filter(r => r.tenant && (r.tenant.petType === 'corgi' || r.tenant.petType === 'husky'));
+                    const catRooms = allRooms.filter(r => r.tenant && (r.tenant.petType === 'calico_cat' || r.tenant.petType === 'orange_cat'));
+                    const totalPetRooms = dogRooms.length + catRooms.length;
+
+                    // 1. MÈO GIÚP TIỆM TẠP HÓA & QUÁN ĂN KHÔNG BỊ CHUỘT PHÁ HOẠI HÀNG HÓA
+                    const hasFoodBiz = (this.state.shopMap.size > 0) || Array.from(this.state.bizMap.values()).some(b => b.typeId === 'eatery' || b.typeId === 'minimart');
+                    if (hasFoodBiz) {
+                        if (catRooms.length > 0 && Math.random() < 0.45) {
+                            const savedBonus = 220000 + catRooms.length * 60000;
+                            this.state.cash += savedBonus;
+                            this.addXP(12);
+                            const catRoom = catRooms[Math.floor(Math.random() * catRooms.length)];
+                            const catCfg = GAME_CONFIG.PET_BREEDS[catRoom.tenant.petType];
+                            this.showToast(`🐱 MÈO BẮT CHUỘT XUẤT SẮC: ${catCfg.name} của phòng ${catRoom.code} đã bắt gọn đàn chuột định cắn phá Tiệm tạp hóa & Quán ăn! Bảo toàn hàng hóa +${formatVND(savedBonus)}đ.`);
+                        } else if (catRooms.length === 0 && Math.random() < 0.28) {
+                            const ratLoss = 250000;
+                            this.state.cash = Math.max(0, this.state.cash - ratLoss);
+                            this.showToast(`🐀 CHUỘT CẮN PHÁ HÀNG HÓA (-${formatVND(ratLoss)}đ): Khu trọ chưa có khách nuôi Mèo (Mèo tam thể / Mèo cam) nên chuột lẻn vào cắn hàng Tạp hóa & Quán ăn!`);
+                        }
+                    }
+
+                    // 2. CHÓ GIÚP SỦA BÁO ĐỘNG KHI CÓ KẺ GIAN LẢNG VẢNG Ở CỔNG VÀO BAN ĐÊM
+                    if (dogRooms.length > 0 && Math.random() < 0.42) {
+                        const dogReward = 300000 + dogRooms.length * 50000;
+                        this.state.cash += dogReward;
+                        this.addXP(18);
+                        const dogRoom = dogRooms[Math.floor(Math.random() * dogRooms.length)];
+                        const dogCfg = GAME_CONFIG.PET_BREEDS[dogRoom.tenant.petType];
+                        this.showToast(`🐶 CHÓ CANH CỔNG BAN ĐÊM: Đêm qua có kẻ gian lảng vảng trước cổng, ${dogCfg.name} (${dogRoom.code}) đã sủa vang báo động đuổi trộm! Thưởng an ninh +${formatVND(dogReward)}đ.`);
+                    }
+
+                    // 3. RỦI RO VỆ SINH & TIẾNG SỦA ĐÊM NẾU CHƯA THUÊ CÔ LAO CÔNG HOẶC CHƯA XÂY BÃI CỎ THÚ CƯNG
+                    if (totalPetRooms > 0) {
+                        const hasCleaner = Boolean(this.state.hiredStaff && this.state.hiredStaff.cleaner);
+                        const hasPetPark = this.state.communityMap && Array.from(this.state.communityMap.values()).some(cm => cm.typeId === 'pet_park');
+                        if (!hasCleaner && !hasPetPark) {
+                            let affectedCount = 0;
+                            allRooms.forEach(rm => {
+                                if (rm.tenant && (rm.tenant.petType === 'corgi' || rm.tenant.petType === 'husky' || rm.tenant.petType === 'calico_cat' || rm.tenant.petType === 'orange_cat')) {
+                                    const nbs = this.state.getNeighbors(rm.gx, rm.gz, rm.floor || 1);
+                                    nbs.forEach(nb => {
+                                        if (nb.tenant) {
+                                            nb.tenant.happiness = Math.max(25, nb.tenant.happiness - 6);
+                                            affectedCount++;
+                                        }
+                                    });
+                                }
+                            });
+                            if (affectedCount > 0) {
+                                this.showToast(`⚠️ PHÀN NÀN THÚ CƯNG: Bạn đang thu phí nuôi thú cưng nhưng chưa xây [🐕 Bãi Cỏ Thú Cưng] hoặc thuê [🧹 Cô Lao Công], khiến thú cưng làm bẩn hành lang & sủa đêm làm phòng kế bên giảm hài lòng!`);
+                            }
+                        } else {
+                            // Đã có Bãi cỏ thú cưng hoặc Cô lao công -> Hành lang sạch thơm, thú cưng ngoan ngoãn tăng hài lòng!
+                            allRooms.forEach(rm => {
+                                if (rm.tenant && rm.tenant.petType) {
+                                    rm.tenant.happiness = Math.min(100, rm.tenant.happiness + 4);
+                                }
+                            });
+                        }
+                    }
+                }
+
                 if (!this.state.activeDisaster && Math.random() < 0.22) {
                     const envKeys = Object.keys(GAME_CONFIG.ENV_CHALLENGES).filter(k => !this.state.envProtection[k]);
                     if (envKeys.length > 0) {
@@ -8261,7 +9360,9 @@
                                 <div>• Tiền điện (${util.headcount} người + ${util.elecEquipCount} thiết bị): <b>+${formatVND(util.elecBaseFee + util.elecEquipFee)}đ/tháng</b></div>
                                 <div>• Tiền nước (${util.headcount} người × 65k): <b>+${formatVND(util.waterFee)}đ/tháng</b></div>
                                 <div>• Cước Internet WiFi: <b>+${formatVND(util.wifiFee)}đ/tháng</b></div>
+                                ${util.hasPet ? `<div style="color:#d84315; font-weight:800;">• 🐾 Phí nuôi thú cưng (${GAME_CONFIG.PET_BREEDS[t.petType].name}): <b>+${formatVND(util.petFee)}đ/tháng</b></div>` : ''}
                             </div>
+                            ${this.renderRoomPetSectionHtml(room)}
 
                             <div style="color:#689f38; font-weight:900; margin-top:5px; font-size:13.5px;">💰 Tổng thu ngày 05 hàng tháng: ${formatVND(room.getMonthlyRent(this.state.level))}đ</div>
                             <div style="margin-top:7px; padding-top:6px; border-top:1.5px dashed #d7ccc8; display:flex; gap:4px; flex-wrap:wrap;">
@@ -8406,6 +9507,7 @@
                         this.openNpcInteractionModal(room);
                     });
                 }
+                this.bindRoomPetSectionListeners(room);
 
                 // Nút sửa sự cố khẩn cấp
                 const btnSolve = document.getElementById('btn-solve-crisis');
@@ -8697,6 +9799,9 @@
                     if (r.group) r.group.visible = vis;
                     if (r.tenant && r.tenant.mesh) {
                         r.tenant.mesh.visible = vis;
+                        if (r.tenant.petObj && r.tenant.petObj.mesh) {
+                            r.tenant.petObj.mesh.visible = vis && Boolean(this.state.allowPetsPolicy);
+                        }
                         if (r.tenant.memberFollowers) {
                             r.tenant.memberFollowers.forEach(mf => { if (mf.mesh) mf.mesh.visible = vis; });
                         }
@@ -9129,6 +10234,7 @@
                         bTag.style.borderColor = biz.typeConfig.roofColor;
                         bTag.style.background = '#fbe9e7';
                         const shortNameMap = {
+                            pet_shop: '🐾 Thú Cưng',
                             eatery: '🍜 Quán Ăn',
                             cafe: '☕ Cà Phê',
                             minimart: '🛒 Siêu Thị',
@@ -10207,6 +11313,8 @@
                     if (instance.upgradedSpecial && instance.typeConfig) {
                         total += instance.typeConfig.specialUpgradeCost || 3000000;
                     }
+                    if (instance.hasParkingFireSafety) total += 1500000;
+                    if (instance.evChargerUpgraded) total += 3800000;
                     return total;
                 }
                 if (kind === 'community') {
@@ -12082,6 +13190,7 @@
                         this.tickTime(deltaSec);
                         this.updateStaffPatrol(deltaSec);
                         this.updateChildNpcs(deltaSec);
+                        this.updateStreetTraffic(deltaSec);
                         this.autoSaveElapsed += deltaSec;
                         if (this.autoSaveElapsed >= 15) {
                             this.autoSaveElapsed = 0;
