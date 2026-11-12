@@ -17574,86 +17574,122 @@
                 return [mn(p[0]), parseFloat(p[1]), parseFloat(p[2])];
             });
 
-            // ---------- 5 BẢN NHẠC (mỗi bản 8 ô nhịp, lặp & biến tấu) ----------
+            // ---------- 5 BẢN NHẠC NỀN ĐẶC TRƯNG KHÁC BIỆT (8 ô nhịp, lặp & biến tấu) ----------
             const TRACKS = [
                 {
-                    name: 'Nắng Sớm Trên Hiên', mood: 'Dịu dàng • buổi sáng',
-                    bpm: 76, beats: 4, spb: 2, swing: 0, pad: true, sparkle: 0, texture: null,
-                    pattern: [0, 1, 2, 1, 3, 1, 2, 1],
-                    chords: [['C', 'maj7'], ['A', 'm7'], ['F', 'maj7'], ['G', '7'], ['C', 'maj7'], ['E', 'm7'], ['F', 'maj7'], ['G', '7']],
-                    melody: [
-                        ['E5 0 1.5', 'G5 1.5 0.5', 'A5 2 1', 'G5 3 1'],
-                        ['E5 0 2', 'C5 2 1', 'D5 3 1'],
-                        ['C5 0 1.5', 'E5 1.5 0.5', 'D5 2 1', 'C5 3 1'],
-                        ['B4 0 2', 'D5 2 1', 'G5 3 1'],
-                        ['G5 0 1.5', 'E5 1.5 0.5', 'G5 2 1', 'A5 3 1'],
-                        ['B5 0 2', 'G5 2 1', 'E5 3 1'],
-                        ['A5 0 1.5', 'G5 1.5 0.5', 'F5 2 1', 'E5 3 1'],
-                        ['D5 0 1.5', 'B4 1.5 0.5', 'D5 2 2']
-                    ]
-                },
-                {
-                    name: 'Mưa Nhẹ Trên Mái Tôn', mood: 'Trầm lắng • ngày mưa',
-                    bpm: 66, beats: 4, spb: 2, swing: 0, pad: true, sparkle: 0.12, texture: 'rain',
-                    pattern: [0, 2, 1, 2, 0, 2, 3, 2],
-                    chords: [['A', 'm7'], ['F', 'maj7'], ['C', 'maj7'], ['G', 'maj'], ['A', 'm7'], ['F', 'maj7'], ['D', 'm7'], ['E', '7']],
-                    melody: [
-                        ['E5 0 1.5', 'A5 1.5 0.5', 'G5 2 1', 'E5 3 1'],
-                        ['F5 0 2', 'E5 2 1', 'C5 3 1'],
-                        ['E5 0 1', 'G5 1 1', 'C6 2 2'],
-                        ['D5 0 1.5', 'B4 1.5 0.5', 'D5 2 2'],
-                        ['C5 0 1', 'E5 1 1', 'A5 2 1.5', 'G5 3.5 0.5'],
-                        ['A5 0 2', 'G5 2 1', 'F5 3 1'],
-                        ['F5 0 1.5', 'E5 1.5 0.5', 'D5 2 2'],
-                        ['G#4 0 1', 'B4 1 1', 'E5 2 2']
-                    ]
-                },
-                {
-                    name: 'Chiều Vàng Bên Hiên Nhà', mood: 'Êm ái • điệu valse',
-                    bpm: 78, beats: 3, spb: 2, swing: 0, pad: true, sparkle: 0.08, texture: null,
-                    pattern: [0, 1, 2, 3, 2, 1],
-                    chords: [['G', 'maj'], ['E', 'm7'], ['C', 'maj7'], ['D', 'maj'], ['G', 'maj'], ['B', 'm7'], ['A', 'm7'], ['D', '7']],
-                    melody: [
-                        ['B4 0 1', 'D5 1 1', 'G5 2 1'],
-                        ['A5 0 1.5', 'G5 1.5 0.5', 'E5 2 1'],
-                        ['E5 0 1', 'G5 1 1', 'E5 2 1'],
-                        ['F#5 0 2', 'D5 2 1'],
-                        ['B5 0 1.5', 'A5 1.5 0.5', 'G5 2 1'],
-                        ['D5 0 1', 'F#5 1 1', 'B5 2 1'],
-                        ['A5 0 1.5', 'G5 1.5 0.5', 'E5 2 1'],
-                        ['F#5 0 1', 'E5 1 1', 'D5 2 1']
-                    ]
-                },
-                {
-                    name: 'Đêm Yên Tĩnh Ở Phố', mood: 'Mơ màng • đêm khuya',
-                    bpm: 58, beats: 4, spb: 2, swing: 0, pad: true, sparkle: 0.35, texture: null,
-                    pattern: [0, 1, 3, 1, 2, 1, 3, 1],
-                    chords: [['F', 'add9'], ['Bb', 'maj7'], ['G', 'm7'], ['C', 'maj'], ['F', 'add9'], ['D', 'm7'], ['Bb', 'maj7'], ['C', 'maj']],
-                    melody: [
-                        ['A5 0 2', 'G5 2 2'],
-                        ['F5 0 2', 'D5 2 1', 'F5 3 1'],
-                        ['G5 0 1.5', 'F5 1.5 0.5', 'D5 2 2'],
-                        ['E5 0 2', 'C5 2 2'],
-                        ['A5 0 1', 'C6 1 1', 'A5 2 2'],
-                        ['A5 0 2', 'F5 2 1', 'A5 3 1'],
-                        ['F5 0 1.5', 'A5 1.5 0.5', 'F5 2 2'],
-                        ['E5 0 2', 'G5 2 2']
-                    ]
-                },
-                {
-                    name: 'Cuối Tuần Thong Thả', mood: 'Nhẹ nhàng • tươi sáng',
-                    bpm: 88, beats: 4, spb: 2, swing: 0.14, pad: true, sparkle: 0.1, texture: null,
+                    // Bài số 1: Tươi vui + Tiếng chim hót + Đàn Piano
+                    id: 'track_1',
+                    name: 'Ban Mai Rộn Ràng',
+                    mood: 'Tươi vui • Chim hót & Đàn Piano 🐦🎹',
+                    style: 'cheerful_piano_birds',
+                    leadInstrument: 'piano_bright',
+                    accompaniment: 'piano_bouncy',
+                    bpm: 108, beats: 4, spb: 2, swing: 0.08, pad: false, sparkle: 0.22, texture: null,
+                    birdsRate: 0.85,
                     pattern: [0, 2, 1, 2, 3, 2, 1, 2],
-                    chords: [['D', 'maj'], ['B', 'm7'], ['G', 'maj7'], ['A', 'maj'], ['D', 'maj'], ['F#', 'm7'], ['G', 'maj7'], ['A', '7']],
+                    chords: [['C', 'maj'], ['G', 'maj'], ['A', 'm7'], ['F', 'maj7'], ['C', 'maj'], ['G', '7'], ['F', 'maj7'], ['G', 'maj']],
                     melody: [
-                        ['F#5 0 1', 'A5 1 1', 'F#5 2 1.5', 'E5 3.5 0.5'],
-                        ['D5 0 1', 'F#5 1 1', 'B5 2 2'],
-                        ['B5 0 1.5', 'A5 1.5 0.5', 'G5 2 1', 'F#5 3 1'],
-                        ['E5 0 1', 'C#5 1 1', 'E5 2 2'],
-                        ['A5 0 1.5', 'F#5 1.5 0.5', 'D5 2 1', 'F#5 3 1'],
-                        ['A5 0 1', 'C#6 1 1.5', 'B5 2.5 0.5', 'A5 3 1'],
-                        ['G5 0 1', 'B5 1 1', 'A5 2 1', 'F#5 3 1'],
-                        ['E5 0 1', 'G5 1 1', 'C#5 2 2']
+                        ['G5 0 0.5', 'A5 0.5 0.5', 'C6 1 1', 'G5 2 0.5', 'E5 2.5 0.5', 'C5 3 1'],
+                        ['D5 0 0.5', 'G5 0.5 0.5', 'B5 1 1', 'A5 2 0.5', 'G5 2.5 0.5', 'D5 3 1'],
+                        ['E5 0 0.5', 'A5 0.5 0.5', 'C6 1 1.5', 'B5 2.5 0.5', 'A5 3 0.5', 'G5 3.5 0.5'],
+                        ['F5 0 1', 'A5 1 1', 'G5 2 0.5', 'F5 2.5 0.5', 'E5 3 1'],
+                        ['G5 0 0.5', 'C6 0.5 0.5', 'E6 1 1', 'D6 2 0.5', 'C6 2.5 0.5', 'G5 3 1'],
+                        ['B5 0 0.5', 'C6 0.5 0.5', 'D6 1 1', 'B5 2 1', 'G5 3 1'],
+                        ['A5 0 0.5', 'B5 0.5 0.5', 'C6 1 1', 'A5 2 0.5', 'F5 2.5 0.5', 'E5 3 1'],
+                        ['D5 0 0.5', 'G5 0.5 0.5', 'B5 1 1', 'C6 2 2']
+                    ]
+                },
+                {
+                    // Bài số 2: Nhẹ nhàng sâu lắng + Tiếng sáo trúc + Tiếng đàn tranh/zither
+                    id: 'track_2',
+                    name: 'Khúc Sáo Chiều Sâu Lắng',
+                    mood: 'Nhẹ nhàng sâu lắng • Tiếng Sáo & Đàn 🪈🪕',
+                    style: 'soulful_flute_zither',
+                    leadInstrument: 'flute',
+                    accompaniment: 'zither',
+                    bpm: 64, beats: 4, spb: 2, swing: 0, pad: true, sparkle: 0.08, texture: null,
+                    birdsRate: 0,
+                    pattern: [0, 1, 2, 3, 2, 1, 2, 0],
+                    chords: [['A', 'm7'], ['F', 'maj7'], ['C', 'maj7'], ['G', 'maj'], ['D', 'm7'], ['A', 'm7'], ['F', 'maj7'], ['E', '7']],
+                    melody: [
+                        ['E5 0 1.5', 'A5 1.5 0.5', 'C6 2 1.5', 'B5 3.5 0.5'],
+                        ['A5 0 2', 'G5 2 1', 'E5 3 1'],
+                        ['G5 0 1.5', 'E5 1.5 0.5', 'D5 2 1', 'C5 3 1'],
+                        ['D5 0 2.5', 'E5 2.5 1.5'],
+                        ['F5 0 1.5', 'A5 1.5 0.5', 'G5 2 1', 'F5 3 1'],
+                        ['E5 0 2', 'C5 2 1', 'A4 3 1'],
+                        ['C5 0 1.5', 'D5 1.5 0.5', 'E5 2 1.5', 'F5 3.5 0.5'],
+                        ['E5 0 3.5']
+                    ]
+                },
+                {
+                    // Bài số 3: Thanh thoát bay bổng + Tiếng trống nhịp nhàng
+                    id: 'track_3',
+                    name: 'Điệu Trống Bay Bổng',
+                    mood: 'Thanh thoát bay bổng • Kèm tiếng Trống 🥁✨',
+                    style: 'ethereal_drums',
+                    leadInstrument: 'ethereal_bell',
+                    accompaniment: 'airy_chords',
+                    bpm: 98, beats: 4, spb: 2, swing: 0.05, pad: true, sparkle: 0.30, texture: null,
+                    hasDrums: true,
+                    birdsRate: 0,
+                    pattern: [0, 2, 3, 2, 1, 2, 3, 1],
+                    chords: [['D', 'maj'], ['A', 'maj'], ['B', 'm7'], ['G', 'maj7'], ['D', 'maj'], ['F#', 'm7'], ['G', 'maj7'], ['A', '7']],
+                    melody: [
+                        ['A5 0 1', 'F#5 1 0.5', 'A5 1.5 0.5', 'D6 2 1.5', 'C#6 3.5 0.5'],
+                        ['B5 0 1', 'A5 1 1', 'E5 2 2'],
+                        ['F#5 0 1', 'A5 1 0.5', 'B5 1.5 0.5', 'D6 2 1', 'B5 3 1'],
+                        ['A5 0 1.5', 'G5 1.5 0.5', 'F#5 2 1', 'D5 3 1'],
+                        ['D6 0 1', 'C#6 1 0.5', 'B5 1.5 0.5', 'A5 2 1.5', 'F#5 3.5 0.5'],
+                        ['A5 0 1.5', 'F#5 1.5 0.5', 'C#5 2 2'],
+                        ['G5 0 1', 'A5 1 0.5', 'B5 1.5 0.5', 'A5 2 1', 'F#5 3 1'],
+                        ['E5 0 1.5', 'F#5 1.5 0.5', 'A5 2 2']
+                    ]
+                },
+                {
+                    // Bài số 4: Thư giãn + Tiếng suối chảy + Tiếng chim hót + Đàn Guitar mộc
+                    id: 'track_4',
+                    name: 'Bên Suối Guitar Mộc',
+                    mood: 'Thư giãn • Tiếng Suối, Chim & Đàn Guitar 🏞️🐦🎸',
+                    style: 'stream_birds_guitar',
+                    leadInstrument: 'guitar',
+                    accompaniment: 'guitar_fingerstyle',
+                    bpm: 76, beats: 4, spb: 2, swing: 0.04, pad: false, sparkle: 0.05, texture: 'stream',
+                    birdsRate: 0.65,
+                    pattern: [0, 1, 2, 3, 1, 2, 0, 2],
+                    chords: [['G', 'maj'], ['D', 'maj'], ['E', 'm7'], ['C', 'maj7'], ['G', 'maj'], ['D', '7'], ['C', 'maj7'], ['D', 'maj']],
+                    melody: [
+                        ['B4 0 0.5', 'D5 0.5 0.5', 'G5 1 1', 'F#5 2 0.5', 'G5 2.5 0.5', 'D5 3 1'],
+                        ['A4 0 0.5', 'D5 0.5 0.5', 'F#5 1 1.5', 'E5 2.5 0.5', 'D5 3 1'],
+                        ['B4 0 0.5', 'E5 0.5 0.5', 'G5 1 1', 'B5 2 1', 'G5 3 1'],
+                        ['G5 0 1', 'E5 1 0.5', 'D5 1.5 0.5', 'C5 2 1', 'E5 3 1'],
+                        ['D5 0 0.5', 'G5 0.5 0.5', 'B5 1 1', 'A5 2 0.5', 'G5 2.5 0.5', 'D5 3 1'],
+                        ['F#5 0 1', 'G5 1 0.5', 'A5 1.5 0.5', 'F#5 2 1', 'D5 3 1'],
+                        ['E5 0 0.5', 'G5 0.5 0.5', 'C6 1 1', 'B5 2 0.5', 'G5 2.5 0.5', 'E5 3 1'],
+                        ['D5 0 0.5', 'F#5 0.5 0.5', 'A5 1 1', 'G5 2 2']
+                    ]
+                },
+                {
+                    // Bài số 5: Êm ả ru ngủ + Tiếng đàn Violon ngân dài
+                    id: 'track_5',
+                    name: 'Khúc Ru Violon Đêm Êm',
+                    mood: 'Êm ả ru ngủ • Đàn Violon du dương 🎻🌙',
+                    style: 'lullaby_violin',
+                    leadInstrument: 'violin',
+                    accompaniment: 'lullaby_harp',
+                    bpm: 54, beats: 3, spb: 2, swing: 0, pad: true, sparkle: 0.25, texture: null,
+                    birdsRate: 0,
+                    pattern: [0, 1, 2, 3, 2, 1],
+                    chords: [['F', 'add9'], ['D', 'm7'], ['Bb', 'maj7'], ['C', 'maj'], ['F', 'maj7'], ['A', 'm7'], ['Bb', 'maj7'], ['C', '7']],
+                    melody: [
+                        ['A5 0 2', 'C6 2 1'],
+                        ['A5 0 1.5', 'G5 1.5 0.5', 'F5 2 1'],
+                        ['D5 0 1.5', 'F5 1.5 0.5', 'A5 2 1'],
+                        ['G5 0 2.8'],
+                        ['A5 0 1.5', 'C6 1.5 0.5', 'D6 2 1'],
+                        ['C6 0 2', 'E5 2 1'],
+                        ['F5 0 1.5', 'G5 1.5 0.5', 'A5 2 1'],
+                        ['G5 0 1.5', 'E5 1.5 0.5', 'F5 2 1']
                     ]
                 }
             ];
@@ -17722,37 +17758,38 @@
                 ambBus.gain.setTargetAtTime(S.sfxOn ? Math.pow(S.sfxVol, 1.5) * 0.7 : 0, now, tc);
             }
 
-            // ---------- Giọng đàn & nhạc cụ ----------
+            // ---------- Giọng đàn & nhạc cụ chuyên biệt cho 5 bài ----------
+            // 1. Đàn Piano (Sáng tươi vui hoặc dịu nhẹ)
             function piano(m, t, dur, vel, dest, opt) {
                 opt = opt || {};
                 const f = hz(m);
                 const lp = ctx.createBiquadFilter();
-                lp.type = 'lowpass'; lp.Q.value = 0.4;
-                lp.frequency.setValueAtTime(Math.min(9000, f * (3 + vel * 7)), t);
-                lp.frequency.exponentialRampToValueAtTime(Math.max(500, f * 1.8), t + 1.2);
+                lp.type = 'lowpass'; lp.Q.value = opt.bright ? 0.85 : 0.4;
+                lp.frequency.setValueAtTime(Math.min(10500, f * (opt.bright ? (5 + vel * 9) : (3 + vel * 7))), t);
+                lp.frequency.exponentialRampToValueAtTime(Math.max(500, f * (opt.bright ? 2.4 : 1.8)), t + 1.1);
 
                 const g = ctx.createGain();
                 const peak = vel * (opt.gain || 0.34) * (m < 48 ? 1.1 : (m > 84 ? 0.7 : 1));
-                const tau = Math.max(0.5, (0.55 + dur * 0.45) * (1.5 - (m - 36) / 80));
+                const tau = Math.max(0.35, (opt.staccato ? 0.28 : (0.55 + dur * 0.45)) * (1.5 - (m - 36) / 80));
                 g.gain.setValueAtTime(0.0001, t);
-                g.gain.linearRampToValueAtTime(peak, t + 0.007);
-                g.gain.setTargetAtTime(0, t + 0.007, tau);
-                const rel = t + dur + 0.5;
-                g.gain.setTargetAtTime(0, rel, 0.3); // nhả phím nhẹ nhàng
+                g.gain.linearRampToValueAtTime(peak, t + 0.006);
+                g.gain.setTargetAtTime(0, t + 0.006, tau);
+                const rel = t + dur + 0.45;
+                g.gain.setTargetAtTime(0, rel, 0.25);
 
                 const o1 = ctx.createOscillator();
                 o1.setPeriodicWave(pianoWave); o1.frequency.value = f;
-                o1.detune.value = (Math.random() - 0.5) * 6;
+                o1.detune.value = (Math.random() - 0.5) * 5;
                 const o2 = ctx.createOscillator();
-                o2.type = 'sine'; o2.frequency.value = f * 2.0035;
+                o2.type = opt.bright ? 'triangle' : 'sine'; o2.frequency.value = f * 2.003;
                 const g2 = ctx.createGain();
-                g2.gain.setValueAtTime(0.22, t);
+                g2.gain.setValueAtTime(opt.bright ? 0.28 : 0.22, t);
                 g2.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
                 o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(dest);
-                const stopAt = rel + 2.0;
+                const stopAt = rel + 1.8;
                 o1.start(t); o2.start(t); o1.stop(stopAt); o2.stop(t + 0.6);
 
-                if (!opt.noHammer) { // tiếng búa gõ dây rất khẽ
+                if (!opt.noHammer) {
                     const n = ctx.createBufferSource(); n.buffer = noiseBuf;
                     const bp = ctx.createBiquadFilter();
                     bp.type = 'bandpass'; bp.frequency.value = Math.min(5000, f * 4); bp.Q.value = 1.2;
@@ -17762,6 +17799,264 @@
                     n.connect(bp); bp.connect(ng); ng.connect(dest);
                     n.start(t, Math.random() * 1.5); n.stop(t + 0.06);
                 }
+            }
+
+            // 2. Tiếng Sáo Trúc (Bài số 2: Âm hơi ấm, rung vibrato tự nhiên, sâu lắng)
+            function fluteNote(m, t, dur, vel, dest) {
+                const f = hz(m);
+                const g = ctx.createGain();
+                const peak = vel * 0.24;
+                const attack = Math.min(0.14, Math.max(0.05, dur * 0.18));
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(peak, t + attack);
+                g.gain.setValueAtTime(peak * 0.92, t + Math.max(attack, dur * 0.78));
+                g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.35);
+
+                const lp = ctx.createBiquadFilter();
+                lp.type = 'lowpass'; lp.frequency.value = Math.min(3600, f * 3.2); lp.Q.value = 0.7;
+
+                const o1 = ctx.createOscillator(); o1.type = 'sine'; o1.frequency.value = f;
+                const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f * 2;
+                const g2 = ctx.createGain(); g2.gain.value = 0.12;
+
+                // Vibrato nhẹ nhàng cho tiếng sáo ngân
+                const vib = ctx.createOscillator(); vib.frequency.value = 5.2;
+                const vibGain = ctx.createGain();
+                vibGain.gain.setValueAtTime(0.1, t);
+                vibGain.gain.linearRampToValueAtTime(f * 0.011, t + attack + 0.15);
+                vib.connect(vibGain); vibGain.connect(o1.frequency);
+
+                // Tiếng hơi thổi sáo (breath chiff)
+                const breath = ctx.createBufferSource(); breath.buffer = noiseBuf; breath.loop = true;
+                const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f * 1.5; bp.Q.value = 3.5;
+                const bg = ctx.createGain();
+                bg.gain.setValueAtTime(0.0001, t);
+                bg.gain.linearRampToValueAtTime(vel * 0.032, t + 0.04);
+                bg.gain.exponentialRampToValueAtTime(0.008, t + dur + 0.2);
+
+                o1.connect(lp); o2.connect(g2); g2.connect(lp);
+                breath.connect(bp); bp.connect(bg); bg.connect(lp);
+                lp.connect(g); g.connect(dest);
+
+                const stopAt = t + dur + 0.42;
+                o1.start(t); o2.start(t); vib.start(t); breath.start(t, Math.random() * 0.8);
+                o1.stop(stopAt); o2.stop(stopAt); vib.stop(stopAt); breath.stop(stopAt);
+            }
+
+            // 3. Tiếng Đàn Tranh / Đàn Gẩy (Bài số 2: Đi kèm tiếng sáo)
+            function zitherPluck(m, t, dur, vel, dest) {
+                const f = hz(m);
+                const lp = ctx.createBiquadFilter();
+                lp.type = 'lowpass'; lp.Q.value = 1.6;
+                lp.frequency.setValueAtTime(Math.min(7200, f * 6.5), t);
+                lp.frequency.exponentialRampToValueAtTime(Math.max(480, f * 1.4), t + 0.9);
+
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(vel * 0.22, t + 0.005);
+                g.gain.setTargetAtTime(0, t + 0.005, 0.42);
+
+                const o1 = ctx.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = f;
+                const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f * 1.002;
+                const g2 = ctx.createGain(); g2.gain.value = 0.35;
+                o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(dest);
+                o1.start(t); o2.start(t);
+                o1.stop(t + dur + 1.4); o2.stop(t + dur + 1.4);
+            }
+
+            // 4. Tiếng Đàn Guitar Acoustic Mộc (Bài số 4: Ấm, giòn, có tiếng móng gảy dây)
+            function guitarPluck(m, t, dur, vel, dest, isLead) {
+                const f = hz(m);
+                const bodyFilter = ctx.createBiquadFilter();
+                bodyFilter.type = 'lowpass'; bodyFilter.Q.value = 1.1;
+                bodyFilter.frequency.setValueAtTime(Math.min(6000, f * (isLead ? 5.8 : 4.2)), t);
+                bodyFilter.frequency.exponentialRampToValueAtTime(Math.max(380, f * 1.3), t + 0.65);
+
+                // Cộng hưởng thùng đàn gỗ ở ~210Hz
+                const woodRes = ctx.createBiquadFilter();
+                woodRes.type = 'peaking'; woodRes.frequency.value = 215; woodRes.Q.value = 1.4; woodRes.gain.value = 4.5;
+
+                const g = ctx.createGain();
+                const peak = vel * (isLead ? 0.30 : 0.22);
+                const tau = isLead ? 0.45 : 0.36;
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(peak, t + 0.004);
+                g.gain.setTargetAtTime(0, t + 0.004, tau);
+
+                const o1 = ctx.createOscillator(); o1.type = 'triangle'; o1.frequency.value = f;
+                const o2 = ctx.createOscillator(); o2.type = 'sawtooth'; o2.frequency.value = f;
+                o2.detune.value = 3.5;
+                const g2 = ctx.createGain();
+                g2.gain.setValueAtTime(0.38, t);
+                g2.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+
+                // Tiếng ngón tay/pick gảy vào dây đàn
+                const plk = ctx.createBufferSource(); plk.buffer = noiseBuf;
+                const pBp = ctx.createBiquadFilter(); pBp.type = 'bandpass'; pBp.frequency.value = Math.min(4200, f * 3.5); pBp.Q.value = 1.8;
+                const pg = ctx.createGain();
+                pg.gain.setValueAtTime(vel * 0.075, t);
+                pg.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
+
+                o1.connect(bodyFilter); o2.connect(g2); g2.connect(bodyFilter);
+                plk.connect(pBp); pBp.connect(pg); pg.connect(bodyFilter);
+                bodyFilter.connect(woodRes); woodRes.connect(g); g.connect(dest);
+
+                const stopAt = t + dur + 1.5;
+                o1.start(t); o2.start(t); plk.start(t, Math.random() * 1.2);
+                o1.stop(stopAt); o2.stop(t + 0.32); plk.stop(t + 0.035);
+            }
+
+            // 5. Tiếng Đàn Violon Du Dương (Bài số 5: Kéo vĩ mềm mại, vibrato sâu, ấm áp ru ngủ)
+            function violinBow(m, t, dur, vel, dest) {
+                const f = hz(m);
+                const g = ctx.createGain();
+                const peak = vel * 0.20;
+                const attack = Math.min(0.38, Math.max(0.14, dur * 0.28));
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(peak, t + attack);
+                g.gain.setValueAtTime(peak * 0.9, t + Math.max(attack + 0.05, dur * 0.72));
+                g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.65);
+
+                // Bộ lọc mô phỏng thùng đàn violon (formant gỗ ấm, không chói)
+                const body1 = ctx.createBiquadFilter();
+                body1.type = 'peaking'; body1.frequency.value = 480; body1.Q.value = 1.2; body1.gain.value = 4.0;
+                const lp = ctx.createBiquadFilter();
+                lp.type = 'lowpass'; lp.frequency.value = Math.min(2600, f * 3.4); lp.Q.value = 0.6;
+
+                const o1 = ctx.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = f;
+                const o2 = ctx.createOscillator(); o2.type = 'sawtooth'; o2.frequency.value = f; o2.detune.value = 6.5;
+                const g2 = ctx.createGain(); g2.gain.value = 0.55;
+
+                // Vibrato vĩ cầm biểu cảm
+                const vib = ctx.createOscillator(); vib.frequency.value = 5.6;
+                const vibGain = ctx.createGain();
+                vibGain.gain.setValueAtTime(0.05, t);
+                vibGain.gain.linearRampToValueAtTime(f * 0.013, t + attack + 0.12);
+                vib.connect(vibGain);
+                vibGain.connect(o1.frequency); vibGain.connect(o2.frequency);
+
+                o1.connect(body1); o2.connect(g2); g2.connect(body1);
+                body1.connect(lp); lp.connect(g); g.connect(dest);
+
+                const stopAt = t + dur + 0.75;
+                o1.start(t); o2.start(t); vib.start(t);
+                o1.stop(stopAt); o2.stop(stopAt); vib.stop(stopAt);
+            }
+
+            // 6. Tiếng Chuông Pha Lê Bay Bổng (Bài số 3: Thanh thoát kết hợp tiếng trống)
+            function etherealLead(m, t, dur, vel, dest) {
+                const f = hz(m);
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(vel * 0.22, t + 0.025);
+                g.gain.setTargetAtTime(0, t + 0.03, Math.max(0.45, dur * 0.55));
+
+                const o1 = ctx.createOscillator(); o1.type = 'sine'; o1.frequency.value = f;
+                const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = f * 2;
+                const g2 = ctx.createGain(); g2.gain.value = 0.25;
+                const o3 = ctx.createOscillator(); o3.type = 'sine'; o3.frequency.value = f * 3;
+                const g3 = ctx.createGain();
+                g3.gain.setValueAtTime(0.10, t);
+                g3.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+
+                o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+                g.connect(dest);
+                const stopAt = t + dur + 1.8;
+                o1.start(t); o2.start(t); o3.start(t);
+                o1.stop(stopAt); o2.stop(stopAt); o3.stop(t + 0.45);
+            }
+
+            // 7. Bộ Trống Acoustic Nhịp Nhàng (Bài số 3: Kick ấm, Snare/Rimshot mềm, Shaker/Hi-hat)
+            function drumHit(kind, t, vel, dest) {
+                if (kind === 'kick') {
+                    const o = ctx.createOscillator(); o.type = 'sine';
+                    o.frequency.setValueAtTime(125, t);
+                    o.frequency.exponentialRampToValueAtTime(46, t + 0.12);
+                    const g = ctx.createGain();
+                    g.gain.setValueAtTime(0.0001, t);
+                    g.gain.linearRampToValueAtTime(vel * 0.32, t + 0.005);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+                    o.connect(g); g.connect(dest);
+                    o.start(t); o.stop(t + 0.28);
+                } else if (kind === 'snare') {
+                    // Tiếng trống snare / gỗ rim mềm kết hợp phần dây lăn nhẹ
+                    const o = ctx.createOscillator(); o.type = 'triangle';
+                    o.frequency.setValueAtTime(210, t);
+                    o.frequency.exponentialRampToValueAtTime(120, t + 0.08);
+                    const og = ctx.createGain();
+                    og.gain.setValueAtTime(vel * 0.14, t);
+                    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+                    o.connect(og); og.connect(dest);
+                    o.start(t); o.stop(t + 0.12);
+
+                    const n = ctx.createBufferSource(); n.buffer = noiseBuf;
+                    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1850; bp.Q.value = 1.1;
+                    const ng = ctx.createGain();
+                    ng.gain.setValueAtTime(0.0001, t);
+                    ng.gain.linearRampToValueAtTime(vel * 0.11, t + 0.004);
+                    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+                    n.connect(bp); bp.connect(ng); ng.connect(dest);
+                    n.start(t, Math.random() * 1.2); n.stop(t + 0.18);
+                } else if (kind === 'hat') {
+                    const n = ctx.createBufferSource(); n.buffer = noiseBuf;
+                    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 5800;
+                    const ng = ctx.createGain();
+                    ng.gain.setValueAtTime(0.0001, t);
+                    ng.gain.linearRampToValueAtTime(vel * 0.045, t + 0.003);
+                    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.055);
+                    n.connect(hp); hp.connect(ng); ng.connect(dest);
+                    n.start(t, Math.random() * 1.5); n.stop(t + 0.065);
+                } else if (kind === 'tom') {
+                    const o = ctx.createOscillator(); o.type = 'sine';
+                    o.frequency.setValueAtTime(165, t);
+                    o.frequency.exponentialRampToValueAtTime(85, t + 0.16);
+                    const g = ctx.createGain();
+                    g.gain.setValueAtTime(vel * 0.18, t);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+                    o.connect(g); g.connect(dest);
+                    o.start(t); o.stop(t + 0.24);
+                }
+            }
+
+            // 8. Tiếng Chim Hót Líu Lo Tự Nhiên (Bài số 1 & Bài số 4)
+            function birdChirpPhrase(t, dest) {
+                const calls = 2 + Math.floor(Math.random() * 3); // 2-4 tiếng líu lo liên tiếp
+                let curT = t;
+                const baseF = 2100 + Math.random() * 900;
+                for (let i = 0; i < calls; i++) {
+                    const dur = 0.065 + Math.random() * 0.055;
+                    const fStart = baseF + (Math.random() - 0.3) * 500;
+                    const fPeak = fStart * (1.22 + Math.random() * 0.22);
+                    const fEnd = fStart * (0.92 + Math.random() * 0.18);
+
+                    const o = ctx.createOscillator(); o.type = 'sine';
+                    o.frequency.setValueAtTime(fStart, curT);
+                    o.frequency.exponentialRampToValueAtTime(fPeak, curT + dur * 0.55);
+                    o.frequency.exponentialRampToValueAtTime(fEnd, curT + dur);
+
+                    const g = ctx.createGain();
+                    g.gain.setValueAtTime(0.0001, curT);
+                    g.gain.linearRampToValueAtTime(0.055, curT + 0.012);
+                    g.gain.exponentialRampToValueAtTime(0.0001, curT + dur + 0.015);
+
+                    o.connect(g); g.connect(dest);
+                    o.start(curT); o.stop(curT + dur + 0.025);
+                    curT += dur + 0.035 + Math.random() * 0.045;
+                }
+            }
+
+            // 9. Giọt Nước Suối Róc Rách (Bài số 4)
+            function waterDroplet(t, dest) {
+                const f = 950 + Math.random() * 1100;
+                const o = ctx.createOscillator(); o.type = 'sine';
+                o.frequency.setValueAtTime(f, t);
+                o.frequency.exponentialRampToValueAtTime(f * 1.48, t + 0.048);
+                const g = ctx.createGain();
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.linearRampToValueAtTime(0.032, t + 0.006);
+                g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+                o.connect(g); g.connect(dest);
+                o.start(t); o.stop(t + 0.07);
             }
 
             function bell(m, t, vol, dest) {
@@ -17778,11 +18073,11 @@
                 o1.start(t); o2.start(t); o1.stop(t + 2.2); o2.stop(t + 1.2);
             }
 
-            function pad(notes, t, dur, dest) {
+            function pad(notes, t, dur, dest, warmScale) {
                 const lp = ctx.createBiquadFilter();
-                lp.type = 'lowpass'; lp.frequency.value = 760; lp.Q.value = 0.3;
+                lp.type = 'lowpass'; lp.frequency.value = warmScale ? 580 : 760; lp.Q.value = 0.3;
                 const g = ctx.createGain();
-                const v = 0.022;
+                const v = warmScale ? 0.028 : 0.022;
                 g.gain.setValueAtTime(0.0001, t);
                 g.gain.linearRampToValueAtTime(v, t + 1.2);
                 g.gain.setValueAtTime(v, t + dur);
@@ -17800,7 +18095,7 @@
             function bassNote(m, t, vel, dest) {
                 const g = ctx.createGain();
                 g.gain.setValueAtTime(0.0001, t);
-                g.gain.linearRampToValueAtTime(0.26 * vel, t + 0.02);
+                g.gain.linearRampToValueAtTime(0.24 * vel, t + 0.02);
                 g.gain.setTargetAtTime(0, t + 0.02, 0.9);
                 const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420;
                 const o1 = ctx.createOscillator(); o1.type = 'sine'; o1.frequency.value = hz(m);
@@ -17810,10 +18105,29 @@
                 o1.start(t); o2.start(t); o1.stop(t + 6); o2.stop(t + 6);
             }
 
+            // Nền âm thanh liên tục (Tiếng suối chảy róc rách cho Bài số 4)
             function startTexture(kind, dest) {
                 if (!kind) return null;
                 const src = ctx.createBufferSource();
                 src.buffer = noiseBuf; src.loop = true;
+
+                if (kind === 'stream') {
+                    // Tiếng suối chảy róc rách (dải lọc nước chảy có LFO gợn sóng nhẹ)
+                    const bp1 = ctx.createBiquadFilter(); bp1.type = 'bandpass'; bp1.frequency.value = 680; bp1.Q.value = 1.4;
+                    const bp2 = ctx.createBiquadFilter(); bp2.type = 'bandpass'; bp2.frequency.value = 1450; bp2.Q.value = 2.0;
+                    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.38;
+                    const lfoGain = ctx.createGain(); lfoGain.gain.value = 220;
+                    lfo.connect(lfoGain); lfoGain.connect(bp1.frequency); lfoGain.connect(bp2.frequency);
+
+                    const g = ctx.createGain(); g.gain.value = 0.0;
+                    g.gain.setTargetAtTime(0.032, ctx.currentTime, 1.5);
+                    src.connect(bp1); bp1.connect(g);
+                    src.connect(bp2); bp2.connect(g);
+                    g.connect(dest);
+                    src.start(); lfo.start();
+                    return () => { try { src.stop(ctx.currentTime + 0.1); lfo.stop(ctx.currentTime + 0.1); } catch (e) {} };
+                }
+
                 const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
                 const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 6500;
                 const g = ctx.createGain(); g.gain.value = 0.0;
@@ -17823,7 +18137,7 @@
                 return () => { try { src.stop(ctx.currentTime + 0.1); } catch (e) {} };
             }
 
-            // ---------- Bộ chạy nhạc ----------
+            // ---------- Bộ chạy nhạc theo phong cách riêng của từng bài ----------
             function scheduleBar(T, bar, t0, loop, dest) {
                 const beatSec = 60 / T.bpm;
                 const stepSec = beatSec / T.spb;
@@ -17833,36 +18147,121 @@
                 const bassM = 36 + PC[ch[0]];
                 const r = bassM + 12;
                 const arr = [r, r + iv[2], r + 12 + iv[1], r + 12];
-                const jit = () => (Math.random() - 0.5) * 0.02;
+                const jit = () => (Math.random() - 0.5) * 0.016;
 
-                bassNote(bassM, t0, 1, dest);
-                if (T.beats === 4) bassNote(bassM, t0 + 2 * beatSec, 0.55, dest);
-                if (T.pad) pad([r, r + iv[1], r + iv[2], r + (iv[3] != null ? iv[3] : 12)], t0, barSec, dest);
+                // 1. Âm trầm & nền hòa âm (Pad)
+                if (T.style === 'cheerful_piano_birds') {
+                    // Bass piano nảy nhịp tươi vui ở phách 1 và phách 3
+                    piano(bassM + 12, t0, beatSec * 0.9, 0.52, dest, { bright: true, staccato: true, gain: 0.30 });
+                    piano(bassM + 19, t0 + beatSec, beatSec * 0.7, 0.36, dest, { bright: true, staccato: true, gain: 0.25 });
+                    piano(bassM + 12, t0 + 2 * beatSec, beatSec * 0.9, 0.48, dest, { bright: true, staccato: true, gain: 0.28 });
+                    piano(bassM + 19, t0 + 3 * beatSec, beatSec * 0.7, 0.36, dest, { bright: true, staccato: true, gain: 0.25 });
+                } else if (T.style === 'stream_birds_guitar') {
+                    // Bass dây trầm đàn guitar mộc
+                    guitarPluck(bassM + 12, t0, beatSec * 1.8, 0.75, dest, false);
+                    if (T.beats === 4) guitarPluck(bassM + 12 + iv[2], t0 + 2 * beatSec, beatSec * 1.8, 0.60, dest, false);
+                } else {
+                    bassNote(bassM, t0, T.style === 'lullaby_violin' ? 0.75 : 1.0, dest);
+                    if (T.beats === 4 && T.style !== 'lullaby_violin') bassNote(bassM, t0 + 2 * beatSec, 0.55, dest);
+                }
 
+                if (T.pad) {
+                    pad([r, r + iv[1], r + iv[2], r + (iv[3] != null ? iv[3] : 12)], t0, barSec, dest, T.style === 'lullaby_violin');
+                }
+
+                // 2. Nhạc cụ đệm (Accompaniment) đặc trưng từng bài
                 const steps = T.beats * T.spb;
                 for (let s = 0; s < steps; s++) {
                     const swing = (s % 2 === 1) ? T.swing * stepSec : 0;
-                    const vel = (s % T.spb === 0 ? 0.42 : 0.30) * (0.9 + Math.random() * 0.2);
-                    piano(arr[T.pattern[s % T.pattern.length]], t0 + s * stepSec + swing + jit(), stepSec * 1.8, vel, dest, { gain: 0.3 });
+                    const noteTime = t0 + s * stepSec + swing + jit();
+                    const noteMidi = arr[T.pattern[s % T.pattern.length]];
+                    const vel = (s % T.spb === 0 ? 0.44 : 0.32) * (0.9 + Math.random() * 0.18);
+
+                    if (T.accompaniment === 'piano_bouncy') {
+                        piano(noteMidi + 12, noteTime, stepSec * 1.1, vel, dest, { bright: true, staccato: true, gain: 0.28 });
+                    } else if (T.accompaniment === 'zither') {
+                        zitherPluck(noteMidi + 12, noteTime, stepSec * 1.8, vel * 0.95, dest);
+                    } else if (T.accompaniment === 'guitar_fingerstyle') {
+                        guitarPluck(noteMidi + 12, noteTime, stepSec * 1.6, vel * 1.05, dest, false);
+                    } else if (T.accompaniment === 'lullaby_harp') {
+                        piano(noteMidi + 12, noteTime, stepSec * 2.4, vel * 0.75, dest, { noHammer: true, gain: 0.24 });
+                    } else {
+                        // airy_chords cho Bài 3
+                        piano(noteMidi + 12, noteTime, stepSec * 2.0, vel * 0.8, dest, { noHammer: true, gain: 0.25 });
+                    }
                 }
 
-                const showMelody = !(loop % 3 === 1 && bar < 4); // vòng 2: bốn ô đầu chỉ có đệm
+                // 3. Nhịp Trống (Riêng cho Bài số 3: Thanh thoát bay bổng kèm tiếng trống)
+                if (T.hasDrums) {
+                    for (let b = 0; b < T.beats; b++) {
+                        const bt = t0 + b * beatSec;
+                        if (b === 0 || b === 2) {
+                            drumHit('kick', bt, b === 0 ? 0.95 : 0.78, dest);
+                            if (b === 2 && bar % 2 === 1) drumHit('kick', bt - stepSec, 0.55, dest);
+                        }
+                        if (b === 1 || b === 3) {
+                            drumHit('snare', bt, 0.82, dest);
+                        }
+                        // Hi-hat / shaker bay bổng trên từng nửa phách
+                        drumHit('hat', bt, 0.7, dest);
+                        drumHit('hat', bt + stepSec + T.swing * stepSec, 0.45, dest);
+                    }
+                    if (bar % 4 === 3) {
+                        drumHit('tom', t0 + 3.5 * beatSec, 0.75, dest);
+                    }
+                }
+
+                // 4. Giai điệu chính (Lead Melody) theo nhạc cụ từng bài
+                const showMelody = !(loop % 4 === 2 && bar < 2);
                 if (showMelody) {
                     T.melody[bar].forEach(n => {
-                        const vel = 0.7 + (Math.random() - 0.5) * 0.14;
+                        const vel = 0.76 + (Math.random() - 0.5) * 0.12;
                         const tt = t0 + n[1] * beatSec + jit();
-                        piano(n[0], tt, n[2] * beatSec, vel, dest, { gain: 0.36 });
-                        if (loop % 3 === 2) piano(n[0] - 12, tt, n[2] * beatSec, vel * 0.4, dest, { gain: 0.3, noHammer: true });
+                        const durSec = n[2] * beatSec;
+
+                        if (T.leadInstrument === 'piano_bright') {
+                            piano(n[0], tt, durSec, vel, dest, { bright: true, gain: 0.40 });
+                            if (loop % 2 === 1) piano(n[0] + 12, tt, durSec * 0.8, vel * 0.38, dest, { bright: true, gain: 0.26 });
+                        } else if (T.leadInstrument === 'flute') {
+                            fluteNote(n[0], tt, durSec, vel, dest);
+                        } else if (T.leadInstrument === 'ethereal_bell') {
+                            etherealLead(n[0], tt, durSec, vel, dest);
+                        } else if (T.leadInstrument === 'guitar') {
+                            guitarPluck(n[0], tt, durSec, vel * 1.1, dest, true);
+                        } else if (T.leadInstrument === 'violin') {
+                            violinBow(n[0], tt, durSec, vel, dest);
+                            if (bar % 2 === 0) violinBow(n[0] - 12, tt, durSec, vel * 0.42, dest);
+                        } else {
+                            piano(n[0], tt, durSec, vel, dest, { gain: 0.36 });
+                        }
                     });
                 }
 
-                if (T.sparkle > 0) { // tiếng chuông nhỏ lấp lánh
+                // 5. Tiếng Chim Hót Tự Nhiên (Bài số 1 và Bài số 4)
+                if (T.birdsRate && T.birdsRate > 0) {
+                    const chirpCount = Math.random() < T.birdsRate ? (1 + (Math.random() < 0.45 ? 1 : 0)) : 0;
+                    for (let c = 0; c < chirpCount; c++) {
+                        const offsetBeat = (0.3 + Math.random() * (T.beats - 0.8)) * beatSec;
+                        birdChirpPhrase(t0 + offsetBeat, dest);
+                    }
+                }
+
+                // 6. Tiếng Giọt Nước Suối Róc Rách (Bài số 4)
+                if (T.texture === 'stream') {
+                    const drops = 3 + Math.floor(Math.random() * 4);
+                    for (let d = 0; d < drops; d++) {
+                        waterDroplet(t0 + Math.random() * barSec, dest);
+                    }
+                }
+
+                // 7. Tiếng Chuông Sao Lấp Lánh (Sparkle)
+                if (T.sparkle > 0) {
                     const pcs = [];
                     T.melody.forEach(b => b.forEach(n => { const p = n[0] % 12; if (pcs.indexOf(p) < 0) pcs.push(p); }));
                     for (let b = 0; b < T.beats; b++) {
                         if (Math.random() < T.sparkle) {
                             const m = 84 + pcs[Math.floor(Math.random() * pcs.length)];
-                            bell(m, t0 + (b + Math.random() * 0.5) * beatSec, 0.035 + Math.random() * 0.03, dest);
+                            bell(m, t0 + (b + Math.random() * 0.5) * beatSec, 0.032 + Math.random() * 0.025, dest);
                         }
                     }
                 }
